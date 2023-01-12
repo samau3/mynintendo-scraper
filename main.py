@@ -12,7 +12,7 @@ def check_items():
     """ Function to scrap items listed on MyNintendo Rewards"""
 
     soup = BeautifulSoup(html_text, 'lxml')
-
+    item_costs = {}
     items = soup.find_all(
         'div', class_='BasicTilestyles__Info-sc-sh8sf3-5 hemcMo')
     for item in items:
@@ -26,9 +26,9 @@ def check_items():
 
         cost = f'{stock.text}' if stock else price
 
-        item_description = f'{name} - {cost}'
+        item_costs[name] = cost
 
-        print(item_description)
+    print(item_costs)
 
 
 check_items()
