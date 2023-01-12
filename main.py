@@ -32,3 +32,6 @@ def check_items():
 
 
 check_items()
+
+
+# def check_for_changes():
