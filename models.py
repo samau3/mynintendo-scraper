@@ -1,17 +1,25 @@
 from datetime import datetime
-import sqlalchemy
+from flask_sqlalchemy import SQLAlchemy
 
-db = sqlalchemy()
+db = SQLAlchemy()
 
 
 class Listings(db.Model):
 
     __tablename__ = "item_listings"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    items = db.Column(db.JSONB, nullable=False)
+    items = db.Column(db.JSON, nullable=False)
     change = db.Column(db.Boolean, nullable=False, default=False)
+
+    @classmethod
+    def add_record(self, items):
+        item = Listings(
+            items=items
+        )
+        db.session.add(item)
+        return item
 
     @classmethod
     def update_database(items):
@@ -21,4 +29,12 @@ class Listings(db.Model):
         db.session.add(items_entry)
         return items_entry
 
-# change to use Flask, and utilize cron-job.org to hit an endpoint
+
+def connect_db(app):
+    """Connect this database to provided Flask app.
+
+    You should call this in your Flask app.
+    """
+
+    db.app = app
+    db.init_app(app)
