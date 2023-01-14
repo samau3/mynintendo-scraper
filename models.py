@@ -14,9 +14,10 @@ class Listings(db.Model):
     change = db.Column(db.Boolean, nullable=False, default=False)
 
     @classmethod
-    def add_record(self, items):
+    def add_record(self, items, has_changed):
         item = Listings(
-            items=items
+            items=items,
+            change=has_changed
         )
         db.session.add(item)
         return item

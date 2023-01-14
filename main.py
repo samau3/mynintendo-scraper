@@ -69,9 +69,10 @@ def check_for_changes(last_stored_items, scraped_items):
 def scrape_mynintendo():
     results = check_items()
     last_record = Listings.query.order_by(Listings.id.desc()).first()
-    changes = check_for_changes(results, last_record.items)
-    print(changes)
-    Listings.add_record(results)
+    changes = check_for_changes(
+        results, last_record.items if last_record is not None else {})
+    has_changed = False if changes is None else True
+    Listings.add_record(results, has_changed)
     db.session.commit()
     # print(res)
 
