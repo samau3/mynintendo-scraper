@@ -15,20 +15,13 @@ class Listings(db.Model):
 
     @classmethod
     def add_record(self, items, has_changed):
+        """Store the scrapped items into database"""
         item = Listings(
             items=items,
             change=has_changed
         )
         db.session.add(item)
         return item
-
-    @classmethod
-    def update_database(items):
-        """Store the scrapped items into database"""
-        items_entry = Listings(items=items)
-
-        db.session.add(items_entry)
-        return items_entry
 
 
 def connect_db(app):
