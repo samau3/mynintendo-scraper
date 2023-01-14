@@ -41,8 +41,6 @@ def check_for_changes(last_stored_items, scraped_items):
     changes = {}
     for difference in diff:
         # if difference is added
-        # iterate through the list
-        # extract keys for scraped items by doing variable[6:-2]
         if difference == "dictionary_item_added":
             new_items = []
             for item in diff[difference]:
@@ -69,12 +67,15 @@ def check_for_changes(last_stored_items, scraped_items):
 def scrape_mynintendo():
     results = check_items()
     last_record = Listings.query.order_by(Listings.id.desc()).first()
-    changes = check_for_changes(
-        results, last_record.items if last_record is not None else {})
-    has_changed = False if changes is None else True
-    Listings.add_record(results, has_changed)
-    db.session.commit()
-    # print(res)
+    last_items = last_record.items if last_record is not None else {}
 
-    # Listings.update_database(items=results)
-    return results
+    changes = check_for_changes(last_items, results)
+    has_changed = False if changes is None else True
+
+    Listings.add_record(results, has_changed)
+    db.session.commit()  # wrap in a try/catch?
+
+    if has_changed:
+        return changes
+
+    return {}
