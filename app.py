@@ -1,8 +1,8 @@
 import os
 
 from flask import Flask
-from models import db, Listings, connect_db
-from main import check_items, check_for_changes, scrape_mynintendo
+from models import db, connect_db
+from main import scrape_mynintendo
 
 import dotenv
 dotenv.load_dotenv()
@@ -28,3 +28,7 @@ def show_home_page():
 def call_scrape_fn():
     results = scrape_mynintendo()
     return results
+
+
+with app.app_context():
+    db.create_all()
