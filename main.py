@@ -91,14 +91,20 @@ def message_discord(changes):
     data = {}
 
     output_message = f"""<@{os.environ['DISCORD_USER_ID']}>\nCheck the listings: {url}\n"""
+    output_embed = []
     for change in changes:
-        message = f"{change}:\n"
+        embed_obj = {}
+        embed_obj["title"] = change
+        description = ""
         for item in changes[change]:
             cleaned_item = (f"{item}")[1:-1]
-            message = f"{message}{cleaned_item}\n"
-        output_message = f"{output_message}{message}\n"
+            description = f"{description}{cleaned_item}\n"
+        # message = f"{message}{message}\n"
+        embed_obj["description"] = description
+        output_embed.append(embed_obj)
 
     data['content'] = output_message
+    data['embeds'] = output_embed
 
     result = requests.post(discord_url, json=data, headers={
                            "Content-Type": "application/json"})
