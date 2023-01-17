@@ -1,7 +1,12 @@
+import os
+
 from bs4 import BeautifulSoup
 import requests
 from deepdiff import DeepDiff
 from models import db, Listings
+
+import dotenv
+dotenv.load_dotenv()
 
 url = "https://www.nintendo.com/store/exclusives/rewards/"
 
@@ -79,3 +84,28 @@ def scrape_mynintendo():
         return changes
 
     return {}
+
+
+def message_discord(changes):
+    discord_url = f"https://discord.com/api/webhooks/{os.environ['WEBHOOK_ID']}/{os.environ['WEBHOOK_TOKEN']}"
+    data = {}
+
+    output_message = f"""<@{os.environ['DISCORD_USER_ID']}>\nCheck the listings: {url}\n"""
+    for change in changes:
+        message = f"{change}:\n"
+        for item in changes[change]:
+            cleaned_item = (f"{item}")[1:-1]
+            message = f"{message}{cleaned_item}\n"
+        output_message = f"{output_message}{message}\n"
+
+    data['content'] = output_message
+
+    result = requests.post(discord_url, json=data, headers={
+                           "Content-Type": "application/json"})
+
+    try:
+        result.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        print(err)
+    else:
+        print("Payload delivered successfully, code {}.".format(result.status_code))

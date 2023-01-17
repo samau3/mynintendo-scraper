@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 from models import db, connect_db
-from main import scrape_mynintendo
+from main import scrape_mynintendo, message_discord
 
 import dotenv
 dotenv.load_dotenv()
@@ -13,8 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ['DATABASE_URL'].replace("postgres://", "postgresql://"))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-# need below line to keep db connection to avoid the following error:
-# sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) server closed the connection unexpectedly
+# need below line to keep db connection active
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
@@ -30,6 +29,10 @@ def show_home_page():
 @app.get('/scrape')
 def call_scrape_fn():
     results = scrape_mynintendo()
+
+    if len(results) != 0:
+        message_discord(results)
+
     return results
 
 
