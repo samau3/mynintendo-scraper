@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 from models import db, connect_db
-from main import scrape_mynintendo, message_discord
+from main import scrape_mynintendo, message_discord, delete_old_records
 
 import dotenv
 dotenv.load_dotenv()
@@ -33,6 +33,13 @@ def call_scrape_fn():
         message_discord(results)
 
     return results
+
+
+@app.get('/delete')
+def delete_records():
+    results = delete_old_records()
+
+    return f"Deleted {results} entries."
 
 
 with app.app_context():

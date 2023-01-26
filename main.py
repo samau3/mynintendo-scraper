@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import requests
 from deepdiff import DeepDiff
 from models import db, Listings
+from datetime import datetime
 
 import dotenv
 dotenv.load_dotenv()
@@ -115,3 +116,13 @@ def message_discord(changes):
         print(err)
     else:
         print("Payload delivered successfully, code {}.".format(result.status_code))
+
+
+def delete_old_records():
+    expired_records = Listings.query.filter(
+        Listings.expiration <= datetime.utcnow())
+    deleted = expired_records.delete(synchronize_session=False)
+    db.session.commit()
+
+    print(deleted)
+    return deleted
