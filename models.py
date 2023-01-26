@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -10,6 +10,8 @@ class Listings(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    expiration = db.Column(db.DateTime, nullable=False,
+                           default=datetime.utcnow() + timedelta(days=7))
     items = db.Column(db.JSON, nullable=False)
     change = db.Column(db.Boolean, nullable=False, default=False)
 
