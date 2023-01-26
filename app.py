@@ -16,7 +16,6 @@ app.config['SQLALCHEMY_ECHO'] = False
 # need below line to keep db connection active
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 connect_db(app)
 
