@@ -16,7 +16,7 @@ html_text = requests.get(url).text
 
 
 def check_items():
-    """ Function to scrap items listed on MyNintendo Rewards"""
+    """ Function to scrape items listed on MyNintendo Rewards"""
 
     soup = BeautifulSoup(html_text, 'lxml')
     item_costs = {}
@@ -39,6 +39,9 @@ def check_items():
 
 
 def check_for_changes(last_stored_items, scraped_items):
+    """ Function to compare two dictionaries, 
+        returning the resulting differences"""
+
     diff = DeepDiff(last_stored_items, scraped_items)
 
     if (len(diff) == 0):
@@ -71,6 +74,7 @@ def check_for_changes(last_stored_items, scraped_items):
 
 
 def scrape_mynintendo():
+    """ Function that calls scraping function and updates database if changes were found"""
     results = check_items()
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
@@ -88,6 +92,7 @@ def scrape_mynintendo():
 
 
 def message_discord(changes):
+    """ Function that calls Discord webhook to message user of changes on MyNintendo Rewards"""
     discord_url = f"https://discord.com/api/webhooks/{os.environ['WEBHOOK_ID']}/{os.environ['WEBHOOK_TOKEN']}"
     data = {}
 
@@ -119,6 +124,7 @@ def message_discord(changes):
 
 
 def delete_old_records():
+    """ Function that deletes expired database records """
     expired_records = Listings.query.filter(
         Listings.expiration <= datetime.utcnow())
     deleted = expired_records.delete(synchronize_session=False)
