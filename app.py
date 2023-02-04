@@ -1,8 +1,8 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 from models import db, connect_db
-from main import scrape_mynintendo, message_discord, delete_old_records, check_items
+from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes
 
 import dotenv
 dotenv.load_dotenv()
@@ -23,14 +23,16 @@ connect_db(app)
 @app.get('/')
 def show_home_page():
     items = check_items()
-    results = scrape_mynintendo()
+    scrape_results = scrape_mynintendo()
+    last_change = get_changes()
 
     display = {
-        "items": items,
-        "changes": results
+        "current_listings": items,
+        "changes": scrape_results,
+        "last_change": last_change
     }
 
-    return display
+    return render_template("home.html", display=display)
 
 
 @app.get('/scrape')
