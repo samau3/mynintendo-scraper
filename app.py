@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 from models import db, connect_db
-from main import scrape_mynintendo, message_discord, delete_old_records
+from main import scrape_mynintendo, message_discord, delete_old_records, check_items
 
 import dotenv
 dotenv.load_dotenv()
@@ -22,7 +22,15 @@ connect_db(app)
 
 @app.get('/')
 def show_home_page():
-    return "Hi"
+    items = check_items()
+    results = scrape_mynintendo()
+
+    display = {
+        "items": items,
+        "changes": results
+    }
+
+    return display
 
 
 @app.get('/scrape')
