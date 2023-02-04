@@ -13,14 +13,32 @@ class Listings(db.Model):
     expiration = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow() + timedelta(days=7))
     items = db.Column(db.JSON, nullable=False)
-    change = db.Column(db.Boolean, nullable=False, default=False)
 
     @classmethod
-    def add_record(self, items, has_changed):
+    def add_record(self, items):
         """Store the scrapped items into database"""
         item = Listings(
             items=items,
-            change=has_changed
+        )
+        db.session.add(item)
+        return item
+
+
+class Changes(db.Model):
+
+    __tablename__ = "changes"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    expiration = db.Column(db.DateTime, nullable=False,
+                           default=datetime.utcnow() + timedelta(days=365))
+    items = db.Column(db.JSON, nullable=False)
+
+    @classmethod
+    def add_record(self, items):
+        """Store the scrapped items into database"""
+        item = Changes(
+            items=items,
         )
         db.session.add(item)
         return item

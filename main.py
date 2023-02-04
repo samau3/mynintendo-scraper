@@ -3,7 +3,7 @@ import os
 from bs4 import BeautifulSoup
 import requests
 from deepdiff import DeepDiff
-from models import db, Listings
+from models import db, Listings, Changes
 from datetime import datetime
 
 import dotenv
@@ -54,7 +54,7 @@ def check_for_changes(last_stored_items, scraped_items):
             new_items = []
             for item in diff[difference]:
                 new_items.append({item[6:-2]: scraped_items[item[6:-2]]})
-            changes["new_items"] = new_items
+            changes["New Items"] = new_items
 
         # if difference is removed
         if difference == "dictionary_item_removed":
@@ -62,15 +62,23 @@ def check_for_changes(last_stored_items, scraped_items):
             for item in diff[difference]:
                 removed_items.append(
                     {item[6:-2]: last_stored_items[item[6:-2]]})
-            changes["removed_items"] = removed_items
+            changes["Removed Items"] = removed_items
         # if difference is changed
         if difference == "values_changed":
             changed_items = []
             for item in diff[difference]:
                 changed_items.append({item[6:-2]: diff[difference][item]})
-            changes["changed_items"] = changed_items
+            changes["Changed Items"] = changed_items
 
     return changes
+
+
+def get_changes():
+    """ Function that returns the changes from database """
+
+    last_change = Changes.query.order_by(Changes.id.desc()).first()
+
+    return last_change
 
 
 def scrape_mynintendo():
@@ -82,7 +90,9 @@ def scrape_mynintendo():
     changes = check_for_changes(last_items, results)
     has_changed = False if changes is None else True
 
-    Listings.add_record(results, has_changed)
+    if has_changed:
+        Changes.add_record(changes)
+    Listings.add_record(results)
     db.session.commit()  # wrap in a try/catch?
 
     if has_changed:
@@ -125,10 +135,13 @@ def message_discord(changes):
 
 def delete_old_records():
     """ Function that deletes expired database records """
-    expired_records = Listings.query.filter(
+    expired_listings = Listings.query.filter(
         Listings.expiration <= datetime.utcnow())
-    deleted = expired_records.delete(synchronize_session=False)
+    expired_changes = Changes.query.filter(
+        Changes.expiration <= datetime.utcnow())
+    deleted_listings = expired_listings.delete(synchronize_session=False)
+    deleted_changes = expired_changes.delete(synchronize_session=False)
     db.session.commit()
 
-    print(deleted)
+    deleted = deleted_listings + deleted_changes
     return deleted
