@@ -10,12 +10,11 @@
   <body>
     <h1>MyNintendo Scraper Summary</h1>
 
-    <h2>Last checked:</h2>
+    <h2>Last checked: {{ display.changes.timestamp}}</h2>
 
     <div>
       <h3>Changes:</h3>
-      {% if display.changes %} {{display.changes}} {% else %} No changes. {%
-      endif %}
+      {{display.changes.changes}}
     </div>
 
     <div>
