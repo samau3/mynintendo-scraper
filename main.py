@@ -88,17 +88,18 @@ def scrape_mynintendo():
     last_items = last_record.items if last_record is not None else {}
 
     changes = check_for_changes(last_items, results)
-    has_changed = False if changes is None else True
 
-    if has_changed:
+    if changes:
         Changes.add_record(changes)
-    Listings.add_record(results)
+    new_item = Listings.add_record(results)
     db.session.commit()  # wrap in a try/catch?
 
-    if has_changed:
+    if changes:
         return changes
+    else:
+        changes = "No changes."
 
-    return {}
+    return {"changes": changes, "timestamp": new_item.timestamp}
 
 
 def message_discord(changes):
