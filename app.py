@@ -39,8 +39,8 @@ def show_home_page():
 def call_scrape_fn():
     results = scrape_mynintendo()
 
-    if len(results) != 0:
-        message_discord(results)
+    if results["changes"] != "No changes.":
+        message_discord(results["changes"])
 
     return results
 
