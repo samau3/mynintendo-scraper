@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyNintendo Scraper</title>
+  </head>
+
+  <body>
+    <h1>MyNintendo Scraper Summary</h1>
+
+    <h2>Last checked: {{ display.changes.timestamp}}</h2>
+
+    <div>
+      <h3>Changes:</h3>
+      {{display.changes.changes}}
+    </div>
+
+    <div>
+      <h3>Last Change:</h3>
+      <p>From: {{display.last_change.timestamp}}</p>
+      <ul>
+        {% for change in display.last_change.items %}
+        <li>{{ change }}</li>
+        <ul>
+          {% for item in display.last_change.items[change] %} {% for key in item
+          %}
+          <li>{{key}} - {{item[key]}}</li>
+          {% endfor %} {% endfor %}
+        </ul>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div>
+      <h3>Current Listings:</h3>
+      <ul>
+        {% for listing in display.current_listings %}
+        <li>{{ listing }} - {{ display.current_listings[listing] }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
