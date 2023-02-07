@@ -76,7 +76,11 @@ def check_for_changes(last_stored_items, scraped_items):
 def get_changes():
     """ Function that returns the changes from database """
 
-    last_change = Changes.query.order_by(Changes.id.desc()).first()
+    last_change_row_object = Changes.query.order_by(Changes.id.desc()).first()
+    last_change = {}
+    for column in last_change_row_object.__table__.columns:
+        last_change[column.name] = str(
+            getattr(last_change_row_object, column.name))
 
     return last_change
 
