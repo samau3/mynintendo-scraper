@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from helpers.calculate_expiration_date import calculate_expiration_date
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -11,7 +12,7 @@ class Listings(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     expiration = db.Column(db.DateTime, nullable=False,
-                           default=datetime.utcnow() + timedelta(days=7))
+                           default=calculate_expiration_date(7))
     items = db.Column(db.JSON, nullable=False)
 
     @classmethod
@@ -31,7 +32,7 @@ class Changes(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     expiration = db.Column(db.DateTime, nullable=False,
-                           default=datetime.utcnow() + timedelta(days=365))
+                           default=calculate_expiration_date(365))
     items = db.Column(db.JSON, nullable=False)
 
     @classmethod
