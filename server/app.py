@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask
 from models import db, connect_db
 from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes
 
@@ -32,7 +32,7 @@ def show_home_page():
         "last_change": last_change
     }
 
-    return render_template("home.html", display=display)
+    return display
 
 
 @app.get('/scrape')
