@@ -41,7 +41,7 @@ class Changes(db.Model):
     def __init__(self, items, expiration=None):
         self.items = items
         self.expiration = expiration if expiration else calculate_expiration_date(
-            7)
+            365)
 
     @classmethod
     def add_record(self, items):
