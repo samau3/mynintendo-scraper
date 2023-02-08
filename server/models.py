@@ -11,9 +11,13 @@ class Listings(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    expiration = db.Column(db.DateTime, nullable=False,
-                           default=calculate_expiration_date(7))
+    expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
+
+    def __init__(self, items, expiration=None):
+        self.items = items
+        self.expiration = expiration if expiration else calculate_expiration_date(
+            7)
 
     @classmethod
     def add_record(self, items):
@@ -31,9 +35,13 @@ class Changes(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    expiration = db.Column(db.DateTime, nullable=False,
-                           default=calculate_expiration_date(365))
+    expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
+
+    def __init__(self, items, expiration=None):
+        self.items = items
+        self.expiration = expiration if expiration else calculate_expiration_date(
+            365)
 
     @classmethod
     def add_record(self, items):
