@@ -14,11 +14,10 @@ class Listings(db.Model):
     expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
 
-    def __init__(self, items, timestamp=None, expiration=None):
-        self.timestamp = timestamp
+    def __init__(self, items, expiration=None):
+        self.items = items
         self.expiration = expiration if expiration else calculate_expiration_date(
             7)
-        self.items = items
 
     @classmethod
     def add_record(self, items):
@@ -39,11 +38,10 @@ class Changes(db.Model):
     expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
 
-    def __init__(self, items, timestamp=None, expiration=None):
-        self.timestamp = timestamp
+    def __init__(self, items, expiration=None):
+        self.items = items
         self.expiration = expiration if expiration else calculate_expiration_date(
             7)
-        self.items = items
 
     @classmethod
     def add_record(self, items):
