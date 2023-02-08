@@ -36,8 +36,7 @@ class Changes(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    expiration = db.Column(db.DateTime, nullable=False,
-                           default=calculate_expiration_date(365))
+    expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
 
     def __init__(self, items, timestamp=None, expiration=None):
