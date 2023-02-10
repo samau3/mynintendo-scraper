@@ -79,8 +79,9 @@ def get_changes():
     last_change_row_object = Changes.query.order_by(Changes.id.desc()).first()
     last_change = {}
     for column in last_change_row_object.__table__.columns:
-        last_change[column.name] = str(
-            getattr(last_change_row_object, column.name))
+        if column.name != "id":
+            last_change[column.name] = getattr(
+                last_change_row_object, column.name)
 
     return last_change
 
