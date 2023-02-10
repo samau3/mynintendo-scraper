@@ -28,7 +28,6 @@ def show_home_page():
     items = check_items()
     scrape_results = scrape_mynintendo()
     last_change = get_changes()
-    scrape_results["changes"] = last_change["items"]
 
     display = {
         "current_listings": items,

@@ -21,7 +21,7 @@ interface ItemsInterface {
 
 interface IScrapeResults {
   changes: {
-    changes: ItemsInterface;
+    changes: ItemsInterface | string;
     timestamp: string;
   };
   current_listings: {
