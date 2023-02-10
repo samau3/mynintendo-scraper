@@ -65,7 +65,8 @@ function App() {
         <Box>
           <Box sx={{ textAlign: "center" }}>
             <Typography variant="h6">
-              Last Checked: {scrapeResults.changes.timestamp}
+              Last Checked:{" "}
+              {new Date(scrapeResults.changes.timestamp).toLocaleString()}
             </Typography>
           </Box>
           <Box>
@@ -83,7 +84,8 @@ function App() {
           <Box>
             <Paper>
               <Typography>Last Change:</Typography>
-              On {scrapeResults.last_change.timestamp}
+              On{" "}
+              {new Date(scrapeResults.last_change.timestamp).toLocaleString()}
               <ChangedItemsList
                 changedItemsData={scrapeResults.last_change.items}
               />
