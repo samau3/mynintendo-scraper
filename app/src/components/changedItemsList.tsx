@@ -13,7 +13,6 @@ interface Items {
 }
 
 export function ChangedItemsList({ changedItemsData }: Items) {
-  // console.log(Object.keys(changedItemsData.changedItemsData));
   return (
     <Box>
       {Object.keys(changedItemsData).map((changeCategory, index) => (

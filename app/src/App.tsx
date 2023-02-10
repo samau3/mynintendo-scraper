@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
-import { ChangedItemsList } from "./components/changedItemsList";
+import { ChangedItemsList } from "./components/ChangedItemsList";
 
 interface IItems {
   [key: string]: string;
