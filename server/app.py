@@ -1,6 +1,8 @@
 import os
 
-from flask import Flask
+from flask import Flask, jsonify
+from flask_cors import CORS
+
 from models import db, connect_db
 from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes
 
@@ -8,6 +10,7 @@ import dotenv
 dotenv.load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ['DATABASE_URL'].replace("postgres://", "postgresql://"))
@@ -25,14 +28,14 @@ def show_home_page():
     items = check_items()
     scrape_results = scrape_mynintendo()
     last_change = get_changes()
+    scrape_results["changes"] = last_change["items"]
 
     display = {
         "current_listings": items,
         "changes": scrape_results,
         "last_change": last_change
     }
-
-    return display
+    return jsonify(display)
 
 
 @app.get('/scrape')
