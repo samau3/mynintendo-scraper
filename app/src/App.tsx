@@ -5,26 +5,17 @@ import {
   Card,
   Container,
   Grid,
-  List,
-  ListItem,
   Paper,
   Typography,
 } from "@mui/material";
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
 import { ChangedItemsList } from "./components/ChangedItemsList";
-
-interface IItems {
-  [key: string]: string;
-}
-
-interface ItemsInterface {
-  [key: string]: IItems[];
-}
+import { ScrapedItems, ItemsInterface } from "./interfaces/scrapedItems";
 
 interface IScrapeResults {
   changes: {
-    changes: ItemsInterface | string;
+    changes: ScrapedItems | string;
     timestamp: string;
   };
   current_listings: {
@@ -32,9 +23,7 @@ interface IScrapeResults {
   };
   last_change: {
     expiration: string;
-    items: {
-      [key: string]: IItems[];
-    };
+    items: ScrapedItems;
     timestamp: string;
   };
 }
@@ -88,8 +77,10 @@ function App() {
             </Paper>
             <Paper sx={{ maxWidth: 1 / 2, marginLeft: 1 }}>
               <Typography>Last Change:</Typography>
-              On{" "}
-              {new Date(scrapeResults.last_change.timestamp).toLocaleString()}
+              <Typography sx={{ fontWeight: "bold" }}>
+                From{" "}
+                {new Date(scrapeResults.last_change.timestamp).toLocaleString()}
+              </Typography>
               <ChangedItemsList
                 changedItemsData={scrapeResults.last_change.items}
               />
@@ -98,16 +89,28 @@ function App() {
           <Paper>
             <Typography variant="h6">Current Listings:</Typography>
             <Grid container spacing={1}>
-              {Object.keys(scrapeResults.current_listings).map((key, index) => (
-                <Grid minWidth={12} display={"flex"} item md={4}>
-                  <Card key={index} sx={{ width: "100%", height: "100%" }}>
-                    <Typography>{key}</Typography>
-                    <Typography>
-                      {scrapeResults.current_listings[key]}
-                    </Typography>
-                  </Card>
-                </Grid>
-              ))}
+              {Object.keys(scrapeResults.current_listings).map(
+                (item, index) => (
+                  <Grid
+                    key={index}
+                    minWidth={12}
+                    display={"flex"}
+                    item
+                    xs={12}
+                    md={4}
+                  >
+                    <Card
+                      key={`${item}-${index}`}
+                      sx={{ width: "100%", height: "100%" }}
+                    >
+                      <Typography variant="subtitle1">{item}</Typography>
+                      <Typography variant="subtitle2">
+                        {scrapeResults.current_listings[item]}
+                      </Typography>
+                    </Card>
+                  </Grid>
+                )
+              )}
             </Grid>
           </Paper>
         </Box>

@@ -1,29 +1,29 @@
 import { Grid, Card, Typography, Box, Paper } from "@mui/material";
 
-interface IItems {
-  [key: string]: string;
+import { ScrapedItems } from "../interfaces/scrapedItems";
+
+interface ItemsParameter {
+  [key: string]: ScrapedItems;
 }
 
-interface ItemsInterface {
-  [key: string]: IItems[];
-}
-
-interface Items {
-  [key: string]: ItemsInterface;
-}
-
-export function ChangedItemsList({ changedItemsData }: Items) {
+export function ChangedItemsList({ changedItemsData }: ItemsParameter) {
   return (
     <Grid>
       {Object.keys(changedItemsData).map((changeCategory, index) => (
-        <Paper>
+        <Paper key={index}>
           <Box textAlign={"center"}>
             <Typography variant="h6">{changeCategory}</Typography>
-            <Grid container spacing={1} justifyContent={"center"} key={index}>
+            <Grid container spacing={1} justifyContent={"center"}>
               {changedItemsData[changeCategory].map((changedItems) =>
                 Object.keys(changedItems).map((changedItem, index) => (
-                  <Grid item md={4} sx={{ width: "100%" }}>
-                    <Card key={index} sx={{ width: "100%", height: "100%" }}>
+                  <Grid
+                    key={`${changedItem}-${index}`}
+                    item
+                    xs={12}
+                    sm={6}
+                    sx={{ width: "100%" }}
+                  >
+                    <Card sx={{ width: "100%", height: "100%" }}>
                       <Typography variant="subtitle1">{changedItem}</Typography>
                       <Typography variant="subtitle2">
                         {changedItems[changedItem]}
