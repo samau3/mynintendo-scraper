@@ -1,4 +1,4 @@
-import { List, ListItem, Box } from "@mui/material";
+import { Grid, Card, Typography, Box, Paper } from "@mui/material";
 
 interface IItems {
   [key: string]: string;
@@ -14,19 +14,28 @@ interface Items {
 
 export function ChangedItemsList({ changedItemsData }: Items) {
   return (
-    <Box>
+    <Grid>
       {Object.keys(changedItemsData).map((changeCategory, index) => (
-        <List key={index}>
-          {changeCategory} -
-          {changedItemsData[changeCategory].map((changedItems) =>
-            Object.keys(changedItems).map((changedItem, index) => (
-              <ListItem key={index}>
-                {changedItem} - {changedItems[changedItem]}
-              </ListItem>
-            ))
-          )}
-        </List>
+        <Paper>
+          <Box textAlign={"center"}>
+            <Typography variant="h6">{changeCategory}</Typography>
+            <Grid container spacing={1} justifyContent={"center"} key={index}>
+              {changedItemsData[changeCategory].map((changedItems) =>
+                Object.keys(changedItems).map((changedItem, index) => (
+                  <Grid item md={4} sx={{ width: "100%" }}>
+                    <Card key={index} sx={{ width: "100%", height: "100%" }}>
+                      <Typography variant="subtitle1">{changedItem}</Typography>
+                      <Typography variant="subtitle2">
+                        {changedItems[changedItem]}
+                      </Typography>
+                    </Card>
+                  </Grid>
+                ))
+              )}
+            </Grid>
+          </Box>
+        </Paper>
       ))}
-    </Box>
+    </Grid>
   );
 }

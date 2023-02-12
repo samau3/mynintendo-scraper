@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button,
+  Card,
   Container,
+  Grid,
   List,
   ListItem,
   Paper,
@@ -40,17 +43,19 @@ function App() {
   const [scrapeResults, setScrapeResults] = useState<
     IScrapeResults | undefined
   >(undefined);
+
   useEffect(() => {
-    async function loadScrapeResults() {
-      try {
-        const results = await MyNintendoScraperAPI.getItems();
-        setScrapeResults(results);
-      } catch (error) {
-        console.log(error);
-      }
-    }
     loadScrapeResults();
   }, []);
+
+  async function loadScrapeResults() {
+    try {
+      const results = await MyNintendoScraperAPI.getItems();
+      setScrapeResults(results);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <Container
@@ -62,15 +67,16 @@ function App() {
         <Typography variant="h3">MyNintendo Scraper</Typography>
       </Box>
       {scrapeResults && (
-        <Box>
-          <Box sx={{ textAlign: "center" }}>
+        <Box textAlign={"center"}>
+          <Box>
             <Typography variant="h6">
               Last Checked:{" "}
               {new Date(scrapeResults.changes.timestamp).toLocaleString()}
             </Typography>
+            <Button onClick={loadScrapeResults}>Scrape Again</Button>
           </Box>
-          <Box>
-            <Paper>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Paper sx={{ maxWidth: 1 / 2, marginRight: 1 }}>
               <Typography>Latest Scrape Results:</Typography>
               {typeof scrapeResults.changes.changes === "string" ? (
                 <Typography> {scrapeResults.changes.changes}</Typography>
@@ -80,9 +86,7 @@ function App() {
                 />
               )}
             </Paper>
-          </Box>
-          <Box>
-            <Paper>
+            <Paper sx={{ maxWidth: 1 / 2, marginLeft: 1 }}>
               <Typography>Last Change:</Typography>
               On{" "}
               {new Date(scrapeResults.last_change.timestamp).toLocaleString()}
@@ -91,20 +95,21 @@ function App() {
               />
             </Paper>
           </Box>
-          <Box>
-            <Paper>
-              <Typography>Current Listings:</Typography>
-              <List>
-                {Object.keys(scrapeResults.current_listings).map(
-                  (key, index) => (
-                    <ListItem key={index}>
-                      {key} - {scrapeResults.current_listings[key]}
-                    </ListItem>
-                  )
-                )}
-              </List>
-            </Paper>
-          </Box>
+          <Paper>
+            <Typography variant="h6">Current Listings:</Typography>
+            <Grid container spacing={1}>
+              {Object.keys(scrapeResults.current_listings).map((key, index) => (
+                <Grid minWidth={12} display={"flex"} item md={4}>
+                  <Card key={index} sx={{ width: "100%", height: "100%" }}>
+                    <Typography>{key}</Typography>
+                    <Typography>
+                      {scrapeResults.current_listings[key]}
+                    </Typography>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
         </Box>
       )}
     </Container>
