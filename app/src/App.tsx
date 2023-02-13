@@ -11,7 +11,7 @@ import {
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
 import { ChangedItemsList } from "./components/ChangedItemsList";
-import { ScrapedItems, ItemsInterface } from "./interfaces/scrapedItems";
+import { ScrapedItems } from "./interfaces/scrapedItems";
 
 interface IScrapeResults {
   changes: {
@@ -65,28 +65,32 @@ function App() {
             <Button onClick={loadScrapeResults}>Scrape Again</Button>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Paper sx={{ maxWidth: 1 / 2, marginRight: 1 }}>
+            <Paper sx={{ maxWidth: 1 / 2, marginRight: 1, padding: 1 }}>
               <Typography>Latest Scrape Results:</Typography>
               {typeof scrapeResults.changes.changes === "string" ? (
-                <Typography> {scrapeResults.changes.changes}</Typography>
+                <Typography variant="h6">
+                  {" "}
+                  {scrapeResults.changes.changes}
+                </Typography>
               ) : (
                 <ChangedItemsList
                   changedItemsData={scrapeResults.changes.changes}
                 />
               )}
             </Paper>
-            <Paper sx={{ maxWidth: 1 / 2, marginLeft: 1 }}>
+            <Paper sx={{ maxWidth: 1 / 2, marginLeft: 1, padding: 1 }}>
               <Typography>Last Change:</Typography>
+
+              <ChangedItemsList
+                changedItemsData={scrapeResults.last_change.items}
+              />
               <Typography sx={{ fontWeight: "bold" }}>
                 From{" "}
                 {new Date(scrapeResults.last_change.timestamp).toLocaleString()}
               </Typography>
-              <ChangedItemsList
-                changedItemsData={scrapeResults.last_change.items}
-              />
             </Paper>
           </Box>
-          <Paper>
+          <Paper sx={{ padding: 1 }}>
             <Typography variant="h6">Current Listings:</Typography>
             <Grid container spacing={1}>
               {Object.keys(scrapeResults.current_listings).map(
@@ -97,6 +101,7 @@ function App() {
                     display={"flex"}
                     item
                     xs={12}
+                    sm={6}
                     md={4}
                   >
                     <Card

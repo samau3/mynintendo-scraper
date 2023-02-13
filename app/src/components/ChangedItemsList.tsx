@@ -10,7 +10,7 @@ export function ChangedItemsList({ changedItemsData }: ItemsParameter) {
   return (
     <Grid>
       {Object.keys(changedItemsData).map((changeCategory, index) => (
-        <Paper key={index}>
+        <Paper variant="outlined" key={index} sx={{ padding: 1 }}>
           <Box textAlign={"center"}>
             <Typography variant="h6">{changeCategory}</Typography>
             <Grid container spacing={1} justifyContent={"center"}>
@@ -23,7 +23,10 @@ export function ChangedItemsList({ changedItemsData }: ItemsParameter) {
                     sm={6}
                     sx={{ width: "100%" }}
                   >
-                    <Card sx={{ width: "100%", height: "100%" }}>
+                    <Card
+                      variant="outlined"
+                      sx={{ width: "100%", height: "100%" }}
+                    >
                       <Typography variant="subtitle1">{changedItem}</Typography>
                       <Typography variant="subtitle2">
                         {changedItems[changedItem]}
