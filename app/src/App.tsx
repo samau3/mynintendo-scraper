@@ -50,7 +50,7 @@ function App() {
       </Box>
       {scrapeResults && (
         <Box textAlign={"center"}>
-          <Box>
+          <Box paddingBottom={1}>
             <Typography variant="h6">
               Last Checked:{" "}
               {new Date(scrapeResults.changes.timestamp).toLocaleString()}
