@@ -1,6 +1,7 @@
-import { Grid, Card, Typography, Box, Paper } from "@mui/material";
+import { Grid, Typography, Box, Paper } from "@mui/material";
 
 import { ScrapedItems } from "../interfaces/scrapedItems";
+import { ItemCard } from "./ItemCard";
 
 interface ItemsParameter {
   [key: string]: ScrapedItems;
@@ -23,15 +24,11 @@ export function ChangedItemsList({ changedItemsData }: ItemsParameter) {
                     sm={6}
                     sx={{ width: "100%" }}
                   >
-                    <Card
-                      variant="outlined"
-                      sx={{ width: "100%", height: "100%" }}
-                    >
-                      <Typography variant="subtitle1">{changedItem}</Typography>
-                      <Typography variant="subtitle2">
-                        {changedItems[changedItem]}
-                      </Typography>
-                    </Card>
+                    <ItemCard
+                      item={changedItem}
+                      index={index}
+                      items={changedItems}
+                    />
                   </Grid>
                 ))
               )}
