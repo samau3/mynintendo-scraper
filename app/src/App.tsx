@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
 import { ChangedItemsList } from "./components/ChangedItemsList";
+import { ItemCard } from "./components/ItemCard";
 import { ScrapedItems } from "./interfaces/scrapedItems";
 
 interface IScrapeResults {
@@ -57,7 +50,7 @@ function App() {
       </Box>
       {scrapeResults && (
         <Box textAlign={"center"}>
-          <Box>
+          <Box paddingBottom={1}>
             <Typography variant="h6">
               Last Checked:{" "}
               {new Date(scrapeResults.changes.timestamp).toLocaleString()}
@@ -104,15 +97,11 @@ function App() {
                     sm={6}
                     md={4}
                   >
-                    <Card
-                      key={`${item}-${index}`}
-                      sx={{ width: "100%", height: "100%" }}
-                    >
-                      <Typography variant="subtitle1">{item}</Typography>
-                      <Typography variant="subtitle2">
-                        {scrapeResults.current_listings[item]}
-                      </Typography>
-                    </Card>
+                    <ItemCard
+                      item={item}
+                      index={index}
+                      items={scrapeResults.current_listings}
+                    />
                   </Grid>
                 )
               )}
