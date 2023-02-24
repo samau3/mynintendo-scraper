@@ -30,6 +30,9 @@ def show_home_page():
     scrape_results = scrape_mynintendo()
     last_change = get_changes()
 
+    if scrape_results["changes"] != "No changes.":
+        message_discord(scrape_results["changes"])
+
     display = {
         "current_listings": items,
         "changes": scrape_results,
