@@ -99,9 +99,7 @@ def scrape_mynintendo():
     new_item = Listings.add_record(results)
     db.session.commit()  # wrap in a try/catch?
 
-    if changes:
-        return changes
-    else:
+    if not changes:
         changes = "No changes."
 
     return {"changes": changes, "timestamp": new_item.timestamp}
