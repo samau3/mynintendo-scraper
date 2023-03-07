@@ -67,7 +67,8 @@ def check_for_changes(last_stored_items, scraped_items):
         if difference == "values_changed":
             changed_items = []
             for item in diff[difference]:
-                changed_items.append({item[6:-2]: diff[difference][item]})
+                changed_items.append(
+                    {item[6:-2]: f'{diff[difference][item]["new_value"]} (Old value: {diff[difference][item]["old_value"]})'})
             changes["Changed Items"] = changed_items
 
     return changes
