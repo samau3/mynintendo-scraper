@@ -25,7 +25,8 @@ def check_items():
     for item in items:
         name = item.div.h3.text
         stock = item.find(
-            'div', 'ProductTilestyles__DescriptionTag-sc-n2s21r-5 hDroje')
+            'div', 'ProductTilestyles__DescriptionTag-sc-n2s21r-5 hDroje')  # checks if the item has "Out of Stock" label
+
         if not stock:
             price = item.find(
                 'div', 'ProductTilestyles__PriceWrapper-sc-n2s21r-4 jrjiqe').div.div.span.div.span.text
