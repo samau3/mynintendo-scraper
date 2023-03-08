@@ -41,7 +41,7 @@ def show_home_page():
     return jsonify(display)
 
 
-@app.get('/scrape')
+@app.get('/api/scrape')
 def call_scrape_fn():
     results = scrape_mynintendo()
 
@@ -51,11 +51,18 @@ def call_scrape_fn():
     return results
 
 
-@app.get('/delete')
+@app.get('/api/delete')
 def delete_records():
     results = delete_old_records()
 
     return f"Deleted {results} entries."
+
+
+@app.get("/api/get-items")
+def call_check_items():
+    items = check_items()
+
+    return jsonify(items)
 
 
 with app.app_context():
