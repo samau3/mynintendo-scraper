@@ -21,19 +21,19 @@ def check_items():
     soup = BeautifulSoup(html_text, 'lxml')
     item_costs = {}
     items = soup.find_all(
-        'div', class_='BasicTilestyles__Info-sc-sh8sf3-5 hemcMo')
+        'div', class_='BasicTilestyles__Info-sc-sh8sf3-5')
     for item in items:
         name = item.div.h3.text
         stock = item.find(
-            'div', 'ProductTilestyles__DescriptionTag-sc-n2s21r-5 hDroje')  # checks if the item has "Out of Stock" label
+            'div', 'ProductTilestyles__DescriptionTag-sc-n2s21r-5')  # checks if the item has "Out of Stock" label
 
-        if not stock:
+        if stock.text != "Out of stock":
             price = item.find(
-                'div', 'ProductTilestyles__PriceWrapper-sc-n2s21r-4 jrjiqe').div.div.span.div.span.text
+                'div', 'ProductTilestyles__PriceWrapper-sc-n2s21r-4').div.div.span.div.span.text
+        else:
+            price = stock.text
 
-        cost = f'{stock.text}' if stock else price
-
-        item_costs[name] = cost
+        item_costs[name] = price
 
     return item_costs
 
