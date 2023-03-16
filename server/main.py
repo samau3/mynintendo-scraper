@@ -10,9 +10,10 @@ import dotenv
 dotenv.load_dotenv()
 
 url = "https://www.nintendo.com/store/exclusives/rewards/"
+headers = {'Cache-Control': 'no-cache, must-revalidate'}
 
 # get the text from the provided url
-html_text = requests.get(url).text
+html_text = requests.get(url, headers=headers).text
 
 
 def check_items():
