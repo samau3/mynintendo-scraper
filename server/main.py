@@ -5,6 +5,7 @@ import requests
 from deepdiff import DeepDiff
 from models import db, Listings, Changes
 from datetime import datetime
+import re
 
 import dotenv
 dotenv.load_dotenv()
@@ -22,15 +23,15 @@ def check_items():
     soup = BeautifulSoup(html_text, 'lxml')
     item_costs = {}
     items = soup.find_all(
-        'div', class_='BasicTilestyles__Info-sc-sh8sf3-5')
+        'div', class_=re.compile('BasicTilestyles__Info-sc'))
     for item in items:
         name = item.div.h3.text
         stock = item.find(
-            'div', 'ProductTilestyles__DescriptionTag-sc-n2s21r-5')  # checks if the item has "Out of Stock" label
+            'div', class_=re.compile('ProductTilestyles__DescriptionTag-sc'))  # checks if the item has "Out of Stock" label
 
         if stock.text != "Out of stock":
             price = item.find(
-                'div', 'ProductTilestyles__PriceWrapper-sc-n2s21r-4').div.div.span.div.span.text
+                'div', class_=re.compile('ProductTilestyles__PriceWrapper-sc')).div.div.span.div.span.text
         else:
             price = stock.text
 
