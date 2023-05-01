@@ -25,7 +25,7 @@ def check_items():
     items = soup.find_all(
         'div', class_=re.compile('BasicTilestyles__Info-sc'))
     for item in items:
-        name = item.div.h3.text
+        name = item.div.h3.text if item.div.h3 else item.div.h2.text
         stock = item.find(
             'div', class_=re.compile('ProductTilestyles__DescriptionTag-sc'))  # checks if the item has "Out of Stock" label
 
