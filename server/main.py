@@ -25,7 +25,10 @@ def check_items():
     items = soup.find_all(
         'div', class_=re.compile('BasicTilestyles__Info-sc'))
     for item in items:
-        name = item.div.h3.text if item.div.h3 else item.div.h2.text
+        # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
+        header = item.div.find_next()
+        name = header.text
+        print(name)
         stock = item.find(
             'div', class_=re.compile('ProductTilestyles__DescriptionTag-sc'))  # checks if the item has "Out of Stock" label
 
