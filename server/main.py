@@ -29,7 +29,7 @@ def check_items():
         stock = item.find(
             'div', class_=re.compile('ProductTilestyles__DescriptionTag-sc'))  # checks if the item has "Out of Stock" label
 
-        if stock.text != "Out of stock":
+        if stock.text == "Exclusive":
             price = item.find(
                 'div', class_=re.compile('ProductTilestyles__PriceWrapper-sc')).div.div.span.div.span.text
         else:
