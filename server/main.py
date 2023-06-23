@@ -28,7 +28,6 @@ def check_items():
         # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
         header = item.div.find_next()
         name = header.text
-        print(name)
         stock = item.find(
             'div', class_=re.compile('ProductTilestyles__DescriptionTag-sc'))  # checks if the item has "Out of Stock" label
 
