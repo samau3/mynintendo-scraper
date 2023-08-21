@@ -11,14 +11,15 @@ import dotenv
 dotenv.load_dotenv()
 
 url = "https://www.nintendo.com/store/exclusives/rewards/"
-headers = {'Cache-Control': 'no-cache, must-revalidate'}
-
-# get the text from the provided url
-html_text = requests.get(url, headers=headers).text
-
 
 def check_items():
     """ Function to scrape items listed on MyNintendo Rewards"""
+    
+    headers = {'Cache-Control': 'no-cache, must-revalidate'}
+
+    # get the text from the provided url
+    html_text = requests.get(url, headers=headers).text
+
 
     soup = BeautifulSoup(html_text, 'lxml')
     item_costs = {}
