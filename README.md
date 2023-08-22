@@ -149,8 +149,19 @@ To get a local copy up and running follow these simple example steps.
 
 </div>
 
-To get started with trading on **Paper Trader**, the user logins and authorizes the application to utilize their Discord profile via Discord's OAuth 2.0 implementation (Note, if the application was not previously authorized then the user will have an additional step of logging into their Discord account). Once authenticated, the user is redirected to their user profile page, displaying their account balance and investments (if any) queried from the PostgreSQL database. In addition, a JWT is generated and stored in the client's local storage such that the user's session can be maintained between visits without having to constantly reauthorize access to their Discord account if they have not logged out.
+Upon accessing the web app, a useEffect hook is ran which scrapes the My Nintendo rewards page for its listings. Then the API checks to see if there are any changes between the items from the most recent scrape result and the previous. If there is a change then:
+  1. The web app will display the changes and store the difference as a new record in the `changes` table of the PostgreSQL database. 
+  2. Then it'll send a message via the Discord bot to notify those who are connected to the bot about the changes
+  
+Regardless of a change, the most recently scraped result will be added as a new record in the `listings` table of the database.
 
+### Automated Scraping
+
+The whole motivation for creating this web app is that the web scraping is automated. To achieve this, I utilized [cron-job.org](https://cron-job.org/en/) to make hourly requests to the API.
+
+### Automated Clean Up
+
+Since so much data is being stored in the database, I make a weekly cron job request to delete records that have been saved in the database for a week or more. This is handled by keeping track of the timestamps when a listing record is stored and having an additional column, `expiration_date`, for that record of seven days after its insertion timestamp. Then the request just queries based on the `expiration_date` column to see if that value is a date older than the time of teh deletion API request.
 
 <!-- ROADMAP -->
 
