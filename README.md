@@ -149,18 +149,18 @@ To get a local copy up and running follow these simple example steps.
 </div>
 
 Upon accessing the web app, a useEffect hook is ran which scrapes the My Nintendo rewards page for its listings. Then the API checks to see if there are any changes between the items from the most recent scrape result and the previous. If there is a change then:
-  1. The web app will display the changes and store the difference as a new record in the `changes` table of the PostgreSQL database. 
+  1. The web app will display the changes and store the difference as a new record in the `changes` table of the database. 
   2. Then it'll send a message via the Discord bot to notify those who are connected to the bot about the changes
   
 Regardless of a change, the most recently scraped result will be added as a new record in the `listings` table of the database.
 
 ### Automated Scraping
 
-The whole motivation for creating this web app is that the web scraping is automated. To achieve this, I utilized [cron-job.org](https://cron-job.org/en/) to make hourly requests to the API.
+The whole motivation for creating this web app is that the web scraping is automated. To achieve this, hourly requests are made to the API via [cron-job.org](https://cron-job.org/en/).
 
 ### Automated Clean Up
 
-Since so much data is being stored in the database, I make a weekly cron job request to delete records that have been saved in the database for a week or more. This is handled by keeping track of the timestamps when a listing record is stored and having an additional column, `expiration_date`, for that record of seven days after its insertion timestamp. Then the request just queries based on the `expiration_date` column to see if that value is a date older than the time of teh deletion API request.
+Since so much data is being stored in the database, a weekly cron job request is made to delete records that have been saved in the database for a week or more. This is handled by keeping track of the timestamps when a listing record is stored and having an additional column, `expiration`, for that record of seven days after its insertion timestamp. Then the request just queries based on the `expiration` column to see if that value is a date older than the time of teh deletion API request.
 
 <!-- ROADMAP -->
 
