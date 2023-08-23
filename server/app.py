@@ -30,12 +30,12 @@ def show_home_page():
     scrape_results = scrape_mynintendo()
     last_change = get_changes()
 
-    if scrape_results["changes"] != "No changes.":
-        message_discord(scrape_results["changes"])
+    if scrape_results["items"] != "No changes.":
+        message_discord(scrape_results["items"])
 
     display = {
         "current_listings": items,
-        "changes": scrape_results,
+        "recent_change": scrape_results,
         "last_change": last_change
     }
     return jsonify(display)

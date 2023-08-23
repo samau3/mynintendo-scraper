@@ -3,19 +3,19 @@ import { ChangedItemsList } from "./ChangedItemsList";
 import { IChanges, ILastChange } from "../interfaces/interfaces";
 
 interface ChangesProps {
-  changes: IChanges;
+  recentChange: IChanges;
   lastChange: ILastChange;
 }
 
-export default function Changes({ changes, lastChange }: ChangesProps) {
+export default function Changes({ recentChange, lastChange }: ChangesProps) {
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       <Paper sx={{ maxWidth: 1 / 2, marginRight: 1, padding: 1 }}>
         <Typography>Latest Scrape Results:</Typography>
-        {typeof changes.changes === "string" ? (
-          <Typography variant="h6"> {changes.changes}</Typography>
+        {typeof recentChange.items === "string" ? (
+          <Typography variant="h6"> {recentChange.items}</Typography>
         ) : (
-          <ChangedItemsList changedItemsData={changes.changes} />
+          <ChangedItemsList changedItemsData={recentChange.items} />
         )}
       </Paper>
       <Paper sx={{ maxWidth: 1 / 2, marginLeft: 1, padding: 1 }}>

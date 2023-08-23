@@ -7,7 +7,7 @@ export interface IScrapedItems {
 }
 
 export interface IChanges {
-  changes: IScrapedItems | string;
+  items: IScrapedItems | string;
   timestamp: string;
 }
 

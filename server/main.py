@@ -108,7 +108,7 @@ def scrape_mynintendo():
     if not changes:
         changes = "No changes."
 
-    return {"changes": changes, "timestamp": new_item.timestamp}
+    return {"items": changes, "timestamp": new_item.timestamp}
 
 
 def message_discord(changes):
