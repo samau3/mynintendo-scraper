@@ -102,25 +102,26 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-- Development Environment Setup
+1. Development Environment Setup
 
-  - You can skip these steps below if you don't plan on submitting changes or features to the repository
+    - You can skip these steps below if you don't plan on submitting changes or features to the repository
 
-- npm
-  - In the `app/` directory, install the required npm packages:
-  ```sh
-  npm install
-  ```
-- pip
-  - In the `server/` directory, install the required python packages:
-  ```sh
-  source venv/bin/activate
-  pip3 install -r requirements.txt
-  ```
-- Discord Bot messagiing
-  - This application utilizes a Discord Bot to send an automated message when changes are detected on the store front, which has private keys that cannot be shared. If one wants to replicate this in their copy of this repository, one can start [here](https://discord.com/developers/docs/resources/webhook).
+    - npm
+      - In the `app/` directory, install the required npm packages:
+      ```sh
+      npm install
+      ```
+    - pip
+      - In the `server/` directory, install the required python packages:
+      ```sh
+      source venv/bin/activate
+      pip3 install -r requirements.txt
+      ```
+2. Discord Bot messaging
 
-4. Enter your secrets in a `.env` file
+    - This application utilizes a Discord Bot to send an automated message when changes are detected on the store front, which has private keys that cannot be shared. If one wants to replicate this in their copy of this repository, one can start [here](https://discord.com/developers/docs/resources/webhook).
+
+3. Enter your secrets in a `.env` file
 
     ```env
     DATABASE_URL=YOUR_DATABASE_URL
@@ -129,7 +130,7 @@ To get a local copy up and running follow these simple example steps.
     DISCORD_USER_ID=YOUR_DISCORD_USER_ID
     ```
 
-5. Starting the application 
+4. Starting the application 
 
    ```sh
     (in the app directory) npm start
