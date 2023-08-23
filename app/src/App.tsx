@@ -1,25 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Button, Container, Typography, Link } from "@mui/material";
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
-import { ChangedItemsList } from "./components/ChangedItemsList";
-import { ItemCard } from "./components/ItemCard";
-import { ScrapedItems } from "./interfaces/scrapedItems";
+import {
+  IChanges,
+  ILastChange,
+  ItemsInterface,
+} from "./interfaces/scrapedItems";
 import ItemGrid from "./components/ItemGrid";
+import Changes from "./components/Changes";
 
 interface IScrapeResults {
-  changes: {
-    changes: ScrapedItems | string;
-    timestamp: string;
-  };
-  current_listings: {
-    [key: string]: string;
-  };
-  last_change: {
-    expiration: string;
-    items: ScrapedItems;
-    timestamp: string;
-  };
+  changes: IChanges;
+  current_listings: ItemsInterface;
+  last_change: ILastChange;
 }
 
 function App() {
@@ -57,34 +51,21 @@ function App() {
               {new Date(scrapeResults.changes.timestamp).toLocaleString()}
             </Typography>
             <Button onClick={loadScrapeResults}>Scrape Again</Button>
+            <Button>
+              <Link
+                href="https://www.nintendo.com/store/exclusives/rewards/"
+                target="_blank"
+                underline="none"
+              >
+                Check the listings
+              </Link>
+            </Button>
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Paper sx={{ maxWidth: 1 / 2, marginRight: 1, padding: 1 }}>
-              <Typography>Latest Scrape Results:</Typography>
-              {typeof scrapeResults.changes.changes === "string" ? (
-                <Typography variant="h6">
-                  {" "}
-                  {scrapeResults.changes.changes}
-                </Typography>
-              ) : (
-                <ChangedItemsList
-                  changedItemsData={scrapeResults.changes.changes}
-                />
-              )}
-            </Paper>
-            <Paper sx={{ maxWidth: 1 / 2, marginLeft: 1, padding: 1 }}>
-              <Typography>Last Change:</Typography>
-
-              <ChangedItemsList
-                changedItemsData={scrapeResults.last_change.items}
-              />
-              <Typography sx={{ fontWeight: "bold" }}>
-                From{" "}
-                {new Date(scrapeResults.last_change.timestamp).toLocaleString()}
-              </Typography>
-            </Paper>
-          </Box>
-            <ItemGrid listings={scrapeResults.current_listings} />
+          <Changes
+            changes={scrapeResults.changes}
+            lastChange={scrapeResults.last_change}
+          ></Changes>
+          <ItemGrid listings={scrapeResults.current_listings} />
         </Box>
       )}
     </Container>
