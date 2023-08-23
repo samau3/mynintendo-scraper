@@ -1,13 +1,13 @@
 import { Grid, Typography, Box, Paper } from "@mui/material";
 
-import { ScrapedItems } from "../interfaces/scrapedItems";
+import { IScrapedItems } from "../interfaces/interfaces";
 import { ItemCard } from "./ItemCard";
 
-interface ItemsParameter {
-  [key: string]: ScrapedItems;
+interface ChangedItemsListProps {
+  [key: string]: IScrapedItems;
 }
 
-export function ChangedItemsList({ changedItemsData }: ItemsParameter) {
+export function ChangedItemsList({ changedItemsData }: ChangedItemsListProps) {
   return (
     <Grid>
       {Object.keys(changedItemsData).map((changeCategory, index) => (
@@ -27,10 +27,10 @@ export function ChangedItemsList({ changedItemsData }: ItemsParameter) {
                     <ItemCard
                       item={changedItem}
                       index={index}
-                      items={changedItems}
+                      cost={changedItems[changedItem]}
                     />
                   </Grid>
-                ))
+                )),
               )}
             </Grid>
           </Box>

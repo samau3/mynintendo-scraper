@@ -1,13 +1,12 @@
 import { Card, Typography } from "@mui/material";
-import { ItemsInterface } from "../interfaces/scrapedItems";
 
-interface ItemCardParams {
+interface ItemCardProps {
   item: string;
   index: number;
-  items: ItemsInterface;
+  cost: string;
 }
 
-export function ItemCard({ item, index, items }: ItemCardParams) {
+export function ItemCard({ item, index, cost }: ItemCardProps) {
   return (
     <Card
       key={`${item}-${index}`}
@@ -20,7 +19,7 @@ export function ItemCard({ item, index, items }: ItemCardParams) {
     >
       <Typography variant="subtitle1">{item}</Typography>
       <Typography sx={{ mt: "auto" }} variant="subtitle2">
-        {items[item]}
+        {cost}
       </Typography>
     </Card>
   );
