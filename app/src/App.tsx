@@ -11,7 +11,7 @@ import ItemGrid from "./components/ItemGrid";
 import Changes from "./components/Changes";
 
 interface IScrapeResults {
-  changes: IChanges;
+  recent_change: IChanges;
   current_listings: IItems;
   last_change: ILastChange;
 }
@@ -48,7 +48,7 @@ function App() {
           <Box paddingBottom={1}>
             <Typography variant="h6">
               Last Checked:{" "}
-              {new Date(scrapeResults.changes.timestamp).toLocaleString()}
+              {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
             </Typography>
             <Button onClick={loadScrapeResults}>Scrape Again</Button>
             <Button>
@@ -62,7 +62,7 @@ function App() {
             </Button>
           </Box>
           <Changes
-            changes={scrapeResults.changes}
+            recentChange={scrapeResults.recent_change}
             lastChange={scrapeResults.last_change}
           ></Changes>
           <ItemGrid listings={scrapeResults.current_listings} />
