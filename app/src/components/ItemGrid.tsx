@@ -1,11 +1,8 @@
 import { Paper, Typography, Grid } from "@mui/material";
 import { ItemCard } from "./ItemCard";
+import { ItemsInterface } from "../interfaces/scrapedItems";
 
-interface IScrapeResults {
-    [key: string]: string;
-}
-
-export default function ItemGrid({ listings }: { listings: IScrapeResults }) {
+export default function ItemGrid({ listings }: { listings: ItemsInterface }) {
   return (
     <>
       <Paper sx={{ padding: 1 }}>
@@ -21,11 +18,7 @@ export default function ItemGrid({ listings }: { listings: IScrapeResults }) {
               sm={6}
               md={4}
             >
-              <ItemCard
-                item={item}
-                index={index}
-                cost={listings[item]}
-              />
+              <ItemCard item={item} index={index} cost={listings[item]} />
             </Grid>
           ))}
         </Grid>
