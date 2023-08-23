@@ -1,6 +1,6 @@
 import { Box, Paper, Typography } from "@mui/material";
 import { ChangedItemsList } from "./ChangedItemsList";
-import { IChanges, ILastChange } from "../interfaces/scrapedItems";
+import { IChanges, ILastChange } from "../interfaces/interfaces";
 
 interface ChangesProps {
   changes: IChanges;

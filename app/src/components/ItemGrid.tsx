@@ -1,8 +1,8 @@
 import { Paper, Typography, Grid } from "@mui/material";
 import { ItemCard } from "./ItemCard";
-import { ItemsInterface } from "../interfaces/scrapedItems";
+import { IItems } from "../interfaces/interfaces";
 
-export default function ItemGrid({ listings }: { listings: ItemsInterface }) {
+export default function ItemGrid({ listings }: { listings: IItems }) {
   return (
     <>
       <Paper sx={{ padding: 1 }}>

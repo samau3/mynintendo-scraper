@@ -1,10 +1,10 @@
 import { Grid, Typography, Box, Paper } from "@mui/material";
 
-import { ScrapedItems } from "../interfaces/scrapedItems";
+import { IScrapedItems } from "../interfaces/interfaces";
 import { ItemCard } from "./ItemCard";
 
 interface ChangedItemsListProps {
-  [key: string]: ScrapedItems;
+  [key: string]: IScrapedItems;
 }
 
 export function ChangedItemsList({ changedItemsData }: ChangedItemsListProps) {

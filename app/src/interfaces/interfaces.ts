@@ -1,18 +1,18 @@
-export interface ItemsInterface {
+export interface IItems {
   [key: string]: string;
 }
 
-export interface ScrapedItems {
-  [key: string]: ItemsInterface[];
+export interface IScrapedItems {
+  [key: string]: IItems[];
 }
 
 export interface IChanges {
-  changes: ScrapedItems | string;
+  changes: IScrapedItems | string;
   timestamp: string;
 }
 
 export interface ILastChange {
   expiration: string;
-  items: ScrapedItems;
+  items: IScrapedItems;
   timestamp: string;
 }

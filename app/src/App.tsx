@@ -5,14 +5,14 @@ import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
 import {
   IChanges,
   ILastChange,
-  ItemsInterface,
-} from "./interfaces/scrapedItems";
+  IItems,
+} from "./interfaces/interfaces";
 import ItemGrid from "./components/ItemGrid";
 import Changes from "./components/Changes";
 
 interface IScrapeResults {
   changes: IChanges;
-  current_listings: ItemsInterface;
+  current_listings: IItems;
   last_change: ILastChange;
 }
 
