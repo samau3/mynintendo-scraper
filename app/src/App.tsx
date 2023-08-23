@@ -5,6 +5,7 @@ import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
 import { ChangedItemsList } from "./components/ChangedItemsList";
 import { ItemCard } from "./components/ItemCard";
 import { ScrapedItems } from "./interfaces/scrapedItems";
+import ItemGrid from "./components/ItemGrid";
 
 interface IScrapeResults {
   changes: {
@@ -83,30 +84,7 @@ function App() {
               </Typography>
             </Paper>
           </Box>
-          <Paper sx={{ padding: 1 }}>
-            <Typography variant="h6">Current Listings:</Typography>
-            <Grid container spacing={1}>
-              {Object.keys(scrapeResults.current_listings).map(
-                (item, index) => (
-                  <Grid
-                    key={index}
-                    minWidth={12}
-                    display={"flex"}
-                    item
-                    xs={12}
-                    sm={6}
-                    md={4}
-                  >
-                    <ItemCard
-                      item={item}
-                      index={index}
-                      items={scrapeResults.current_listings}
-                    />
-                  </Grid>
-                )
-              )}
-            </Grid>
-          </Paper>
+            <ItemGrid listings={scrapeResults.current_listings} />
         </Box>
       )}
     </Container>
