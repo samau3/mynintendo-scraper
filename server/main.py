@@ -6,6 +6,7 @@ from deepdiff import DeepDiff
 from models import db, Listings, Changes
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
+from errors import DatabaseError, CSSTagSelectorError
 import re
 
 import dotenv
@@ -29,6 +30,9 @@ def check_items():
     items = soup.find_all(
         'div', class_=re.compile('BasicTilestyles__Info-sc'))
 
+    if not items:
+        raise CSSTagSelectorError("The CSS tag for items have changed.")
+
     for item in items:
         # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
         header = item.div.find_next()
@@ -43,7 +47,7 @@ def check_items():
                 'span')[2] if price_element else None
             price = price_span.text if price_span else "Price Not Found"
 
-        elif stock and stock.text == "Out of Stock":
+        elif stock and stock.text == "Sold out":
             price = stock.text
         else:
             price = "Price Not Found"
@@ -115,9 +119,10 @@ def scrape_mynintendo():
 
     try:
         db.session.commit()
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
         db.session.rollback()
-        return {"error": "Database error occurred while committing changes."}
+        print(str(e))
+        raise DatabaseError("Database error occurred while committing changes.")
 
     if not changes:
         changes = "No changes."
@@ -165,7 +170,12 @@ def delete_old_records():
         Changes.expiration <= datetime.utcnow())
     deleted_listings = expired_listings.delete(synchronize_session=False)
     deleted_changes = expired_changes.delete(synchronize_session=False)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(str(e))
+        raise DatabaseError("Database error occurred while committing changes.")
 
     deleted = deleted_listings + deleted_changes
     return deleted
