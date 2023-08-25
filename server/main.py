@@ -5,6 +5,7 @@ import requests
 from deepdiff import DeepDiff
 from models import db, Listings, Changes
 from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
 import re
 
 import dotenv
@@ -111,7 +112,12 @@ def scrape_mynintendo():
     if changes:
         Changes.add_record(changes)
     new_item = Listings.add_record(results)
-    db.session.commit()  # wrap in a try/catch?
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return {"error": "Database error occurred while committing changes."}
 
     if not changes:
         changes = "No changes."
