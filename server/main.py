@@ -45,7 +45,7 @@ def check_items():
                 'span')[2] if price_element else None
             price = price_span.text if price_span else "Price Not Found"
 
-        elif stock and stock.text == "Sold out":
+        elif stock and stock.text != "Exclusive":
             price = stock.text
         else:
             price = "Price Not Found"
