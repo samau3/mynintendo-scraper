@@ -12,32 +12,40 @@ dotenv.load_dotenv()
 
 url = "https://www.nintendo.com/store/exclusives/rewards/"
 
+
 def check_items():
     """ Function to scrape items listed on MyNintendo Rewards"""
-    
+
     headers = {'Cache-Control': 'no-cache, must-revalidate'}
 
     # get the text from the provided url
     html_text = requests.get(url, headers=headers).text
 
-
     soup = BeautifulSoup(html_text, 'lxml')
     item_costs = {}
+
+    # Find items, based on the CSS tag BasicTilestyles__Info-sc
     items = soup.find_all(
         'div', class_=re.compile('BasicTilestyles__Info-sc'))
+
     for item in items:
         # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
         header = item.div.find_next()
-        name = header.text
+        name = header.text.strip() if header else "Unknown Name"
         stock = item.find(
             'div', class_=re.compile('ProductTilestyles__DescriptionTag-sc'))  # checks if the item has "Out of Stock" label
 
-        if stock.text == "Exclusive":
-            price = item.find(
-                'div', class_=re.compile('ProductTilestyles__PriceWrapper-sc')).div.div.span.div.span.text
-        else:
-            price = stock.text
+        if stock and stock.text == "Exclusive":
+            price_element = item.find('div', class_=re.compile(
+                'ProductTilestyles__PriceWrapper-sc'))
+            price_span = price_element.find_all(
+                'span')[2] if price_element else None
+            price = price_span.text if price_span else "Price Not Found"
 
+        elif stock and stock.text == "Out of Stock":
+            price = stock.text
+        else:
+            price = "Price Not Found"
         item_costs[name] = price
 
     return item_costs
