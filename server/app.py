@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 from models import db, connect_db
 from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes
+from errors import CustomError
 
 import dotenv
 dotenv.load_dotenv()
@@ -53,9 +54,12 @@ def call_scrape_fn():
 
 @app.get('/api/delete')
 def delete_records():
-    results = delete_old_records()
-
-    return f"Deleted {results} entries."
+    try:
+        results = delete_old_records()
+        return f"Deleted {results} entries."
+    except Exception as e:
+        print("api/delete error: ",str(e))
+        raise CustomError("An error occurred while deleting records.")
 
 
 @app.get("/api/get-items")
@@ -63,6 +67,38 @@ def call_check_items():
     items = check_items()
 
     return jsonify(items)
+
+
+@app.after_request
+def add_header(response):
+    """Add non-caching headers on every request."""
+
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+    response.cache_control.no_store = True
+    return response
+
+
+@app.errorhandler(404)
+def handle_not_found_error(error):
+    response = {
+        "message": "Resource not found.",
+    }
+    return jsonify(response), 404
+
+
+@app.errorhandler(Exception)
+def handle_error(error):
+    if isinstance(error, CustomError):
+        custom_error_message = error.message
+        response = {
+            "error": custom_error_message,
+        }
+    else:
+        response = {
+            "message": "An error occurred.",
+        }
+    
+    return jsonify(response), 500  
 
 
 with app.app_context():
