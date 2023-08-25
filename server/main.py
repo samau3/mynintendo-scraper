@@ -18,10 +18,8 @@ url = "https://www.nintendo.com/store/exclusives/rewards/"
 def check_items():
     """ Function to scrape items listed on MyNintendo Rewards"""
 
-    headers = {'Cache-Control': 'no-cache, must-revalidate'}
-
     # get the text from the provided url
-    html_text = requests.get(url, headers=headers).text
+    html_text = requests.get(url).text
 
     soup = BeautifulSoup(html_text, 'lxml')
     item_costs = {}
@@ -122,7 +120,7 @@ def scrape_mynintendo():
     except SQLAlchemyError as e:
         db.session.rollback()
         print(str(e))
-        raise DatabaseError("Database error occurred while committing changes.")
+        raise DatabaseError("Database error occurred while updating database for changes.")
 
     if not changes:
         changes = "No changes."
@@ -175,7 +173,7 @@ def delete_old_records():
     except SQLAlchemyError as e:
         db.session.rollback()
         print(str(e))
-        raise DatabaseError("Database error occurred while committing changes.")
+        raise DatabaseError("Database error occurred while trying to delete records.")
 
     deleted = deleted_listings + deleted_changes
     return deleted
