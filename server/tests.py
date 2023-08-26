@@ -3,6 +3,7 @@ from unittest.mock import patch, Mock
 from datetime import datetime, timedelta
 
 from main import check_items
+from errors import CSSTagSelectorError
 from helpers.calculate_expiration_date import calculate_expiration_date, DateTimeProvider
 
 
@@ -24,9 +25,9 @@ class TestCalculateExpDate(TestCase):
 
 class TestCheckItemsFunction(TestCase):
 
-    @patch('main.requests.get')  # Mocking the requests.get function
-    def test_check_items_in_stock(self, mock_get):
-        # Mocked HTML content for testing
+    @patch('requests.get')
+    def test_check_items(self, mock_get):
+
         mock_html_text = """
             <div class="BasicTilestyles__Info-sc">
                 <div>
@@ -34,11 +35,17 @@ class TestCheckItemsFunction(TestCase):
                 </div>
                 <div class="ProductTilestyles__DescriptionTag-sc">Exclusive</div>
                 <div class="ProductTilestyles__PriceWrapper-sc">
-                    <div>
-                        <div>
-                            <span>
-                                <div>
-                                    <span>$10</span>
+                    <div class="Pricestyles__Price-sc">
+                        <div class="Pricestyles__Price-sc">
+                            <span class="Pricestyles_MSRP">
+                                <span class="ScreenReaderOnlystyles">Regular Price:</span>
+                                <div class="Pricestyles_PlatinumPoints">
+                                    <div class="Imagestyles_ImageWrapper">
+                                        <img>
+                                    </div>
+                                    <span class="Pricestyles_PlatinumPointsText">
+                                        <span>$10</span>
+                                    </span>
                                 </div>
                             </span>
                         </div>
@@ -47,19 +54,18 @@ class TestCheckItemsFunction(TestCase):
             </div>
         """
 
-        # Create a mock response object and configure its behavior
+
         mock_response = Mock()
         mock_response.text = mock_html_text
         mock_get.return_value = mock_response
 
-        expected_result = {
-            "Item 1": "$10"
-        }
+        item_costs = check_items()
+        item_costs["Item 1"] = item_costs["Item 1"].strip()
 
-        result = check_items()
-        self.assertEqual(result, expected_result)
+        self.assertEqual(item_costs, {'Item 1': '$10'})
 
-    @patch('main.requests.get')  # Mocking the requests.get function
+        
+    @patch('requests.get')    
     def test_check_items_no_stock(self, mock_get):
         # Mocked HTML content for testing
         mock_html_text = """
@@ -67,13 +73,19 @@ class TestCheckItemsFunction(TestCase):
                 <div>
                     <h2>Item 1</h2>
                 </div>
-                <div class="ProductTilestyles__DescriptionTag-sc">Out of Stock</div>
+                <div class="ProductTilestyles__DescriptionTag-sc">Sold out</div>
                 <div class="ProductTilestyles__PriceWrapper-sc">
-                    <div>
-                        <div>
-                            <span>
-                                <div>
-                                    <span>$10</span>
+                    <div class="Pricestyles__Price-sc">
+                        <div class="Pricestyles__Price-sc">
+                            <span class="Pricestyles_MSRP">
+                                <span class="ScreenReaderOnlystyles">Regular Price:</span>
+                                <div class="Pricestyles_PlatinumPoints">
+                                    <div class="Imagestyles_ImageWrapper">
+                                        <img>
+                                    </div>
+                                    <span class="Pricestyles_PlatinumPointsText">
+                                        <span>$10</span>
+                                    </span>
                                 </div>
                             </span>
                         </div>
@@ -82,17 +94,25 @@ class TestCheckItemsFunction(TestCase):
             </div>
         """
 
-        # Create a mock response object and configure its behavior
         mock_response = Mock()
         mock_response.text = mock_html_text
         mock_get.return_value = mock_response
 
         expected_result = {
-            "Item 1": "Out of Stock"
+            "Item 1": "Sold out"
         }
 
         result = check_items()
         self.assertEqual(result, expected_result)
+
+    @patch('requests.get')
+    def test_check_items_css_error(self, mock_get):
+        mock_response = Mock()
+        mock_response.text = "<html></html>"
+        mock_get.return_value = mock_response
+
+        with self.assertRaises(CSSTagSelectorError):
+            check_items()
 
 
 if __name__ == '__main__':
