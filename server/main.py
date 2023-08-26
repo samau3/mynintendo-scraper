@@ -29,7 +29,7 @@ def check_items():
     # Find items, based on the CSS tag BasicTilestyles__Info-sc
     items = soup.find_all(
         'div', class_=re.compile('BasicTilestyles__Info-sc'))
-
+    # print(items)
     if not items:
         raise CSSTagSelectorError("The CSS tag for items have changed.")
 
