@@ -109,9 +109,9 @@ class TestCheckItemsFunction(TestCase):
 
         item_costs = check_items()
         item_costs['Item 2 (Normal)'] = item_costs['Item 2 (Normal)'].strip()
-        
 
-        self.assertEqual(item_costs, {'Item 1 (Sold out)': 'Sold out', 'Item 2 (Normal)': '$15', 'Item 3 (CSS price tag changed)': 'Price Not Found'})
+        self.assertEqual(item_costs, {'Item 1 (Sold out)': 'Sold out',
+                         'Item 2 (Normal)': '$15', 'Item 3 (CSS price tag changed)': 'Price Not Found'})
 
     @patch('requests.get')
     def test_check_items_css_error(self, mock_get):
