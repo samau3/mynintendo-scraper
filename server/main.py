@@ -5,6 +5,8 @@ import requests
 from deepdiff import DeepDiff
 from models import db, Listings, Changes
 from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
+from errors import DatabaseError, CSSTagSelectorError
 import re
 
 import dotenv
@@ -12,32 +14,43 @@ dotenv.load_dotenv()
 
 url = "https://www.nintendo.com/store/exclusives/rewards/"
 
+
 def check_items():
     """ Function to scrape items listed on MyNintendo Rewards"""
-    
+
     headers = {'Cache-Control': 'no-cache, must-revalidate'}
 
     # get the text from the provided url
     html_text = requests.get(url, headers=headers).text
 
-
     soup = BeautifulSoup(html_text, 'lxml')
     item_costs = {}
+
+    # Find items, based on the CSS tag BasicTilestyles__Info-sc
     items = soup.find_all(
         'div', class_=re.compile('BasicTilestyles__Info-sc'))
+    # print(items)
+    if not items:
+        raise CSSTagSelectorError("The CSS tag for items have changed.")
+
     for item in items:
         # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
         header = item.div.find_next()
-        name = header.text
+        name = header.text.strip() if header else "Unknown Name"
         stock = item.find(
             'div', class_=re.compile('ProductTilestyles__DescriptionTag-sc'))  # checks if the item has "Out of Stock" label
 
-        if stock.text == "Exclusive":
-            price = item.find(
-                'div', class_=re.compile('ProductTilestyles__PriceWrapper-sc')).div.div.span.div.span.text
-        else:
-            price = stock.text
+        if stock and stock.text == "Exclusive":
+            price_element = item.find('div', class_=re.compile(
+                'ProductTilestyles__PriceWrapper-sc'))
+            price_span = price_element.find_all(
+                'span')[2] if price_element else None
+            price = price_span.text if price_span else "Price Not Found"
 
+        elif stock and stock.text != "Exclusive":
+            price = stock.text
+        else:
+            price = "Price Not Found"
         item_costs[name] = price
 
     return item_costs
@@ -103,7 +116,14 @@ def scrape_mynintendo():
     if changes:
         Changes.add_record(changes)
     new_item = Listings.add_record(results)
-    db.session.commit()  # wrap in a try/catch?
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(str(e))
+        raise DatabaseError(
+            "Database error occurred while updating database for changes.")
 
     if not changes:
         changes = "No changes."
@@ -151,7 +171,13 @@ def delete_old_records():
         Changes.expiration <= datetime.utcnow())
     deleted_listings = expired_listings.delete(synchronize_session=False)
     deleted_changes = expired_changes.delete(synchronize_session=False)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(str(e))
+        raise DatabaseError(
+            "Database error occurred while trying to delete records.")
 
     deleted = deleted_listings + deleted_changes
     return deleted

@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 from models import db, connect_db
 from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes
+from errors import CustomError, CSSTagSelectorError
 
 import dotenv
 dotenv.load_dotenv()
@@ -53,8 +54,8 @@ def call_scrape_fn():
 
 @app.get('/api/delete')
 def delete_records():
-    results = delete_old_records()
 
+    results = delete_old_records()
     return f"Deleted {results} entries."
 
 
@@ -63,6 +64,37 @@ def call_check_items():
     items = check_items()
 
     return jsonify(items)
+
+@app.errorhandler(404)
+def handle_not_found_error(error):
+    response = {"message": "Resource not found."}
+    return jsonify(response), 404
+
+
+@app.errorhandler(Exception)
+def handle_error(error):
+    if isinstance(error, CustomError):
+        response = {"message": str(error)}
+    elif isinstance(error, CSSTagSelectorError):
+        response = {"message": str(error)}
+
+    else:
+        response = {
+            "message": "An error occurred.",
+        }
+
+    return jsonify(response), 500
+
+
+@app.after_request
+def add_header(response):
+    """Add non-caching headers on every request."""
+
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+    response.cache_control.no_store = True
+    response.cache_control.no_cache = True
+    response.cache_control.must_revalidate = True
+    return response
 
 
 with app.app_context():
