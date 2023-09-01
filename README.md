@@ -190,6 +190,8 @@ Since so much data is being stored in the database, a weekly cron job request is
   - [] Test routes
   - [] Test models
 - [] Improve frontend visuals
+- [] Distribute this app for public use
+- [] An account system
 
 </details>
 
