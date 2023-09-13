@@ -42,6 +42,9 @@ def check_items():
         stock = item.find(
             'div', class_=re.compile('__DescriptionTag-sc'))
 
+        if not stock:
+            raise CSSTagSelectorError("The CSS tag for stock has changed.")
+
         if stock and stock.text == "Exclusive":
             price_element = item.find('div', class_=re.compile(
                 'ProductTilestyles__PriceWrapper-sc'))
