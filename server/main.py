@@ -37,8 +37,10 @@ def check_items():
         # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
         header = item.div.find_next()
         name = header.text.strip() if header else "Unknown Name"
+        # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
+        # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
         stock = item.find(
-            'div', class_=re.compile('ProductTilestyles__DescriptionTag-sc'))  # checks if the item has "Out of Stock" label
+            'div', class_=re.compile('__DescriptionTag-sc'))
 
         if stock and stock.text == "Exclusive":
             price_element = item.find('div', class_=re.compile(
