@@ -77,7 +77,7 @@ def handle_error(error):
         response = {"message": str(error)}
     elif isinstance(error, CSSTagSelectorError):
         response = {"message": str(error)}
-
+        return jsonify(response), 503
     else:
         response = {
             "message": "An error occurred.",
