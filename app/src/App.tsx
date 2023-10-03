@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Container, Typography, Link } from "@mui/material";
+import { AxiosError } from "axios";
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
 import {
@@ -9,7 +10,7 @@ import {
 } from "./interfaces/interfaces";
 import ItemGrid from "./components/ItemGrid";
 import Changes from "./components/Changes";
-import { AxiosError } from "axios";
+
 
 interface IScrapeResults {
   recent_change: IChanges;
