@@ -33,10 +33,13 @@ function App() {
       const results = await MyNintendoScraperAPI.getItems();
       setScrapeResults(results);
     } catch (error) {
+      let message = "Something went wrong"
       if (error instanceof AxiosError) {
-        console.log(error?.response?.data.message);
-        setErrorInfo(error?.response?.data.message)
+        message = error?.response?.data.message
+      } else {
+        console.log(error)
       }
+      setErrorInfo(message)
     }
   }
 
