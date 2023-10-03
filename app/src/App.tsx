@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Container, Typography, Link } from "@mui/material";
+import { AxiosError } from "axios";
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
 import {
@@ -9,6 +10,7 @@ import {
 } from "./interfaces/interfaces";
 import ItemGrid from "./components/ItemGrid";
 import Changes from "./components/Changes";
+
 
 interface IScrapeResults {
   recent_change: IChanges;
@@ -20,6 +22,7 @@ function App() {
   const [scrapeResults, setScrapeResults] = useState<
     IScrapeResults | undefined
   >(undefined);
+  const [errorInfo, setErrorInfo] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     loadScrapeResults();
@@ -30,7 +33,13 @@ function App() {
       const results = await MyNintendoScraperAPI.getItems();
       setScrapeResults(results);
     } catch (error) {
-      console.log(error);
+      let message = "Something went wrong"
+      if (error instanceof AxiosError) {
+        message = error?.response?.data.message
+      } else {
+        console.log(error)
+      }
+      setErrorInfo(message)
     }
   }
 
@@ -43,6 +52,12 @@ function App() {
       <Box sx={{ textAlign: "center" }}>
         <Typography variant="h3">MyNintendo Scraper</Typography>
       </Box>
+      {errorInfo && 
+      <Box sx={{ textAlign: "center" }}>
+        <Typography variant="h5" color="red">{errorInfo}</Typography>
+        <Typography variant="h5">Please create a new issue on the <a href="https://github.com/samau3/mynintendo-scraper" target="_blank" >Github repository</a>.</Typography>
+      </Box>
+      }
       {scrapeResults && (
         <Box textAlign={"center"}>
           <Box paddingBottom={1}>
