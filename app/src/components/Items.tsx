@@ -39,11 +39,7 @@ export default function Items() {
   }
 
   return (
-    <Container
-      sx={{
-        height: "100vh",
-      }}
-    >
+    <>
       <Box sx={{ textAlign: "center" }}>
         <Typography variant="h3">MyNintendo Scraper</Typography>
       </Box>
@@ -89,6 +85,6 @@ export default function Items() {
           <ItemGrid listings={scrapeResults.current_listings} />
         </Box>
       )}
-    </Container>
+    </>
   );
 }
