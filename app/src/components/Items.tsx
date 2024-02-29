@@ -40,9 +40,9 @@ export default function Items() {
 
   return (
     <>
-      <Box sx={{ textAlign: "center" }}>
-        <Typography variant="h3">MyNintendo Scraper</Typography>
-      </Box>
+      <div>
+        <p className="text-4xl dark:text-gray-300 ">MyNintendo Scraper</p>
+      </div>
       {errorInfo && (
         <Box sx={{ textAlign: "center" }}>
           <Typography variant="h5" color="red">
@@ -63,10 +63,10 @@ export default function Items() {
       {scrapeResults && (
         <Box textAlign={"center"}>
           <Box paddingBottom={1}>
-            <Typography variant="h6">
+            <p className="text-2xl dark:text-gray-300 ">
               Last Checked:{" "}
               {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
-            </Typography>
+            </p>
             <Button onClick={loadScrapeResults}>Scrape Again</Button>
             <Button>
               <Link
