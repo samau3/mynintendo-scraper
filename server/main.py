@@ -28,7 +28,7 @@ def check_items():
 
     # Find items, based on the CSS tag BasicTilestyles__Info-sc
     items = soup.find_all(
-        'div', class_=re.compile('BasicTilestyles__Info-sc'))
+        'div', class_=re.compile('sc-1bsju6x-4 lhqOtT'))
     # print(items)
     if not items:
         raise CSSTagSelectorError("The CSS tag for items have changed.")
@@ -37,21 +37,19 @@ def check_items():
         # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
         header = item.div.find_next()
         name = header.text.strip() if header else "Unknown Name"
+
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
         stock = item.find(
-            'div', class_=re.compile('__DescriptionTag-sc'))
+            'div', class_=re.compile('sc-tb903t-0 hrzCZf sc-m1loqs-4 goCpQE'))
 
         if not stock:
             raise CSSTagSelectorError("The CSS tag for stock has changed.")
 
         if stock and stock.text == "Exclusive":
             price_element = item.find('div', class_=re.compile(
-                'ProductTilestyles__PriceWrapper-sc'))
-            price_span = price_element.find_all(
-                'span')[2] if price_element else None
-            price = price_span.text if price_span else "Price Not Found"
-
+                'sc-1f0n8u6-8 hwzUKA'))
+            price = price_element.get_text() if price_element else "Price Not Found"
         elif stock and stock.text != "Exclusive":
             price = stock.text
         else:
