@@ -28,7 +28,7 @@ def check_items():
 
     # Find items, based on the CSS tag BasicTilestyles__Info-sc
     items = soup.find_all(
-        'div', class_=re.compile('sc-1bsju6x-4 lhqOtT'))
+        'div', class_=re.compile('sc-1bsju6x-4'))
     # print(items)
     if not items:
         raise CSSTagSelectorError("The CSS tag for items have changed.")
@@ -41,14 +41,14 @@ def check_items():
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
         stock = item.find(
-            'div', class_=re.compile('sc-tb903t-0 hrzCZf sc-m1loqs-4 goCpQE'))
+            'div', class_=re.compile('sc-tb903t-0'))
 
         if not stock:
             raise CSSTagSelectorError("The CSS tag for stock has changed.")
 
         if stock and stock.text == "Exclusive":
             price_element = item.find('div', class_=re.compile(
-                'sc-1f0n8u6-8 hwzUKA'))
+                'sc-1f0n8u6-8'))
             price = price_element.get_text() if price_element else "Price Not Found"
         elif stock and stock.text != "Exclusive":
             price = stock.text
