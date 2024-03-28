@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Container, Typography, Link } from "@mui/material";
+import { Box } from "@mui/material";
 import { AxiosError } from "axios";
 
 import { MyNintendoScraperAPI } from "../api/myNintendoScraperAPI";
@@ -27,6 +27,9 @@ export default function Items() {
     try {
       const results = await MyNintendoScraperAPI.getItems();
       setScrapeResults(results);
+      if (errorInfo) {
+        setErrorInfo(undefined);
+      }
     } catch (error) {
       let message = "Something went wrong";
       if (error instanceof AxiosError) {
@@ -35,6 +38,10 @@ export default function Items() {
         console.log(error);
       }
       setErrorInfo(message);
+
+      if (scrapeResults) {
+        setScrapeResults(undefined);
+      }
     }
   }
 
@@ -44,11 +51,9 @@ export default function Items() {
         <p className="text-4xl dark:text-gray-300 ">MyNintendo Scraper</p>
       </div>
       {errorInfo && (
-        <Box sx={{ textAlign: "center" }}>
-          <Typography variant="h5" color="red">
-            {errorInfo}
-          </Typography>
-          <Typography variant="h5">
+        <div className="text-center">
+          <p className="font-bold text-lg text-red-700">{errorInfo}</p>
+          <p className="font-bold text-lg">
             Please create a new issue on the{" "}
             <a
               href="https://github.com/samau3/mynintendo-scraper"
@@ -57,8 +62,8 @@ export default function Items() {
               Github repository
             </a>
             .
-          </Typography>
-        </Box>
+          </p>
+        </div>
       )}
       {scrapeResults && (
         <Box textAlign={"center"}>
@@ -67,16 +72,20 @@ export default function Items() {
               Last Checked:{" "}
               {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
             </p>
-            <Button onClick={loadScrapeResults}>Scrape Again</Button>
-            <Button>
-              <Link
+            <button
+              className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100"
+              onClick={loadScrapeResults}
+            >
+              Scrape Again
+            </button>
+            <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100">
+              <a
                 href="https://www.nintendo.com/store/exclusives/rewards/"
                 target="_blank"
-                underline="none"
               >
                 Check the listings
-              </Link>
-            </Button>
+              </a>
+            </button>
           </Box>
           <Changes
             recentChange={scrapeResults.recent_change}
