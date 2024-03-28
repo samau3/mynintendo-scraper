@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
 import { AxiosError } from "axios";
 
 import { MyNintendoScraperAPI } from "../api/myNintendoScraperAPI";
@@ -66,8 +65,8 @@ export default function Items() {
         </div>
       )}
       {scrapeResults && (
-        <Box textAlign={"center"}>
-          <Box paddingBottom={1}>
+        <div className="text-center">
+          <div className="pb-2">
             <p className="text-2xl dark:text-gray-300 ">
               Last Checked:{" "}
               {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
@@ -86,13 +85,13 @@ export default function Items() {
                 Check the listings
               </a>
             </button>
-          </Box>
+          </div>
           <Changes
             recentChange={scrapeResults.recent_change}
             lastChange={scrapeResults.last_change}
           ></Changes>
           <ItemGrid listings={scrapeResults.current_listings} />
-        </Box>
+        </div>
       )}
     </>
   );
