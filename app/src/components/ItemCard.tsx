@@ -1,5 +1,3 @@
-import { Card, Typography } from "@mui/material";
-
 interface ItemCardProps {
   item: string;
   index: number;
@@ -8,19 +6,17 @@ interface ItemCardProps {
 
 export function ItemCard({ item, index, cost }: ItemCardProps) {
   return (
-    <Card
+    <div
       key={`${item}-${index}`}
-      sx={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
+      className="w-full h-full flex flex-col shadow-lg p-4 bg-white dark:bg-slate-800 rounded-lg justify-between"
     >
-      <Typography variant="subtitle1">{item}</Typography>
-      <Typography sx={{ mt: "auto" }} variant="subtitle2">
+      {/* <img src="https://placehold.co/300" /> */}
+      <p className="mb-auto text-lg tracking-tight text-black dark:text-slate-200 ">
+        {item}
+      </p>
+      <p className="text-md font-medium tracking-tighter text-black dark:text-slate-300 ">
         {cost}
-      </Typography>
-    </Card>
+      </p>
+    </div>
   );
 }

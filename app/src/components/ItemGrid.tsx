@@ -1,28 +1,22 @@
-import { Paper, Typography, Grid } from "@mui/material";
 import { ItemCard } from "./ItemCard";
 import { IItems } from "../interfaces/interfaces";
 
 export default function ItemGrid({ listings }: { listings: IItems }) {
   return (
     <>
-      <Paper sx={{ padding: 1 }}>
-        <Typography variant="h6">Current Listings:</Typography>
-        <Grid container spacing={1}>
+      
+      <p className="mb-auto font-bold text-lg tracking-tight text-black dark:text-slate-200 ">
+        Current Listings:
+        </p>
+        <div className="grid auto-cols-fr gap-8 sm:grid-cols-3">
           {Object.keys(listings).map((item, index) => (
-            <Grid
+            <div
               key={index}
-              minWidth={12}
-              display={"flex"}
-              item
-              xs={12}
-              sm={6}
-              md={4}
             >
               <ItemCard item={item} index={index} cost={listings[item]} />
-            </Grid>
+            </div>
           ))}
-        </Grid>
-      </Paper>
+        </div>
     </>
   );
 }

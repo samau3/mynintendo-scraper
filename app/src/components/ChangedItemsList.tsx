@@ -1,5 +1,3 @@
-import { Grid, Typography, Box, Paper } from "@mui/material";
-
 import { IScrapedItems } from "../interfaces/interfaces";
 import { ItemCard } from "./ItemCard";
 
@@ -9,33 +7,30 @@ interface ChangedItemsListProps {
 
 export function ChangedItemsList({ changedItemsData }: ChangedItemsListProps) {
   return (
-    <Grid>
+    <div >
       {Object.keys(changedItemsData).map((changeCategory, index) => (
-        <Paper variant="outlined" key={index} sx={{ padding: 1 }}>
-          <Box textAlign={"center"}>
-            <Typography variant="h6">{changeCategory}</Typography>
-            <Grid container spacing={1} justifyContent={"center"}>
+        <div key={index} >
+          <div  >
+            <p className="mb-auto text-lg font-bold tracking-tight text-black dark:text-slate-200">{changeCategory}</p>
+            <div className="flex flex-col justify-around sm:flex-row ">
               {changedItemsData[changeCategory].map((changedItems) =>
                 Object.keys(changedItems).map((changedItem, index) => (
-                  <Grid
+                  <div
                     key={`${changedItem}-${index}`}
-                    item
-                    xs={12}
-                    sm={6}
-                    sx={{ width: "100%" }}
+                    className="m-1"
                   >
                     <ItemCard
                       item={changedItem}
                       index={index}
                       cost={changedItems[changedItem]}
                     />
-                  </Grid>
+                  </div>
                 )),
               )}
-            </Grid>
-          </Box>
-        </Paper>
+            </div>
+          </div>
+        </div>
       ))}
-    </Grid>
+    </div>
   );
 }
