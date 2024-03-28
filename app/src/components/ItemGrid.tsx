@@ -8,7 +8,7 @@ export default function ItemGrid({ listings }: { listings: IItems }) {
       <p className="mb-auto text-lg tracking-tight text-black dark:text-slate-200 ">
         Current Listings:
         </p>
-        <div className="grid auto-cols-fr gap-4 sm:grid-cols-3">
+        <div className="grid auto-cols-fr gap-8 sm:grid-cols-3">
           {Object.keys(listings).map((item, index) => (
             <div
               key={index}
