@@ -8,11 +8,15 @@
   --light-gold-rgb: 249 181 51;
   --dark-gold-rgb: 215 147 23;
 
-  --light-dark-rgb: 10, 10, 10;
-  --dark-dark-rgb: 0, 0, 0;
+  --light-dark-rgb: 10 10 10;
+  --dark-dark-rgb: 0 0 0;
   
   --primary-stripe-rgb: 230 230 230;
   --secondary-stripe-rgb: 240 240 240;
+
+  --primary-dark-stripe-rgb: 70 70 70;
+  --secondary-dark-stripe-rgb: 100 100 100;
+
 }
 
 html {

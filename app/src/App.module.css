@@ -121,3 +121,16 @@
   box-shadow: inset 0rem 0.5rem 2rem 0.25rem rgb(0 0 0 / 40%);
   animation: pan 360s linear infinite;
 }
+
+:global(html.dark) #stripe-pattern {
+  background-image: linear-gradient(
+    -45deg,
+    rgb(var(--primary-dark-stripe-rgb)) 25%,
+    rgb(var(--secondary-dark-stripe-rgb)) 25%,
+    rgb(var(--secondary-dark-stripe-rgb)) 50%,
+    rgb(var(--primary-dark-stripe-rgb)) 50%,
+    rgb(var(--primary-dark-stripe-rgb)) 75%,
+    rgb(var(--secondary-dark-stripe-rgb)) 75%,
+    rgb(var(--secondary-dark-stripe-rgb)) 100%
+  );
+}
