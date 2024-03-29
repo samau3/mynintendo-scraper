@@ -71,7 +71,7 @@
 
 <div align="center">
 
-<!-- ![homepage](https://user-images.githubusercontent.com/69769431/220259451-28f0a532-a294-4092-bde9-bb8a3734927d.png) -->
+![homepage](https://github.com/samau3/mynintendo-scraper/assets/69769431/0d9ba468-3df9-4edb-901e-cdbaae201046)
 
 </div>
 
@@ -88,7 +88,7 @@ The motivation for this project was automate the process of checking My Nintendo
 - [![PostgreSQL][postgresql]][postgresql-url]
 - [![Node][node.js]][node-url]
 - [![Github Actions][github-actions]][github-actions-url]
-- [![Material UI][mui]][mui-url]
+- [![Tailwind][tailwind]][tailwind-url]
 - [Fly.io](https://fly.io/)
 - [Axios](https://axios-http.com/)
 
@@ -227,6 +227,7 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 ## Acknowledgments
 
 - Thanks to FreeCodeCamp for the BeautifulSoup Webscraping tutorial that helped get this project started
+- Thanks for Hyperplexed for the Mario UI background idea, check out his [tutorial](https://www.youtube.com/watch?v=x872keruUWQ&pp=ygULaHlwZXJwbGV4ZWQ%3D)!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -252,5 +253,5 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 [github-actions-url]: https://docs.github.com/en/actions
 [vercel]: https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white
 [vercel-url]: https://vercel.com/
-[mui]: https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white
-[mui-url]: https://mui.com/
+[tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+[tailwind-url]: https://tailwindcss.com/
