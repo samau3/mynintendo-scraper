@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
+import { RotatingLines } from "react-loader-spinner"
 
 import { MyNintendoScraperAPI } from "../api/myNintendoScraperAPI";
 import { IChanges, ILastChange, IItems } from "./../interfaces/interfaces";
@@ -64,7 +65,7 @@ export default function Items() {
           </p>
         </div>
       )}
-      {scrapeResults && (
+      {scrapeResults ? (
         <div className="text-center">
           <div className="pb-2">
             <p className="text-2xl dark:text-gray-300 ">
@@ -92,7 +93,12 @@ export default function Items() {
           ></Changes>
           <ItemGrid listings={scrapeResults.current_listings} />
         </div>
-      )}
+      ) : (
+        <div className="mt-10">
+          <RotatingLines strokeColor="gray" />
+        </div>
+      )
+    }
     </>
   );
 }
