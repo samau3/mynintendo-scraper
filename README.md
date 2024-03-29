@@ -227,6 +227,7 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 ## Acknowledgments
 
 - Thanks to FreeCodeCamp for the BeautifulSoup Webscraping tutorial that helped get this project started
+- Thanks for Hyperplexed for the Mario UI background idea, check out his [tutorial](https://www.youtube.com/watch?v=x872keruUWQ&pp=ygULaHlwZXJwbGV4ZWQ%3D)!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
