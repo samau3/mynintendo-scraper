@@ -21,13 +21,12 @@
 
 html {
   overflow: auto;
-  /* scrollbar-gutter: stable both-edges; */
-  /* background-color: red; */
+  scrollbar-gutter: stable both-edges;
 }
 
-/* html.dark {
-  background-color: rgb(30 41 59);
-} */
+html.dark {
+  background: black;
+}
 
 body {
   margin: 0;
