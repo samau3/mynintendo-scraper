@@ -2,15 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  overflow: auto;
-  scrollbar-gutter: stable both-edges;
+:root {
+  --glow-rgb: 245 245 245;
   
+  --light-gold-rgb: 249 181 51;
+  --dark-gold-rgb: 215 147 23;
+  
+  --primary-stripe-rgb: 230 230 230;
+  --secondary-stripe-rgb: 240 240 240;
 }
 
-html.dark {
-  background-color: rgb(30 41 59);
+html {
+  overflow: auto;
+  /* scrollbar-gutter: stable both-edges; */
+  /* background-color: red; */
 }
+
+/* html.dark {
+  background-color: rgb(30 41 59);
+} */
 
 body {
   margin: 0;
@@ -19,6 +29,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
 }
 
 code {
