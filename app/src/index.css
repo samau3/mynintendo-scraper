@@ -1,10 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-:root {
-  --glow-rgb: 245 245 245;
-  
+:root {  
   --light-gold-rgb: 249 181 51;
   --dark-gold-rgb: 215 147 23;
 
@@ -20,12 +18,7 @@
 }
 
 html {
-  overflow: auto;
-  scrollbar-gutter: stable both-edges;
-}
-
-html.dark {
-  background: black;
+  overflow-y: scroll;
 }
 
 body {
