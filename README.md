@@ -88,7 +88,7 @@ The motivation for this project was automate the process of checking My Nintendo
 - [![PostgreSQL][postgresql]][postgresql-url]
 - [![Node][node.js]][node-url]
 - [![Github Actions][github-actions]][github-actions-url]
-- [![Material UI][mui]][mui-url]
+- [![Tailwind][tailwind]][tailwind-url]
 - [Fly.io](https://fly.io/)
 - [Axios](https://axios-http.com/)
 
@@ -252,5 +252,5 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 [github-actions-url]: https://docs.github.com/en/actions
 [vercel]: https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white
 [vercel-url]: https://vercel.com/
-[mui]: https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white
-[mui-url]: https://mui.com/
+[tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+[tailwind-url]: https://tailwindcss.com/
