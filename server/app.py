@@ -65,6 +65,7 @@ def call_check_items():
 
     return jsonify(items)
 
+
 @app.errorhandler(404)
 def handle_not_found_error(error):
     response = {"message": "Resource not found."}
