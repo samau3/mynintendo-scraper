@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
-import { RotatingLines } from "react-loader-spinner"
+import { RotatingLines } from "react-loader-spinner";
 
 import { MyNintendoScraperAPI } from "../api/myNintendoScraperAPI";
 import { IChanges, ILastChange, IItems } from "./../interfaces/interfaces";
@@ -73,12 +73,12 @@ export default function Items() {
               {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
             </p>
             <button
-              className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100"
+              className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-full"
               onClick={loadScrapeResults}
             >
               Scrape Again
             </button>
-            <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100">
+            <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-full">
               <a
                 href="https://www.nintendo.com/store/exclusives/rewards/"
                 target="_blank"
@@ -97,8 +97,7 @@ export default function Items() {
         <div className="mt-10">
           <RotatingLines strokeColor="gray" />
         </div>
-      )
-    }
+      )}
     </>
   );
 }
