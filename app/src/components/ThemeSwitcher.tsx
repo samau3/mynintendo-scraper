@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faSun, faMoon} from "@fortawesome/free-solid-svg-icons";
+import { SunIcon } from "@heroicons/react/24/solid";
+import { MoonIcon } from "@heroicons/react/16/solid";
 
 const ThemeSwitcher = () => {
   const [darkMode, setDarkMode] = useState(true);
@@ -24,7 +24,7 @@ const ThemeSwitcher = () => {
       onClick={toggleDarkMode}
       className="px-4 py-2 rounded-md bg-slate-800 dark:bg-white text-white dark:text-black"
     >
-      {darkMode ? <FontAwesomeIcon icon={faSun} /> : <FontAwesomeIcon icon={faMoon} />}
+      {darkMode ? <SunIcon className="h-6 w-6 text-blue-700"></SunIcon> : <MoonIcon className="h-6 w-6 text-blue-500"></MoonIcon>}
     </button>
   );
 };
