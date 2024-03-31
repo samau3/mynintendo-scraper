@@ -91,6 +91,7 @@ The motivation for this project was automate the process of checking My Nintendo
 - [![Tailwind][tailwind]][tailwind-url]
 - [Fly.io](https://fly.io/)
 - [Axios](https://axios-http.com/)
+- [HeroIcons](https://heroicons.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
