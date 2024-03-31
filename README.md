@@ -180,7 +180,7 @@ Since so much data is being stored in the database, a weekly cron job request is
 - [x] Display current changes if any
 - [x] Utilize a useEffect to scrape as soon as web app is accessed
   - [x] Include a timestamp to show when scrape occurred at time of web app loading
-- [x] Improve frontend visuals
+- [x] Improve frontend visuals so it isn't so plain
 
 </details>
 
