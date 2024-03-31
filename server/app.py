@@ -13,7 +13,7 @@ dotenv.load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-app.config['JSON_SORT_KEYS'] = False
+app.json.sort_keys = False
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ['DATABASE_URL'].replace("postgres://", "postgresql://"))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
