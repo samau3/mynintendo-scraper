@@ -7,12 +7,12 @@ interface ChangedItemsListProps {
 
 export function ChangedItemsList({ changedItemsData }: ChangedItemsListProps) {
   return (
-    <div >
+    <>
       {Object.keys(changedItemsData).map((changeCategory, index) => (
         <div key={index} >
           <div  >
             <p className="mb-auto text-lg font-bold tracking-tight text-black dark:text-slate-200">{changeCategory}</p>
-            <div className="flex flex-col justify-around sm:flex-row ">
+            <div className="grid auto-cols-auto">
               {changedItemsData[changeCategory].map((changedItems) =>
                 Object.keys(changedItems).map((changedItem, index) => (
                   <div
@@ -31,6 +31,6 @@ export function ChangedItemsList({ changedItemsData }: ChangedItemsListProps) {
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 }

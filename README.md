@@ -91,6 +91,7 @@ The motivation for this project was automate the process of checking My Nintendo
 - [![Tailwind][tailwind]][tailwind-url]
 - [Fly.io](https://fly.io/)
 - [Axios](https://axios-http.com/)
+- [HeroIcons](https://heroicons.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -180,6 +181,7 @@ Since so much data is being stored in the database, a weekly cron job request is
 - [x] Display current changes if any
 - [x] Utilize a useEffect to scrape as soon as web app is accessed
   - [x] Include a timestamp to show when scrape occurred at time of web app loading
+- [x] Improve frontend visuals so it isn't so plain
 
 </details>
 
@@ -189,7 +191,6 @@ Since so much data is being stored in the database, a weekly cron job request is
 - [] Add tests
   - [] Test routes
   - [] Test models
-- [] Improve frontend visuals
 - [] Distribute this app for public use
 - [] An account system
 
@@ -227,7 +228,7 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 ## Acknowledgments
 
 - Thanks to FreeCodeCamp for the BeautifulSoup Webscraping tutorial that helped get this project started
-- Thanks for Hyperplexed for the Mario UI background idea, check out his [tutorial](https://www.youtube.com/watch?v=x872keruUWQ&pp=ygULaHlwZXJwbGV4ZWQ%3D)!
+- Thanks to Hyperplexed for the Mario UI background idea, check out his [tutorial](https://www.youtube.com/watch?v=x872keruUWQ&pp=ygULaHlwZXJwbGV4ZWQ%3D)!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
