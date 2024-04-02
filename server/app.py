@@ -49,7 +49,7 @@ def call_scrape_fn():
     if results["items"] != "No changes.":
         message_discord(results["items"])
 
-    return results
+    return jsonify(results["timestamp"])
 
 
 @app.get('/api/delete')
@@ -65,6 +65,9 @@ def call_check_items():
 
     return jsonify(items)
 
+@app.get("/api/check")
+def check_api():
+    return jsonify("API is running.")
 
 @app.errorhandler(404)
 def handle_not_found_error(error):
