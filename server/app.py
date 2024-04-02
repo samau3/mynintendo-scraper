@@ -49,7 +49,7 @@ def call_scrape_fn():
     if results["items"] != "No changes.":
         message_discord(results["items"])
 
-    return results
+    return f"Scraped at {results['timestamp']}."
 
 
 @app.get('/api/delete')
