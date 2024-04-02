@@ -65,6 +65,9 @@ def call_check_items():
 
     return jsonify(items)
 
+@app.get("/api/check")
+def check_api():
+    return jsonify("API is running.")
 
 @app.errorhandler(404)
 def handle_not_found_error(error):
