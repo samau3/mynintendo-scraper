@@ -59,21 +59,128 @@ def check_items():
     return item_costs
 
 
-def check_for_changes(last_stored_items, scraped_items):
+def check_for_changes():
     """ Function to compare two dictionaries, 
         returning the resulting differences"""
+
+    # diff = DeepDiff(last_stored_items, scraped_items)
+
+    # old = {
+    #     "Splatoon x The Legend of Zelda Splatfest Keychain Set": "550 Platinum Points"
+    # }
+
+    # new = {
+    #     "Splatoon™ x The Legend of Zelda™ Splatfest Keychain Set": "550 Platinum Points"
+    # }
+
+    scraped_items = {
+        "Princess Peach™: Showtime! Pocket Folder Set": "600 Platinum Points",
+        "My Nintendo Mario™ Zipper Pouch": "800 Platinum Points",
+        "My Nintendo Super Mario™ Removable Tech Sticker sheet": "300 Platinum Points",
+        "Splatoon™ 3:  Expansion Pass - Side Order Tech Sticker sheet": "300 Platinum Points",
+        "Pokémon™ Scarlet and Pokémon™ Violet Partner Pokémon Mini-Notebook": "500 Platinum Points",
+        "Pokémon™ Scarlet and Pokémon™ Violet Highlighter": "500 Platinum Points",
+        "Splatoon™ 3: Splatsville Shopping Bag": "800 Platinum Points",
+        "Splatoon 3: Graffiti Sticker Set": "400 Platinum Points",
+        "WarioWare™: Move It! Magnets": "500 Platinum Points",
+        "My Nintendo 2024 Desktop Calendar": "400 Platinum Points",
+        "Super Mario™ Holiday Ornament": "500 Platinum Points",
+        "Mario Kart™ 8 Deluxe Vinyl Sticker Sheet No. 2": "300 Platinum Points",
+        "Detective Pikachu™ Returns Cup Cozy": "500 Platinum Points",
+        "Super Mario Bros.™ Wonder Double Keychain": "800 Platinum Points",
+        "Super Mario™ Shopping Bag": "800 Platinum Points",
+        "Xenoblade Chronicles™ 3: Camping Coasters (set of 4)": "700 Platinum Points",
+        "Pikmin™ 4 Kitchen Towel": "600 Platinum Points",
+        "Pikmin™ 4 Shoe Charm Set": "500 Platinum Points",
+        "Pikmin™ 4 - Sticker Set": "200 Platinum Points",
+        "Mario Kart™ 8 Deluxe Vinyl Sticker Sheet": "300 Platinum Points",
+        "Splatoon™ x The Legend of Zelda™ Splatfest  Keychain Set": "550 Platinum Points",
+        "Metroid Prime™ Remastered - Big Pin Set": "800 Platinum Points",
+        "Kirby’s Return to Dream Land™ Deluxe – Kirby & Magolor Canvas Pouch": "500 Platinum Points",
+        "My Nintendo Platinum Point and Gold Point Coins Pin Set": "800 Platinum Points",
+        "Fire Emblem™ Engage Character Button pins": "700 Platinum Points",
+        "Kirby's Dream Buffet Keychain": "600 Platinum Points",
+        "MARIO + RABBIDS®  SPARKS OF HOPE keychain": "400 Platinum Points",
+        "Super Smash Bros.™ Ultimate Invitation Greeting Card Set": "400 Platinum Points",
+        "Mario & Me: A Three-Year Journey Journal Book": "800 Platinum Points",
+        "Mario Strikers™: Battle League Drawstring Bag": "600 Platinum Points",
+        "Fire Emblem™ Warriors: Three Hopes Memo Pad": "600 Platinum Points",
+        "Nintendo Switch™ Sports - Spocco Square Cooling Towel": "550 Platinum Points",
+        "Mario Golf™: Super Rush ID Tag": "600 Platinum Points",
+        "Bravely Default™ II Reversible Poster": "400 Platinum Points",
+        "DC Super Hero Girls™: Teen Power Drawstring Bag": "500 Platinum Points"
+    }
+
+    last_stored_items = {
+        "Princess Peach™: Showtime! Pocket Folder Set": "600 Platinum Points",
+        "My Nintendo Mario™ Zipper Pouch": "800 Platinum Points",
+        "My Nintendo Super Mario™ Removable Tech Sticker sheet": "300 Platinum Points",
+        "Splatoon™ 3:  Expansion Pass - Side Order Tech Sticker sheet": "300 Platinum Points",
+        "Pokémon™ Scarlet and Pokémon™ Violet Partner Pokémon Mini-Notebook": "500 Platinum Points",
+        "Pokémon™ Scarlet and Pokémon™ Violet Highlighter": "500 Platinum Points",
+        "Splatoon™ 3: Splatsville Shopping Bag": "800 Platinum Points",
+        "Splatoon 3: Graffiti Sticker Set": "400 Platinum Points",
+        "WarioWare™: Move It! Magnets": "500 Platinum Points",
+        "My Nintendo 2024 Desktop Calendar": "400 Platinum Points",
+        "Super Mario™ Holiday Ornament": "500 Platinum Points",
+        "Mario Kart™ 8 Deluxe Vinyl Sticker Sheet No. 2": "300 Platinum Points",
+        "Detective Pikachu™ Returns Cup Cozy": "500 Platinum Points",
+        "Super Mario Bros.™ Wonder Double Keychain": "800 Platinum Points",
+        "Super Mario™ Shopping Bag": "800 Platinum Points",
+        "Xenoblade Chronicles™ 3: Camping Coasters (set of 4)": "700 Platinum Points",
+        "Pikmin™ 4 Kitchen Towel": "600 Platinum Points",
+        "Pikmin™ 4 Shoe Charm Set": "500 Platinum Points",
+        "Pikmin™ 4 - Sticker Set": "200 Platinum Points",
+        "Mario Kart™ 8 Deluxe Vinyl Sticker Sheet": "300 Platinum Points",
+        "Splatoon x The Legend of Zelda™ Splatfest  Keychain Set": "550 Platinum Points",
+        "Metroid Prime™ Remastered - Big Pin Set": "800 Platinum Points",
+        "Kirby’s Return to Dream Land™ Deluxe – Kirby & Magolor Canvas Pouch": "500 Platinum Points",
+        "My Nintendo Platinum Point and Gold Point Coins Pin Set": "800 Platinum Points",
+        "Fire Emblem™ Engage Character Button pins": "700 Platinum Points",
+        "Kirby's Dream Buffet Keychain": "600 Platinum Points",
+        "MARIO + RABBIDS®  SPARKS OF HOPE keychain": "400 Platinum Points",
+        "Super Smash Bros.™ Ultimate Invitation Greeting Card Set": "400 Platinum Points",
+        "Mario & Me: A Three-Year Journey Journal Book": "800 Platinum Points",
+        "Mario Strikers™: Battle League Drawstring Bag": "600 Platinum Points",
+        "Fire Emblem™ Warriors: Three Hopes Memo Pad": "600 Platinum Points",
+        "Nintendo Switch™ Sports - Spocco Square Cooling Towel": "550 Platinum Points",
+        "Mario Golf™: Super Rush ID Tag": "600 Platinum Points",
+        "Bravely Default™ II Reversible Poster": "400 Platinum Points",
+        "DC Super Hero Girls™: Teen Power Drawstring Bag": "500 Platinum Points"
+    }
 
     diff = DeepDiff(last_stored_items, scraped_items)
 
     if (len(diff) == 0):
         return None
+    
+    cleaned_dict = diff.copy()
+
+    for difference in cleaned_dict:
+        cleaned_dict[difference] = remove_trademark_symbols_from_list(cleaned_dict[difference])
+
+    l1, l2 = index_of_common_strings(cleaned_dict["dictionary_item_added"], cleaned_dict["dictionary_item_removed"])
+
+    for i in range(len(l1) - 1, -1, -1):
+        diff["dictionary_item_added"].pop(l1[i])
+        if len(diff["dictionary_item_added"]) == 0:
+            del diff["dictionary_item_added"]
+    for i in range(len(l2) - 1, -1, -1):
+        diff["dictionary_item_removed"].pop(l2[i])
+        if len(diff["dictionary_item_removed"]) == 0:
+            del diff["dictionary_item_removed"]
+        
+    if (len(diff) == 0):
+        return None
 
     changes = {}
     for difference in diff:
+
         # if difference is added
         if difference == "dictionary_item_added":
             new_items = []
             for item in diff[difference]:
+                print(item[6:-2], scraped_items[item[6:-2]])
                 new_items.append({item[6:-2]: scraped_items[item[6:-2]]})
             changes["New Items"] = new_items
 
@@ -81,6 +188,7 @@ def check_for_changes(last_stored_items, scraped_items):
         if difference == "dictionary_item_removed":
             removed_items = []
             for item in diff[difference]:
+                print(item[6:-2], last_stored_items[item[6:-2]])
                 removed_items.append(
                     {item[6:-2]: last_stored_items[item[6:-2]]})
             changes["Removed Items"] = removed_items
@@ -93,6 +201,23 @@ def check_for_changes(last_stored_items, scraped_items):
             changes["Changed Items"] = changed_items
 
     return changes
+
+def remove_trademark_symbols_from_list(input_list):
+    cleaned_list = []
+    for string in input_list:
+        # Using re.sub() to remove trademark symbols from each string in the list
+        cleaned_string = re.sub(r'™', '', string)
+        cleaned_list.append(cleaned_string)
+    return cleaned_list
+
+def index_of_common_strings(list1, list2):
+    l1_idx = []
+    l2_idx = []
+    for idx, item in enumerate(list1):  # Iterate over a copy of list1 to avoid modifying it while iterating
+        if item in list2:
+            l1_idx.append(idx)
+            l2_idx.append(list2.index(item))
+    return l1_idx, l2_idx
 
 
 def get_changes():
