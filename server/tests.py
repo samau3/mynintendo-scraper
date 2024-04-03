@@ -112,21 +112,21 @@ class TestCheckItemsFunction(TestCase):
         self.mock_response.text = """
             <html>
                 <body>
-                    <div class="BasicTilestyles__Info-sc">
+                    <div class="sc-eg7slj-1 ieWZCg">
                         <div>
                             <h2>Item 1 (Sold out)</h2>
                         </div>
-                        <div class="ProductTilestyles__DescriptionTag-sc">Sold out</div>
-                        <div class="ProductTilestyles__PriceWrapper-sc">
-                            <div class="Pricestyles__Price-sc">
-                                <div class="Pricestyles__Price-sc">
-                                    <span class="Pricestyles_MSRP">
-                                        <span class="ScreenReaderOnlystyles">Regular Price:</span>
-                                        <div class="Pricestyles_PlatinumPoints">
-                                            <div class="Imagestyles_ImageWrapper">
+                        <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Sold out</div>
+                        <div class="sc-m1loqs-3 gGJMHZ">
+                            <div class="sc-1f0n8u6-0 kNfSFq">
+                                <div class="sc-1f0n8u6-1 icpwvf">
+                                    <span class="sc-1f0n8u6-5 fpvyxr">
+                                        <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
+                                        <div class="sc-1f0n8u6-8 ftpArF">
+                                            <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
                                                 <img>
                                             </div>
-                                            <span class="Pricestyles_PlatinumPointsText">
+                                            <span class="sc-1f0n8u6-10 imlIYl">
                                                 <span>Now: $10</span>
                                             </span>
                                         </div>
@@ -135,21 +135,21 @@ class TestCheckItemsFunction(TestCase):
                             </div>
                         </div>
                     </div>
-                    <div class="BasicTilestyles__Info-sc">
+                    <div class="sc-eg7slj-1 ieWZCg">
                         <div>
                             <h2>Item 2 (Normal)</h2>
                         </div>
-                        <div class="ProductTilestyles__DescriptionTag-sc">Exclusive</div>
-                        <div class="ProductTilestyles__PriceWrapper-sc">
-                            <div class="Pricestyles__Price-sc">
-                                <div class="Pricestyles__Price-sc">
-                                    <span class="Pricestyles_MSRP">
-                                        <span class="ScreenReaderOnlystyles">Regular Price:</span>
-                                        <div class="Pricestyles_PlatinumPoints">
-                                            <div class="Imagestyles_ImageWrapper">
+                        <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Exclusive</div>
+                        <div class="sc-m1loqs-3 gGJMHZ">
+                            <div class="sc-1f0n8u6-0 kNfSFq">
+                                <div class="sc-1f0n8u6-1 icpwvf">
+                                    <span class="sc-1f0n8u6-5 fpvyxr">
+                                        <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
+                                        <div class="sc-1f0n8u6-8 ftpArF">
+                                            <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
                                                 <img>
                                             </div>
-                                            <span class="Pricestyles_PlatinumPointsText">
+                                            <span class="sc-1f0n8u6-10 imlIYl">
                                                 <span>$15</span>
                                             </span>
                                         </div>
@@ -158,21 +158,21 @@ class TestCheckItemsFunction(TestCase):
                             </div>
                         </div>
                     </div>
-                    <div class="BasicTilestyles__Info-sc">
+                    <div class="sc-eg7slj-1 ieWZCg">
                         <div>
                             <h2>Item 3 (CSS price tag changed)</h2>
                         </div>
-                        <div class="ProductTilestyles__DescriptionTag-sc">Exclusive</div>
+                        <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Exclusive</div>
                         <div class="ProductTilestyles__PriceWrapper-change">
-                            <div class="Pricestyles__Price-sc">
-                                <div class="Pricestyles__Price-sc">
-                                    <span class="Pricestyles_MSRP">
-                                        <span class="ScreenReaderOnlystyles">Regular Price:</span>
-                                        <div class="Pricestyles_PlatinumPoints">
-                                            <div class="Imagestyles_ImageWrapper">
+                            <div class="sc-1f0n8u6-0 kNfSFq">
+                                <div class="sc-1f0n8u6-1 icpwvf">
+                                    <span class="sc-1f0n8u6-5 fpvyxr">
+                                        <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
+                                        <div class="sc-1f0n8u6-8 ftpArF">
+                                            <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
                                                 <img>
                                             </div>
-                                            <span class="Pricestyles_PlatinumPointsText">
+                                            <span class="sc-1f0n8u6-10 imlIYl">
                                                 <span>$15</span>
                                             </span>
                                         </div>
