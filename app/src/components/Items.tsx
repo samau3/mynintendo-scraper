@@ -13,11 +13,15 @@ interface IScrapeResults {
   last_change: ILastChange;
 }
 
+const API_STATUS_URL = "https://j50pzswk.status.cron-job.org/";
+
 export default function Items() {
   const [scrapeResults, setScrapeResults] = useState<
     IScrapeResults | undefined
   >(undefined);
   const [errorInfo, setErrorInfo] = useState<string | undefined>(undefined);
+
+  const shouldShowLoading = !scrapeResults && !errorInfo;
 
   useEffect(() => {
     loadScrapeResults();
@@ -53,19 +57,32 @@ export default function Items() {
       {errorInfo && (
         <div className="text-center">
           <p className="font-bold text-lg text-red-700">{errorInfo}</p>
-          <p className="font-bold text-lg">
+          <p className="font-bold text-lg dark:text-gray-300">
             Please create a new issue on the{" "}
             <a
-              href="https://github.com/samau3/mynintendo-scraper"
+              href={API_STATUS_URL}
               target="_blank"
+              className="text-blue-600 underline"
             >
               Github repository
             </a>
             .
           </p>
+          <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-lg">
+            <a href={API_STATUS_URL} target="_blank">
+              API Status
+            </a>
+          </button>
         </div>
       )}
-      {scrapeResults ? (
+      
+      {shouldShowLoading && (
+        <div className="mt-10">
+          <RotatingLines strokeColor="gray" />
+        </div>
+      )}
+
+      {scrapeResults && (
         <div className="text-center">
           <div className="pb-2">
             <p className="text-2xl dark:text-gray-300 ">
@@ -92,10 +109,6 @@ export default function Items() {
             lastChange={scrapeResults.last_change}
           ></Changes>
           <ItemGrid listings={scrapeResults.current_listings} />
-        </div>
-      ) : (
-        <div className="mt-10">
-          <RotatingLines strokeColor="gray" />
         </div>
       )}
     </>
