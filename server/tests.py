@@ -129,6 +129,52 @@ class TestCheckItemsFunction(TestCase):
                                                     <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
                                                 </div>
                                                 <span class="sc-1f0n8u6-10 imlIYl">
+                                                    <span class="sc-1f0n8u6-9 unbAu">800</span> Platinum Points
+                                                </span>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sc-eg7slj-0 cstaaz">
+                                <div class="sc-v8r1lj-1 UbrcP">
+                                    <div class="sc-v8r1lj-0 dQBnrT"></div>
+                                    <span>Exclusives</span>
+                                </div>
+                                <button class="sc-1ud0cp0-0 jhpscK sc-m1loqs-0 jgyRXQ" title="Add to Wish List" aria-label="Add to Wish List" aria-pressed="false">
+                                    <svg viewBox="0 0 54 54" fill="currentColor" stroke="currentColor" width="24" role="presentation" alt="" data-testid="heartspark" color="currentColor" size="24">
+                                        <g class="hearts">
+                                            <path ></path>
+                                            <path ></path>
+                                        </g>
+                                        <g class="sparks">
+                                            <path ></path>
+                                            <path ></path>
+                                        <path ></path>
+                                        <path ></path>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sc-1bsju6x-4 eJevZe">
+                        <div class="sc-1bsju6x-6 irzLJU">
+                            <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
+                                <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 2 (Sold Out)</h2>
+                                <div class="sc-m1loqs-5 bvcBeK"></div>
+                            </div>
+                            <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Sold Out</div>
+                            <div class="sc-m1loqs-3 gGJMHZ">
+                                <div class="sc-1f0n8u6-0 kNfSFq">
+                                    <div class="sc-1f0n8u6-1 icpwvf">
+                                        <span class="sc-1f0n8u6-5 fpvyxr">
+                                            <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
+                                            <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
+                                                <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
+                                                    <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                                                </div>
+                                                <span class="sc-1f0n8u6-10 imlIYl">
                                                     <span class="sc-1f0n8u6-9 unbAu">800</span>
                                                     <!-- -->Platinum Points
                                                 </span>
@@ -168,14 +214,73 @@ class TestCheckItemsFunction(TestCase):
         mock_get.return_value = self.mock_response
 
         item_costs = check_items()
-        # item_costs['Item 2 (Normal)'] = item_costs['Item 2 (Normal)'].strip()
+        item_costs['Item 1 (Normal)'] = item_costs['Item 1 (Normal)'].strip()
 
         self.assertEqual(item_costs, {'Item 1 (Normal)': '800 Platinum Points',
-                         'Item 2 (Normal)': '$15'})
+                         'Item 2 (Sold Out)': 'Sold Out'})
 
     @patch('requests.get')
     def test_check_items_css_error(self, mock_get):
         self.mock_response.text = "<html></html>"  # Simulate no items found
+        mock_get.return_value = self.mock_response
+
+        with self.assertRaises(CSSTagSelectorError):
+            check_items()
+
+    @patch('requests.get')
+    def test_check_items_css_price_error(self, mock_get):
+        self.mock_response.text = """
+            <html>
+                <body>
+                    <div class="sc-1bsju6x-4 eJevZe">
+                        <div class="sc-1bsju6x-6 irzLJU">
+                            <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
+                                <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 1 (Normal)</h2>
+                                <div class="sc-m1loqs-5 bvcBeK"></div>
+                            </div>
+                            <div class="CHANGED_TAG">Exclusive</div>
+                            <div class="sc-m1loqs-3 gGJMHZ">
+                                <div class="sc-1f0n8u6-0 kNfSFq">
+                                    <div class="sc-1f0n8u6-1 icpwvf">
+                                        <span class="sc-1f0n8u6-5 fpvyxr">
+                                            <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
+                                            <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
+                                                <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
+                                                    <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                                                </div>
+                                                <span class="sc-1f0n8u6-10 imlIYl">
+                                                    <span class="sc-1f0n8u6-9 unbAu">800</span> Platinum Points
+                                                </span>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sc-eg7slj-0 cstaaz">
+                                <div class="sc-v8r1lj-1 UbrcP">
+                                    <div class="sc-v8r1lj-0 dQBnrT"></div>
+                                    <span>Exclusives</span>
+                                </div>
+                                <button class="sc-1ud0cp0-0 jhpscK sc-m1loqs-0 jgyRXQ" title="Add to Wish List" aria-label="Add to Wish List" aria-pressed="false">
+                                    <svg viewBox="0 0 54 54" fill="currentColor" stroke="currentColor" width="24" role="presentation" alt="" data-testid="heartspark" color="currentColor" size="24">
+                                        <g class="hearts">
+                                            <path ></path>
+                                            <path ></path>
+                                        </g>
+                                        <g class="sparks">
+                                            <path ></path>
+                                            <path ></path>
+                                        <path ></path>
+                                        <path ></path>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        """
         mock_get.return_value = self.mock_response
 
         with self.assertRaises(CSSTagSelectorError):
