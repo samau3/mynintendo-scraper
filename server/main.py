@@ -71,13 +71,13 @@ def check_for_changes(last_stored_items, scraped_items):
     if (len(diff) == 0):
         return None
 
-    diff = remove_trademark_false_positives(diff)
+    cleaned_diff = remove_trademark_false_positives(diff)
 
-    if (len(diff) == 0):
+    if (len(cleaned_diff) == 0):
         return None
 
     changes = {}
-    for difference in diff:
+    for difference in cleaned_diff:
 
         # if difference is added
         if difference == "dictionary_item_added":
