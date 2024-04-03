@@ -224,8 +224,11 @@ class TestCheckItemsFunction(TestCase):
         self.mock_response.text = "<html></html>"  # Simulate no items found
         mock_get.return_value = self.mock_response
 
-        with self.assertRaises(CSSTagSelectorError):
+        with self.assertRaises(CSSTagSelectorError) as cm:
             check_items()
+        exception_message = str(cm.exception)
+        self.assertEqual(
+            exception_message, "The CSS tag for items have changed.")
 
     @patch('requests.get')
     def test_check_items_css_price_error(self, mock_get):
@@ -283,8 +286,11 @@ class TestCheckItemsFunction(TestCase):
         """
         mock_get.return_value = self.mock_response
 
-        with self.assertRaises(CSSTagSelectorError):
+        with self.assertRaises(CSSTagSelectorError) as cm:
             check_items()
+        exception_message = str(cm.exception)
+        self.assertEqual(
+            exception_message, "The CSS tag for stock has changed.")
 
 
 if __name__ == '__main__':
