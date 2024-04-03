@@ -193,6 +193,10 @@ Since so much data is being stored in the database, a weekly cron job request is
   - [] Test models
 - [] Distribute this app for public use
 - [] An account system
+- [] Refine Discord Bot
+  - [] Add an option/method to add users to be mentioned when a change is detected
+  - [] Add an option to choose which types of changes to be notified for
+  - [] Add a command to call the scrape functions 
 
 </details>
 
