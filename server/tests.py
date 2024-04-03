@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 from main import check_items
 from errors import CSSTagSelectorError
 from helpers.calculate_expiration_date import calculate_expiration_date, DateTimeProvider
+from helpers.remove_trademark_false_positives import remove_trademark_false_positives
+from helpers.index_of_common_strings import index_of_common_strings
+from helpers.remove_trademark_symbols import remove_trademark_symbols
 
 
 class TestCalculateExpDate(TestCase):
@@ -21,6 +24,85 @@ class TestCalculateExpDate(TestCase):
 
         result = calculate_expiration_date(number_of_days, datetime_provider)
         self.assertEqual(result, expected_result)
+
+
+class TestIndexOfCommonStrings(TestCase):
+    def test_index_of_common_strings(self):
+        list1 = ['apple', 'banana', 'orange']
+        list2 = ['kiwi', 'banana', 'orange']
+        result = index_of_common_strings(list1, list2)
+        self.assertEqual(result, ([1, 2], [1, 2]))
+
+    def test_index_of_common_strings_no_common_strings(self):
+        list1 = ['apple', 'banana', 'orange']
+        list2 = ['kiwi', 'grape', 'pear']
+        result = index_of_common_strings(list1, list2)
+        self.assertEqual(result, ([], []))
+
+    def test_index_of_common_strings_empty_lists(self):
+        list1 = []
+        list2 = []
+        result = index_of_common_strings(list1, list2)
+        self.assertEqual(result, ([], []))
+
+    def test_index_of_common_strings_one_empty_list(self):
+        list1 = ['apple', 'banana', 'orange']
+        list2 = ['kiwi', 'banana', 'apple']
+        result = index_of_common_strings(list1, list2)
+        self.assertEqual(result, ([0, 1], [2, 1]))
+
+
+class TestRemoveTrademarkSymbols(TestCase):
+    def test_remove_trademark_symbols(self):
+        input_list = ["Apple™", "Banana", "Orange™"]
+        result = remove_trademark_symbols(input_list)
+        self.assertEqual(result, ['Apple', 'Banana', 'Orange'])
+
+    def test_remove_trademark_symbols_empty_list(self):
+        input_list = []
+        result = remove_trademark_symbols(input_list)
+        self.assertEqual(result, [])
+
+    def test_remove_trademark_symbols_no_trademark_symbols(self):
+        input_list = ["Apple", "Banana", "Orange"]
+        result = remove_trademark_symbols(input_list)
+        self.assertEqual(result, ['Apple', 'Banana', 'Orange'])
+
+
+class TestRemoveTrademarkFalsePositives(TestCase):
+    def test_remove_trademark_false_positives(self):
+        differences = {
+            "dictionary_item_added": ["Apple™", "Banana", "Orange™"],
+            "dictionary_item_removed": ["Apple", "Banana™", "Kiwi"]
+        }
+        result = remove_trademark_false_positives(differences)
+        self.assertEqual(result, {'dictionary_item_added': [
+                         'Orange™'], 'dictionary_item_removed': ['Kiwi']})
+
+    def test_remove_trademark_false_positives_out_of_order(self):
+        differences = {
+            "dictionary_item_added": ["Apple™", "Banana", "Orange™", "Kiwi™"],
+            "dictionary_item_removed": ["Apple", "Banana™", "Kiwi"]
+        }
+        result = remove_trademark_false_positives(differences)
+        self.assertEqual(result, {'dictionary_item_added': [
+                         'Orange™']})
+
+    def test_remove_trademark_false_positives_no_common_strings(self):
+        differences = {
+            "dictionary_item_added": ["Apple™", "Banana", "Orange™"],
+            "dictionary_item_removed": ["Kiwi", "Grape", "Pear"]
+        }
+        result = remove_trademark_false_positives(differences)
+        self.assertEqual(result, differences)
+
+    def test_remove_trademark_false_positives_empty_lists(self):
+        differences = {
+            "dictionary_item_added": [],
+            "dictionary_item_removed": []
+        }
+        result = remove_trademark_false_positives(differences)
+        self.assertEqual(result, differences)
 
 
 class TestCheckItemsFunction(TestCase):
