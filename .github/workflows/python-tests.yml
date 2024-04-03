@@ -5,8 +5,12 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  test:
+  test-flask-server:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: server
 
     steps:
       - name: Checkout code
