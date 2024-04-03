@@ -1,6 +1,7 @@
 from helpers.index_of_common_strings import index_of_common_strings
 from helpers.remove_trademark_symbols import remove_trademark_symbols
 
+
 def remove_trademark_false_positives(differences_dictionary):
     """
     Removes trademark false positives from a dictionary of differences.
@@ -28,10 +29,12 @@ def remove_trademark_false_positives(differences_dictionary):
 
     # Remove trademark symbols from items in the dictionary
     for difference in cleaned_dict:
-        cleaned_dict[difference] = remove_trademark_symbols(cleaned_dict[difference])
+        cleaned_dict[difference] = remove_trademark_symbols(
+            cleaned_dict[difference])
 
     # Find indices of common strings between added and removed items
-    added_indices, removed_indices = index_of_common_strings(cleaned_dict["dictionary_item_added"], cleaned_dict["dictionary_item_removed"])
+    added_indices, removed_indices = index_of_common_strings(
+        cleaned_dict["dictionary_item_added"], cleaned_dict["dictionary_item_removed"])
 
     # Remove common items from added and removed lists
     for i in range(len(added_indices) - 1, -1, -1):
@@ -39,7 +42,8 @@ def remove_trademark_false_positives(differences_dictionary):
         if len(differences_dictionary["dictionary_item_added"]) == 0:
             del differences_dictionary["dictionary_item_added"]
     for i in range(len(removed_indices) - 1, -1, -1):
-        differences_dictionary["dictionary_item_removed"].pop(removed_indices[i])
+        differences_dictionary["dictionary_item_removed"].pop(
+            removed_indices[i])
         if len(differences_dictionary["dictionary_item_removed"]) == 0:
             del differences_dictionary["dictionary_item_removed"]
 
