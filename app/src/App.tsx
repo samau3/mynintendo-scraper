@@ -20,14 +20,6 @@ function App() {
           <ThemeSwitcher />
         </div>
         <Items />
-        <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-lg">
-              <a
-                href="https://j50pzswk.status.cron-job.org/"
-                target="_blank"
-              >
-                API Status
-              </a>
-            </button>
       </div>
     </>
   );
