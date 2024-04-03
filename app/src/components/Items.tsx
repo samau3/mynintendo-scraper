@@ -73,12 +73,12 @@ export default function Items() {
               {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
             </p>
             <button
-              className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-full"
+              className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-lg"
               onClick={loadScrapeResults}
             >
               Scrape Again
             </button>
-            <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-full">
+            <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-lg">
               <a
                 href="https://www.nintendo.com/store/exclusives/rewards/"
                 target="_blank"
