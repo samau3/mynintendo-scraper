@@ -16,7 +16,7 @@ ordered-set==4.1.0
 orjson==3.9.15
 psycopg2-binary==2.9.5
 pycodestyle==2.10.0
-python-dotenv==0.21.0
+python-dotenv==1.0.1
 requests==2.31.0
 six==1.16.0
 soupsieve==2.3.2.post1
