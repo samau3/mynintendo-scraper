@@ -9,6 +9,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from errors import DatabaseError, CSSTagSelectorError
 import re
 
+from helpers.remove_trademark_false_positives import remove_trademark_false_positives
+
+
 import dotenv
 dotenv.load_dotenv()
 
@@ -68,8 +71,14 @@ def check_for_changes(last_stored_items, scraped_items):
     if (len(diff) == 0):
         return None
 
+    cleaned_diff = remove_trademark_false_positives(diff)
+
+    if (len(cleaned_diff) == 0):
+        return None
+
     changes = {}
-    for difference in diff:
+    for difference in cleaned_diff:
+
         # if difference is added
         if difference == "dictionary_item_added":
             new_items = []
