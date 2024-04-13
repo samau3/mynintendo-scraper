@@ -65,9 +65,35 @@ def call_check_items():
 
     return jsonify(items)
 
-@app.get("/api/check")
-def check_api():
-    return jsonify("API is running.")
+
+@app.get("/api/check-fly")
+def check_fly():
+    try:
+        return jsonify("API is running.")
+    except Exception as err:
+        print(err)
+        raise CustomError("Fly is down.")
+
+
+@app.get("/api/check-scraping")
+def check_scraping():
+    try:
+        check_items()
+        return jsonify("API Scraping is running.")
+    except Exception as err:
+        print(err)
+        raise CustomError("Scraping function failed.")
+
+
+@app.get("/api/check-db")
+def check_fly_db():
+    try:
+        get_changes()
+        return jsonify("API DB is running.")
+    except Exception as err:
+        print(err)
+        raise CustomError("DB function failed.")
+
 
 @app.errorhandler(404)
 def handle_not_found_error(error):
