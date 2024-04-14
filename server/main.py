@@ -85,7 +85,7 @@ def check_for_changes(last_stored_items, scraped_items):
             for item in diff[difference]:
                 new_items.append({item[6:-2]: scraped_items[item[6:-2]]})
             changes["New Items"] = new_items
-
+        print(diff[difference])
         # if difference is removed
         if difference == "dictionary_item_removed":
             removed_items = []
