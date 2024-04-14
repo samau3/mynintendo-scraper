@@ -110,7 +110,7 @@ def handle_error(error):
         return jsonify(response), 503
     else:
         response = {
-            "message": "An error occurred.",
+            "message": f"{error}",
         }
 
     return jsonify(response), 500
