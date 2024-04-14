@@ -67,12 +67,12 @@ def check_for_changes(last_stored_items, scraped_items):
         returning the resulting differences"""
 
     diff = DeepDiff(last_stored_items, scraped_items)
-
+    print("diff", diff)
     if (len(diff) == 0):
         return None
 
     cleaned_diff = remove_trademark_false_positives(diff)
-
+    print("cleaned_diff", cleaned_diff)
     if (len(cleaned_diff) == 0):
         return None
 
