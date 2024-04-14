@@ -78,7 +78,7 @@ def check_for_changes(last_stored_items, scraped_items):
 
     changes = {}
     for difference in cleaned_diff:
-
+        print(difference)
         # if difference is added
         if difference == "dictionary_item_added":
             new_items = []
