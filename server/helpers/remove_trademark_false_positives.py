@@ -34,7 +34,7 @@ def remove_trademark_false_positives(differences_dictionary):
 
     # Find indices of common strings between added and removed items
     added_indices, removed_indices = index_of_common_strings(
-        cleaned_dict["dictionary_item_added"], cleaned_dict["dictionary_item_removed"])
+        cleaned_dict.get("dictionary_item_added", []), cleaned_dict.get("dictionary_item_removed", []))
     
     # If no indices are found for either added or removed items, return the original dictionary
     if not added_indices or not removed_indices:

@@ -32,7 +32,7 @@ def check_items():
     # Find items, based on the CSS tag BasicTilestyles__Info-sc
     items = soup.find_all(
         'div', class_=re.compile('sc-1bsju6x-4'))
-    # print(items)
+
     if not items:
         raise CSSTagSelectorError("The CSS tag for items have changed.")
 
@@ -122,13 +122,13 @@ def scrape_mynintendo():
     results = check_items()
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
-    print("got results and last items")
+
     changes = check_for_changes(last_items, results)
-    print("checked for changes")
+
     if changes:
         Changes.add_record(changes)
     new_item = Listings.add_record(results)
-    print("added record")
+
     try:
         db.session.commit()
     except SQLAlchemyError as e:
@@ -138,12 +138,12 @@ def scrape_mynintendo():
             "Database error occurred while updating database for changes.")
     except Exception as e:
         print(str(e))
-        raise CustomError(e, "Error occurred while updating database for changes.")
+        raise CustomError(
+            e, "Error occurred while updating database for changes.")
 
-    print("committed to db")
     if not changes:
         changes = "No changes."
-    print("returning changes")
+
     return {"items": changes, "timestamp": new_item.timestamp}
 
 
