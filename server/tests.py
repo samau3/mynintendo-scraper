@@ -104,6 +104,13 @@ class TestRemoveTrademarkFalsePositives(TestCase):
         result = remove_trademark_false_positives(differences)
         self.assertEqual(result, differences)
 
+    def test_remove_trademark_false_positives_values_changed(self):
+        differences = {
+            "values_changed": {'root[2]': {'new_value': 4, 'old_value': 2}}
+        }
+        result = remove_trademark_false_positives(differences)
+        self.assertEqual(result, differences)
+
 
 class TestCheckItemsFunction(TestCase):
 
