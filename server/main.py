@@ -1,6 +1,13 @@
 import os
 
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
+from webdriver_manager.chrome import ChromeDriverManager
+
 import requests
 from deepdiff import DeepDiff
 from models import db, Listings, Changes
@@ -15,18 +22,23 @@ from helpers.remove_trademark_false_positives import remove_trademark_false_posi
 import dotenv
 dotenv.load_dotenv()
 
+
 url = "https://www.nintendo.com/store/exclusives/rewards/"
 
 
 def check_items():
     """ Function to scrape items listed on MyNintendo Rewards"""
-
-    headers = {'Cache-Control': 'no-cache, must-revalidate'}
+    driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver.get(url)
+    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "sc-1bsju6x-4")))
+    
+    # for element in elements:
+    #     print(f"item: {element}")
 
     # get the text from the provided url
-    html_text = requests.get(url, headers=headers).text
+    # html_text = requests.get(url).text
 
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(driver.page_source, 'lxml')
     item_costs = {}
 
     # Find items, based on the CSS tag BasicTilestyles__Info-sc
