@@ -93,7 +93,7 @@ export default function Items() {
               {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
             </p>
             <button
-              className={`uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-200 ${loading ? "bg-blue-100 text-blue-400" : ""} rounded-lg`}
+              className={`uppercase text-sm font-bold p-2 m-2 ${loading ? "bg-blue-100 text-blue-400" : "bg-blue-200 text-blue-600"} rounded-lg`}
               onClick={loadScrapeResults}
               disabled={loading}
             >
