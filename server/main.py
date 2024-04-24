@@ -1,12 +1,6 @@
 import os
 
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-from webdriver_manager.chrome import ChromeDriverManager
 
 import requests
 from deepdiff import DeepDiff
@@ -16,34 +10,28 @@ from sqlalchemy.exc import SQLAlchemyError
 from errors import DatabaseError, CSSTagSelectorError, CustomError
 import re
 
+from helpers.load_page_data import load_page_data
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
-
 
 import dotenv
 dotenv.load_dotenv()
 
 
-url = "https://www.nintendo.com/store/exclusives/rewards/"
+MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
+ITEMS_CSS_TAG = "sc-1bsju6x-4"
 
 
 def check_items():
     """ Function to scrape items listed on MyNintendo Rewards"""
-    driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    driver.get(url)
-    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "sc-1bsju6x-4")))
-    
-    # for element in elements:
-    #     print(f"item: {element}")
 
-    # get the text from the provided url
-    # html_text = requests.get(url).text
+    page_data = load_page_data(MYNINTENDO_URL, ITEMS_CSS_TAG)
 
-    soup = BeautifulSoup(driver.page_source, 'lxml')
+    soup = BeautifulSoup(page_data, 'lxml')
     item_costs = {}
 
-    # Find items, based on the CSS tag BasicTilestyles__Info-sc
+    # Find items, based on the CSS tag used
     items = soup.find_all(
-        'div', class_=re.compile('sc-1bsju6x-4'))
+        'div', class_=re.compile(ITEMS_CSS_TAG))
 
     if not items:
         raise CSSTagSelectorError("The CSS tag for items have changed.")
@@ -164,7 +152,7 @@ def message_discord(changes):
     discord_url = f"https://discord.com/api/webhooks/{os.environ['WEBHOOK_ID']}/{os.environ['WEBHOOK_TOKEN']}"
     data = {}
 
-    output_message = f"""<@{os.environ['DISCORD_USER_ID']}>\nCheck the listings: {url}\n"""
+    output_message = f"""<@{os.environ['DISCORD_USER_ID']}>\nCheck the listings: {MYNINTENDO_URL}\n"""
     output_embed = []
     for change in changes:
         embed_obj = {}
