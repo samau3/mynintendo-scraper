@@ -20,6 +20,7 @@ export default function Items() {
     IScrapeResults | undefined
   >(undefined);
   const [errorInfo, setErrorInfo] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const shouldShowLoading = !scrapeResults && !errorInfo;
 
@@ -28,9 +29,11 @@ export default function Items() {
   }, []);
 
   async function loadScrapeResults() {
+    setLoading(prev => !prev);
     try {
       const results = await MyNintendoScraperAPI.getItems();
       setScrapeResults(results);
+      setLoading(prev => !prev);
       if (errorInfo) {
         setErrorInfo(undefined);
       }
@@ -75,7 +78,7 @@ export default function Items() {
           </button>
         </div>
       )}
-      
+
       {shouldShowLoading && (
         <div className="mt-10">
           <RotatingLines strokeColor="gray" />
@@ -90,12 +93,13 @@ export default function Items() {
               {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
             </p>
             <button
-              className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-lg"
+              className={`uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-200 ${loading ? "bg-blue-100 text-blue-400" : ""} rounded-lg`}
               onClick={loadScrapeResults}
+              disabled={loading}
             >
               Scrape Again
             </button>
-            <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-lg">
+            <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-200 rounded-lg">
               <a
                 href="https://www.nintendo.com/store/exclusives/rewards/"
                 target="_blank"
