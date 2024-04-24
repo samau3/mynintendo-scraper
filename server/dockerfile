@@ -1,6 +1,6 @@
 # Dockerfile
 # Start from a Python 3 Image 
-FROM --platform=linux/amd64  python:3.10
+FROM --platform=linux/amd64  python:3.10 as builder
 
 # Change current directory to /app
 WORKDIR /server
@@ -19,5 +19,4 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
 RUN apt-get update && apt-get -y install google-chrome-stable
 
-# CMD is called on `docker run` ; It runs the Python script and copies the resulting CSV to a cloud storage bucket.
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
