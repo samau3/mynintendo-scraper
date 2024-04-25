@@ -10,7 +10,13 @@ from sqlalchemy.exc import SQLAlchemyError
 from errors import DatabaseError, CSSTagSelectorError, CustomError
 import re
 
-from helpers.load_page_data import load_page_data
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
 
 import dotenv
@@ -21,10 +27,26 @@ MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
 ITEMS_CSS_TAG = "sc-1bsju6x-4"
 
 
-def check_items():
-    """ Function to scrape items listed on MyNintendo Rewards"""
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
 
-    page_data = load_page_data(MYNINTENDO_URL, ITEMS_CSS_TAG)
+
+def load_page_data():
+    """ Function to load a webpage and wait for a specific tag to load"""
+
+    driver = webdriver.Chrome(service=Service(
+        ChromeDriverManager().install()), options=options)
+    driver.get(MYNINTENDO_URL)
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)))
+
+    return driver.page_source
+
+
+def check_items(page_data=None):
+    """ Function to scrape items listed on MyNintendo Rewards"""
 
     soup = BeautifulSoup(page_data, 'lxml')
     item_costs = {}
@@ -117,9 +139,9 @@ def get_changes():
     return last_change
 
 
-def scrape_mynintendo():
+def scrape_mynintendo(page_data=None):
     """ Function that calls scraping function and updates database if changes were found"""
-    results = check_items()
+    results = check_items(page_data)
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
 
