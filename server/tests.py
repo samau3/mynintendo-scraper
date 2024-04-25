@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from unittest.mock import patch, Mock
+from unittest.mock import Mock
 from datetime import datetime, timedelta
 
 from main import check_items
@@ -113,7 +113,6 @@ class TestRemoveTrademarkFalsePositives(TestCase):
 
 
 class TestCheckItemsFunction(TestCase):
-
     def setUp(self):
         self.mock_response = Mock()
         self.mock_response.text = """
@@ -216,29 +215,23 @@ class TestCheckItemsFunction(TestCase):
             </html>
         """
 
-    @patch('requests.get')
-    def test_check_items(self, mock_get):
-        mock_get.return_value = self.mock_response
-
-        item_costs = check_items()
+    def test_check_items(self):
+        item_costs = check_items(self.mock_response.text)
         item_costs['Item 1 (Normal)'] = item_costs['Item 1 (Normal)'].strip()
 
         self.assertEqual(item_costs, {'Item 1 (Normal)': '800 Platinum Points',
                          'Item 2 (Sold Out)': 'Sold Out'})
 
-    @patch('requests.get')
-    def test_check_items_css_error(self, mock_get):
+    def test_check_items_css_error(self):
         self.mock_response.text = "<html></html>"  # Simulate no items found
-        mock_get.return_value = self.mock_response
 
         with self.assertRaises(CSSTagSelectorError) as cm:
-            check_items()
+            check_items(self.mock_response.text)
         exception_message = str(cm.exception)
         self.assertEqual(
             exception_message, "The CSS tag for items have changed.")
 
-    @patch('requests.get')
-    def test_check_items_css_price_error(self, mock_get):
+    def test_check_items_css_price_error(self):
         self.mock_response.text = """
             <html>
                 <body>
@@ -291,10 +284,9 @@ class TestCheckItemsFunction(TestCase):
                 </body>
             </html>
         """
-        mock_get.return_value = self.mock_response
 
         with self.assertRaises(CSSTagSelectorError) as cm:
-            check_items()
+            check_items(self.mock_response.text)
         exception_message = str(cm.exception)
         self.assertEqual(
             exception_message, "The CSS tag for stock has changed.")
