@@ -4,7 +4,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 from models import db, connect_db
-from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes
+from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes, load_page_data
 from errors import CustomError, CSSTagSelectorError
 
 import dotenv
@@ -27,8 +27,9 @@ connect_db(app)
 
 @app.get('/')
 def show_home_page():
-    items = check_items()
-    scrape_results = scrape_mynintendo()
+    page_data = load_page_data()
+    items = check_items(page_data)
+    scrape_results = scrape_mynintendo(page_data)
     last_change = get_changes()
 
     if scrape_results["items"] != "No changes.":
@@ -44,7 +45,8 @@ def show_home_page():
 
 @app.get('/api/scrape')
 def call_scrape_fn():
-    results = scrape_mynintendo()
+    page_data = load_page_data()
+    results = scrape_mynintendo(page_data)
 
     if results["items"] != "No changes.":
         message_discord(results["items"])
@@ -61,7 +63,8 @@ def delete_records():
 
 @app.get("/api/get-items")
 def call_check_items():
-    items = check_items()
+    page_data = load_page_data()
+    items = check_items(page_data)
 
     return jsonify(items)
 
@@ -78,7 +81,8 @@ def check_fly():
 @app.get("/api/check-scraping")
 def check_scraping():
     try:
-        check_items()
+        page_data = load_page_data()
+        check_items(page_data)
         return jsonify("API Scraping is running.")
     except Exception as err:
         print(err)

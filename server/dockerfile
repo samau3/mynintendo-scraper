@@ -1,0 +1,24 @@
+# Dockerfile
+# Start from a Python 3 Image 
+FROM --platform=linux/amd64  python:3.10 as builder
+
+# Change current directory to /app
+WORKDIR /server
+
+# Copy application code to server/
+COPY . /server
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# debconf to be non-interactive
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get install -y wget
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt-get update && apt-get -y install google-chrome-stable
+
+EXPOSE 8080
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]

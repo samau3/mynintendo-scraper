@@ -1,6 +1,7 @@
 import os
 
 from bs4 import BeautifulSoup
+
 import requests
 from deepdiff import DeepDiff
 from models import db, Listings, Changes
@@ -9,29 +10,50 @@ from sqlalchemy.exc import SQLAlchemyError
 from errors import DatabaseError, CSSTagSelectorError, CustomError
 import re
 
-from helpers.remove_trademark_false_positives import remove_trademark_false_positives
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 
+from helpers.remove_trademark_false_positives import remove_trademark_false_positives
 
 import dotenv
 dotenv.load_dotenv()
 
-url = "https://www.nintendo.com/store/exclusives/rewards/"
+
+MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
+ITEMS_CSS_TAG = "sc-1bsju6x-4"
 
 
-def check_items():
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+
+
+def load_page_data():
+    """ Function to load a webpage and wait for a specific tag to load"""
+
+    driver = webdriver.Chrome(service=Service(
+        ChromeDriverManager().install()), options=options)
+    driver.get(MYNINTENDO_URL)
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)))
+
+    return driver.page_source
+
+
+def check_items(page_data=None):
     """ Function to scrape items listed on MyNintendo Rewards"""
 
-    headers = {'Cache-Control': 'no-cache, must-revalidate'}
-
-    # get the text from the provided url
-    html_text = requests.get(url, headers=headers).text
-
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(page_data, 'lxml')
     item_costs = {}
 
-    # Find items, based on the CSS tag BasicTilestyles__Info-sc
+    # Find items, based on the CSS tag used
     items = soup.find_all(
-        'div', class_=re.compile('sc-1bsju6x-4'))
+        'div', class_=re.compile(ITEMS_CSS_TAG))
 
     if not items:
         raise CSSTagSelectorError("The CSS tag for items have changed.")
@@ -117,9 +139,9 @@ def get_changes():
     return last_change
 
 
-def scrape_mynintendo():
+def scrape_mynintendo(page_data=None):
     """ Function that calls scraping function and updates database if changes were found"""
-    results = check_items()
+    results = check_items(page_data)
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
 
@@ -152,7 +174,7 @@ def message_discord(changes):
     discord_url = f"https://discord.com/api/webhooks/{os.environ['WEBHOOK_ID']}/{os.environ['WEBHOOK_TOKEN']}"
     data = {}
 
-    output_message = f"""<@{os.environ['DISCORD_USER_ID']}>\nCheck the listings: {url}\n"""
+    output_message = f"""<@{os.environ['DISCORD_USER_ID']}>\nCheck the listings: {MYNINTENDO_URL}\n"""
     output_embed = []
     for change in changes:
         embed_obj = {}
