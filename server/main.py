@@ -24,7 +24,7 @@ dotenv.load_dotenv()
 
 
 MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
-ITEMS_CSS_TAG = "sc-1bsju6x-4"
+ITEMS_CSS_TAG = "sc-1bsju6x-1"
 
 
 options = webdriver.ChromeOptions()
@@ -53,16 +53,14 @@ def check_items(page_data=None):
 
     # Find items, based on the CSS tag used
     items = soup.find_all(
-        'div', class_=re.compile(ITEMS_CSS_TAG))
+        'a', class_=re.compile(ITEMS_CSS_TAG))
 
     if not items:
         raise CSSTagSelectorError("The CSS tag for items have changed.")
 
     for item in items:
-        # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
-        header = item.div.find_next()
-        name = header.text.strip() if header else "Unknown Name"
-
+        name = item.get('aria-label', 'Unknown Name').strip()
+        
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
         stock = item.find(
