@@ -155,17 +155,16 @@ def get_changes():
     return last_change
 
 
-def scrape_mynintendo(items=None):
+def scrape_mynintendo(current_items):
     """ Function that calls scraping function and updates database if changes were found"""
-    results = get_items(items)
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
 
-    changes = check_for_changes(last_items, results)
+    changes = check_for_changes(last_items, current_items)
 
     if changes:
         Changes.add_record(changes)
-    new_item = Listings.add_record(results)
+    new_item = Listings.add_record(current_items)
 
     try:
         db.session.commit()

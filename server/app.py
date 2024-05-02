@@ -30,7 +30,7 @@ def show_home_page():
     raw_item_elements = load_items()
     items = get_items(raw_item_elements)
     images = get_item_images(raw_item_elements)
-    scrape_results = scrape_mynintendo(raw_item_elements)
+    scrape_results = scrape_mynintendo(items)
     last_change = get_changes()
 
     if scrape_results["items"] != "No changes.":
@@ -48,7 +48,8 @@ def show_home_page():
 @app.get('/api/scrape')
 def call_scrape_fn():
     raw_item_elements = load_items()
-    results = scrape_mynintendo(raw_item_elements)
+    items = get_items(raw_item_elements)
+    results = scrape_mynintendo(items)
 
     if results["items"] != "No changes.":
         message_discord(results["items"])
