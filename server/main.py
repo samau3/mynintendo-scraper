@@ -18,6 +18,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
+from helpers.find_items import find_items
 
 import dotenv
 dotenv.load_dotenv()
@@ -52,15 +53,11 @@ def check_items(page_data=None):
     item_costs = {}
 
     # Find items, based on the CSS tag used
-    items = soup.find_all(
-        'a', class_=re.compile(ITEMS_CSS_TAG))
-
-    if not items:
-        raise CSSTagSelectorError("The CSS tag for items have changed.")
+    items = find_items(soup, ITEMS_CSS_TAG)
 
     for item in items:
         name = item.get('aria-label', 'Unknown Name').strip()
-        
+
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
         stock = item.find(
@@ -88,9 +85,7 @@ def get_item_images(page_data=None):
     soup = BeautifulSoup(page_data, 'lxml')
     item_images = {}
 
-    items = soup.find_all('a', class_=re.compile('sc-1bsju6x-1'))
-    if not items:
-        raise CSSTagSelectorError("The CSS tag for item cards have changed.")
+    items = find_items(soup, ITEMS_CSS_TAG)
 
     for item in items:
 
@@ -99,11 +94,11 @@ def get_item_images(page_data=None):
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
         image = item.find(
-            'img', class_=re.compile('sc-1244ond-1 eaPLXy'))
+            'img', class_=re.compile('sc-1244ond-1'))
 
         if not image:
             raise CSSTagSelectorError("The CSS tag for images has changed.")
-        
+
         image_url = image.get('src', 'https://placehold.co/600x400')
 
         item_images[name] = image_url
