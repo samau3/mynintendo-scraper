@@ -84,6 +84,35 @@ def check_items(page_data=None):
     return item_costs
 
 
+def get_item_images(page_data=None):
+    """ Function to scrape items listed on MyNintendo Rewards"""
+
+    soup = BeautifulSoup(page_data, 'lxml')
+    item_images = {}
+
+    items = soup.find_all('a', class_=re.compile('sc-1bsju6x-1'))
+    if not items:
+        raise CSSTagSelectorError("The CSS tag for item cards have changed.")
+
+    for item in items:
+
+        name = item.get('aria-label', 'Unknown Name').strip()
+
+        # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
+        # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
+        image = item.find(
+            'img', class_=re.compile('sc-1244ond-1 eaPLXy'))
+
+        if not image:
+            raise CSSTagSelectorError("The CSS tag for images has changed.")
+        
+        image_url = image.get('src', 'https://placehold.co/600x400')
+
+        item_images[name] = image_url
+
+    return item_images
+
+
 def check_for_changes(last_stored_items, scraped_items):
     """ Function to compare two dictionaries, 
         returning the resulting differences"""

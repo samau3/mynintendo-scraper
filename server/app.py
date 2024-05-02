@@ -4,7 +4,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 from models import db, connect_db
-from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes, load_page_data
+from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes, load_page_data, get_item_images
 from errors import CustomError, CSSTagSelectorError
 
 import dotenv
@@ -65,8 +65,9 @@ def delete_records():
 def call_check_items():
     page_data = load_page_data()
     items = check_items(page_data)
+    # print(get_item_images(page_data))
 
-    return jsonify(items)
+    return jsonify({"items": items, "images": get_item_images(page_data)})
 
 
 @app.get("/api/check-fly")
