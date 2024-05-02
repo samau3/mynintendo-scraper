@@ -34,7 +34,7 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 
 
-def load_page_data():
+def load_items():
     """ Function to load a webpage and wait for a specific tag to load"""
 
     driver = webdriver.Chrome(service=Service(
@@ -43,17 +43,15 @@ def load_page_data():
     WebDriverWait(driver, 10).until(
         EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)))
 
-    return driver.page_source
+    soup = BeautifulSoup(driver.page_source, 'lxml')
+    item_elements = find_items(soup, ITEMS_CSS_TAG)
+    return item_elements
 
 
-def check_items(page_data=None):
+def get_items(items):
     """ Function to scrape items listed on MyNintendo Rewards"""
 
-    soup = BeautifulSoup(page_data, 'lxml')
-    item_costs = {}
-
-    # Find items, based on the CSS tag used
-    items = find_items(soup, ITEMS_CSS_TAG)
+    item_data = {}
 
     for item in items:
         name = item.get('aria-label', 'Unknown Name').strip()
@@ -74,18 +72,14 @@ def check_items(page_data=None):
             price = stock.text
         else:
             price = "Price Not Found"
-        item_costs[name] = price
+        item_data[name] = price
 
-    return item_costs
+    return item_data
 
 
-def get_item_images(page_data=None):
+def get_item_images(items):
     """ Function to scrape items listed on MyNintendo Rewards"""
-
-    soup = BeautifulSoup(page_data, 'lxml')
     item_images = {}
-
-    items = find_items(soup, ITEMS_CSS_TAG)
 
     for item in items:
 
@@ -161,9 +155,9 @@ def get_changes():
     return last_change
 
 
-def scrape_mynintendo(page_data=None):
+def scrape_mynintendo(items=None):
     """ Function that calls scraping function and updates database if changes were found"""
-    results = check_items(page_data)
+    results = get_items(items)
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
 

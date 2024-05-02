@@ -4,7 +4,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 from models import db, connect_db
-from main import scrape_mynintendo, message_discord, delete_old_records, check_items, get_changes, load_page_data, get_item_images
+from main import scrape_mynintendo, message_discord, delete_old_records, get_items, get_changes, load_items, get_item_images
 from errors import CustomError, CSSTagSelectorError
 
 import dotenv
@@ -27,9 +27,10 @@ connect_db(app)
 
 @app.get('/')
 def show_home_page():
-    page_data = load_page_data()
-    items = check_items(page_data)
-    scrape_results = scrape_mynintendo(page_data)
+    raw_item_elements = load_items()
+    items = get_items(raw_item_elements)
+    images = get_item_images(raw_item_elements)
+    scrape_results = scrape_mynintendo(raw_item_elements)
     last_change = get_changes()
 
     if scrape_results["items"] != "No changes.":
@@ -37,6 +38,7 @@ def show_home_page():
 
     display = {
         "current_listings": items,
+        "images": images,
         "recent_change": scrape_results,
         "last_change": last_change
     }
@@ -45,8 +47,8 @@ def show_home_page():
 
 @app.get('/api/scrape')
 def call_scrape_fn():
-    page_data = load_page_data()
-    results = scrape_mynintendo(page_data)
+    raw_item_elements = load_items()
+    results = scrape_mynintendo(raw_item_elements)
 
     if results["items"] != "No changes.":
         message_discord(results["items"])
@@ -62,12 +64,11 @@ def delete_records():
 
 
 @app.get("/api/get-items")
-def call_check_items():
-    page_data = load_page_data()
-    items = check_items(page_data)
-    # print(get_item_images(page_data))
+def call_get_items():
+    raw_item_elements = load_items()
+    items = get_items(raw_item_elements)
 
-    return jsonify({"items": items, "images": get_item_images(page_data)})
+    return jsonify(items)
 
 
 @app.get("/api/check-fly")
@@ -82,8 +83,8 @@ def check_fly():
 @app.get("/api/check-scraping")
 def check_scraping():
     try:
-        page_data = load_page_data()
-        check_items(page_data)
+        raw_item_elements = load_items()
+        get_items(raw_item_elements)
         return jsonify("API Scraping is running.")
     except Exception as err:
         print(err)
