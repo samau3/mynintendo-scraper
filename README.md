@@ -71,7 +71,7 @@
 
 <div align="center">
 
-![homepage](https://github.com/samau3/mynintendo-scraper/assets/69769431/0d9ba468-3df9-4edb-901e-cdbaae201046)
+![homepage](https://github.com/samau3/mynintendo-scraper/assets/69769431/d75fd8e1-23a8-47c1-8273-f43d13330665)
 
 </div>
 
