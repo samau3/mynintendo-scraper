@@ -82,13 +82,16 @@ The motivation for this project was automate the process of checking My Nintendo
 
 - [![Typescript][typescript]][typescript-url]
 - [![React][react.js]][react-url]
-- [![Vercel][vercel]][vercel-url]
-- [![Discord][discord]][discord-url]
 - [![Express][express]][express-url]
-- [![PostgreSQL][postgresql]][postgresql-url]
 - [![Node][node.js]][node-url]
-- [![Github Actions][github-actions]][github-actions-url]
+- [![PostgreSQL][postgresql]][postgresql-url]
+- [![Python][python]][python-url]
+- [![Selenium][selenium]][selenium-url]
 - [![Tailwind][tailwind]][tailwind-url]
+- [![Github Actions][github-actions]][github-actions-url]
+- [![Docker][docker]][docker-url]
+- [![Discord][discord]][discord-url]
+- [![Vercel][vercel]][vercel-url]
 - [Fly.io](https://fly.io/)
 - [Axios](https://axios-http.com/)
 - [HeroIcons](https://heroicons.com/)
@@ -244,19 +247,23 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 [typescript-url]: https://www.typescriptlang.org/
 [react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [react-url]: https://reactjs.org/
-[node.js]: https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white
-[node-url]: https://nodejs.org/en/
-[discord]: https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white
-[discord-url]: https://discord.com/
-[postgresql]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
-[postgresql-url]: https://www.postgresql.org/
-[firebase]: https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase
-[firebase-url]: https://firebase.google.com/
 [express]: https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB
 [express-url]: https://expressjs.com/
-[github-actions]: https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white
-[github-actions-url]: https://docs.github.com/en/actions
-[vercel]: https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white
-[vercel-url]: https://vercel.com/
+[node.js]: https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white
+[node-url]: https://nodejs.org/en/
+[postgresql]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
+[postgresql-url]: https://www.postgresql.org/
+[python]: https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue
+[python-url]: https://www.python.org/
+[selenium]: https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=Selenium&logoColor=white
+[selenium-url]: https://www.selenium.dev/
 [tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
 [tailwind-url]: https://tailwindcss.com/
+[github-actions]: https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white
+[github-actions-url]: https://docs.github.com/en/actions
+[docker]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
+[docker-url]: https://www.docker.com/
+[discord]: https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white
+[discord-url]: https://discord.com/
+[vercel]: https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white
+[vercel-url]: https://vercel.com/
