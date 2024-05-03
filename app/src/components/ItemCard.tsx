@@ -11,7 +11,7 @@ export function ItemCard({ item, index, cost, imageURL }: ItemCardProps) {
       key={`${item}-${index}`}
       className="w-full h-full flex flex-col shadow-lg p-4 bg-gray-100 bg-opacity-80 border-2 dark:bg-slate-800 dark:border-gray-600 dark:bg-opacity-80 rounded-lg justify-between"
     >
-      <img className="mb-2" src={imageURL} />
+      {imageURL && <img className="mb-2" src={imageURL} />}
       <p className="mb-auto text-lg tracking-tight text-black dark:text-slate-200 ">
         {item}
       </p>
