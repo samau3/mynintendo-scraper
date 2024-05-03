@@ -71,7 +71,7 @@
 
 <div align="center">
 
-![homepage](https://github.com/samau3/mynintendo-scraper/assets/69769431/d75fd8e1-23a8-47c1-8273-f43d13330665)
+![homepage](https://github.com/samau3/mynintendo-scraper/assets/69769431/0d9ba468-3df9-4edb-901e-cdbaae201046)
 
 </div>
 
@@ -185,6 +185,8 @@ Since so much data is being stored in the database, a weekly cron job request is
 - [x] Utilize a useEffect to scrape as soon as web app is accessed
   - [x] Include a timestamp to show when scrape occurred at time of web app loading
 - [x] Improve frontend visuals so it isn't so plain
+  - [x] Added Mario inspired background animation
+  - [x] Include the image of items currently listed on MyNintendo
 
 </details>
 
