@@ -18,13 +18,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
+from helpers.find_items import find_items
 
 import dotenv
 dotenv.load_dotenv()
 
 
 MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
-ITEMS_CSS_TAG = "sc-1bsju6x-4"
+ITEMS_CSS_TAG = "sc-1bsju6x-1"
 
 
 options = webdriver.ChromeOptions()
@@ -33,7 +34,7 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 
 
-def load_page_data():
+def load_items():
     """ Function to load a webpage and wait for a specific tag to load"""
 
     driver = webdriver.Chrome(service=Service(
@@ -42,26 +43,18 @@ def load_page_data():
     WebDriverWait(driver, 10).until(
         EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)))
 
-    return driver.page_source
+    soup = BeautifulSoup(driver.page_source, 'lxml')
+    item_elements = find_items(soup, ITEMS_CSS_TAG)
+    return item_elements
 
 
-def check_items(page_data=None):
+def get_items(items):
     """ Function to scrape items listed on MyNintendo Rewards"""
 
-    soup = BeautifulSoup(page_data, 'lxml')
-    item_costs = {}
-
-    # Find items, based on the CSS tag used
-    items = soup.find_all(
-        'div', class_=re.compile(ITEMS_CSS_TAG))
-
-    if not items:
-        raise CSSTagSelectorError("The CSS tag for items have changed.")
+    item_data = {}
 
     for item in items:
-        # the website changes what header is used (e.g. h2, h3) so need a non hard coded way to target it via find_next()
-        header = item.div.find_next()
-        name = header.text.strip() if header else "Unknown Name"
+        name = item.get('aria-label', 'Unknown Name').strip()
 
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
@@ -79,9 +72,32 @@ def check_items(page_data=None):
             price = stock.text
         else:
             price = "Price Not Found"
-        item_costs[name] = price
+        item_data[name] = price
 
-    return item_costs
+    return item_data
+
+
+def get_item_images(items):
+    """ Function to scrape items listed on MyNintendo Rewards"""
+    item_images = {}
+
+    for item in items:
+
+        name = item.get('aria-label', 'Unknown Name').strip()
+
+        # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
+        # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
+        image = item.find(
+            'img', class_=re.compile('sc-1244ond-1'))
+
+        if not image:
+            raise CSSTagSelectorError("The CSS tag for images has changed.")
+
+        image_url = image.get('src', 'https://placehold.co/600x400')
+
+        item_images[name] = image_url
+
+    return item_images
 
 
 def check_for_changes(last_stored_items, scraped_items):
@@ -139,17 +155,16 @@ def get_changes():
     return last_change
 
 
-def scrape_mynintendo(page_data=None):
+def scrape_mynintendo(current_items):
     """ Function that calls scraping function and updates database if changes were found"""
-    results = check_items(page_data)
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
 
-    changes = check_for_changes(last_items, results)
+    changes = check_for_changes(last_items, current_items)
 
     if changes:
         Changes.add_record(changes)
-    new_item = Listings.add_record(results)
+    new_item = Listings.add_record(current_items)
 
     try:
         db.session.commit()

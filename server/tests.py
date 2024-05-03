@@ -2,12 +2,15 @@ from unittest import TestCase, main
 from unittest.mock import Mock
 from datetime import datetime, timedelta
 
-from main import check_items
+from bs4 import BeautifulSoup
+
+from main import get_items
 from errors import CSSTagSelectorError
 from helpers.calculate_expiration_date import calculate_expiration_date, DateTimeProvider
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
 from helpers.index_of_common_strings import index_of_common_strings
 from helpers.remove_trademark_symbols import remove_trademark_symbols
+from helpers.find_items import find_items
 
 
 class TestCalculateExpDate(TestCase):
@@ -112,180 +115,192 @@ class TestRemoveTrademarkFalsePositives(TestCase):
         self.assertEqual(result, differences)
 
 
+class TestFindItemsFunction(TestCase):
+    def test_get_items_css_error(self):
+        self.mock_response = "<html></html>"  # Simulate no items found
+
+        with self.assertRaises(CSSTagSelectorError) as cm:
+            self.items = find_items(BeautifulSoup(
+                self.mock_response, 'lxml'), "sc-1bsju6x-1")
+        exception_message = str(cm.exception)
+        self.assertEqual(
+            exception_message, "The CSS tag for items have changed.")
+
+
 class TestCheckItemsFunction(TestCase):
-    def setUp(self):
+    def test_get_items(self):
         self.mock_response = """
             <html>
                 <body>
-                    <div class="sc-1bsju6x-4 eJevZe">
-                        <div class="sc-1bsju6x-6 irzLJU">
-                            <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
-                                <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 1 (Normal)</h2>
-                                <div class="sc-m1loqs-5 bvcBeK"></div>
-                            </div>
-                            <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Exclusive</div>
-                            <div class="sc-m1loqs-3 gGJMHZ">
-                                <div class="sc-1f0n8u6-0 kNfSFq">
-                                    <div class="sc-1f0n8u6-1 icpwvf">
-                                        <span class="sc-1f0n8u6-5 fpvyxr">
-                                            <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
-                                            <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
-                                                <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
-                                                    <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                    <a aria-label="Item 1 (Normal)" class="sc-1bsju6x-1">
+                        <div class="sc-1bsju6x-4 eJevZe">
+                            <div class="sc-1bsju6x-6 irzLJU">
+                                <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
+                                    <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 1 (Normal)</h2>
+                                    <div class="sc-m1loqs-5 bvcBeK"></div>
+                                </div>
+                                <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Exclusive</div>
+                                <div class="sc-m1loqs-3 gGJMHZ">
+                                    <div class="sc-1f0n8u6-0 kNfSFq">
+                                        <div class="sc-1f0n8u6-1 icpwvf">
+                                            <span class="sc-1f0n8u6-5 fpvyxr">
+                                                <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
+                                                <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
+                                                    <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
+                                                        <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                                                    </div>
+                                                    <span class="sc-1f0n8u6-10 imlIYl">
+                                                        <span class="sc-1f0n8u6-9 unbAu">800</span> Platinum Points
+                                                    </span>
                                                 </div>
-                                                <span class="sc-1f0n8u6-10 imlIYl">
-                                                    <span class="sc-1f0n8u6-9 unbAu">800</span> Platinum Points
-                                                </span>
-                                            </div>
-                                        </span>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="sc-eg7slj-0 cstaaz">
-                                <div class="sc-v8r1lj-1 UbrcP">
-                                    <div class="sc-v8r1lj-0 dQBnrT"></div>
-                                    <span>Exclusives</span>
+                                <div class="sc-eg7slj-0 cstaaz">
+                                    <div class="sc-v8r1lj-1 UbrcP">
+                                        <div class="sc-v8r1lj-0 dQBnrT"></div>
+                                        <span>Exclusives</span>
+                                    </div>
+                                    <button class="sc-1ud0cp0-0 jhpscK sc-m1loqs-0 jgyRXQ" title="Add to Wish List" aria-label="Add to Wish List" aria-pressed="false">
+                                        <svg viewBox="0 0 54 54" fill="currentColor" stroke="currentColor" width="24" role="presentation" alt="" data-testid="heartspark" color="currentColor" size="24">
+                                            <g class="hearts">
+                                                <path ></path>
+                                                <path ></path>
+                                            </g>
+                                            <g class="sparks">
+                                                <path ></path>
+                                                <path ></path>
+                                            <path ></path>
+                                            <path ></path>
+                                            </g>
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button class="sc-1ud0cp0-0 jhpscK sc-m1loqs-0 jgyRXQ" title="Add to Wish List" aria-label="Add to Wish List" aria-pressed="false">
-                                    <svg viewBox="0 0 54 54" fill="currentColor" stroke="currentColor" width="24" role="presentation" alt="" data-testid="heartspark" color="currentColor" size="24">
-                                        <g class="hearts">
-                                            <path ></path>
-                                            <path ></path>
-                                        </g>
-                                        <g class="sparks">
-                                            <path ></path>
-                                            <path ></path>
-                                        <path ></path>
-                                        <path ></path>
-                                        </g>
-                                    </svg>
-                                </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="sc-1bsju6x-4 eJevZe">
-                        <div class="sc-1bsju6x-6 irzLJU">
-                            <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
-                                <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 2 (Sold Out)</h2>
-                                <div class="sc-m1loqs-5 bvcBeK"></div>
-                            </div>
-                            <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Sold Out</div>
-                            <div class="sc-m1loqs-3 gGJMHZ">
-                                <div class="sc-1f0n8u6-0 kNfSFq">
-                                    <div class="sc-1f0n8u6-1 icpwvf">
-                                        <span class="sc-1f0n8u6-5 fpvyxr">
-                                            <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
-                                            <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
-                                                <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
-                                                    <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                    </a>
+                    <a aria-label="Item 2 (Sold Out)" class="sc-1bsju6x-1">
+                        <div class="sc-1bsju6x-4 eJevZe">
+                            <div class="sc-1bsju6x-6 irzLJU">
+                                <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
+                                    <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 2 (Sold Out)</h2>
+                                    <div class="sc-m1loqs-5 bvcBeK"></div>
+                                </div>
+                                <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Sold Out</div>
+                                <div class="sc-m1loqs-3 gGJMHZ">
+                                    <div class="sc-1f0n8u6-0 kNfSFq">
+                                        <div class="sc-1f0n8u6-1 icpwvf">
+                                            <span class="sc-1f0n8u6-5 fpvyxr">
+                                                <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
+                                                <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
+                                                    <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
+                                                        <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                                                    </div>
+                                                    <span class="sc-1f0n8u6-10 imlIYl">
+                                                        <span class="sc-1f0n8u6-9 unbAu">800</span>
+                                                        <!-- -->Platinum Points
+                                                    </span>
                                                 </div>
-                                                <span class="sc-1f0n8u6-10 imlIYl">
-                                                    <span class="sc-1f0n8u6-9 unbAu">800</span>
-                                                    <!-- -->Platinum Points
-                                                </span>
-                                            </div>
-                                        </span>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="sc-eg7slj-0 cstaaz">
-                                <div class="sc-v8r1lj-1 UbrcP">
-                                    <div class="sc-v8r1lj-0 dQBnrT"></div>
-                                    <span>Exclusives</span>
+                                <div class="sc-eg7slj-0 cstaaz">
+                                    <div class="sc-v8r1lj-1 UbrcP">
+                                        <div class="sc-v8r1lj-0 dQBnrT"></div>
+                                        <span>Exclusives</span>
+                                    </div>
+                                    <button class="sc-1ud0cp0-0 jhpscK sc-m1loqs-0 jgyRXQ" title="Add to Wish List" aria-label="Add to Wish List" aria-pressed="false">
+                                        <svg viewBox="0 0 54 54" fill="currentColor" stroke="currentColor" width="24" role="presentation" alt="" data-testid="heartspark" color="currentColor" size="24">
+                                            <g class="hearts">
+                                                <path ></path>
+                                                <path ></path>
+                                            </g>
+                                            <g class="sparks">
+                                                <path ></path>
+                                                <path ></path>
+                                            <path ></path>
+                                            <path ></path>
+                                            </g>
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button class="sc-1ud0cp0-0 jhpscK sc-m1loqs-0 jgyRXQ" title="Add to Wish List" aria-label="Add to Wish List" aria-pressed="false">
-                                    <svg viewBox="0 0 54 54" fill="currentColor" stroke="currentColor" width="24" role="presentation" alt="" data-testid="heartspark" color="currentColor" size="24">
-                                        <g class="hearts">
-                                            <path ></path>
-                                            <path ></path>
-                                        </g>
-                                        <g class="sparks">
-                                            <path ></path>
-                                            <path ></path>
-                                        <path ></path>
-                                        <path ></path>
-                                        </g>
-                                    </svg>
-                                </button>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </body>
             </html>
         """
+        self.items = find_items(BeautifulSoup(
+            self.mock_response, 'lxml'), "sc-1bsju6x-1")
 
-    def test_check_items(self):
-        item_costs = check_items(self.mock_response)
+        item_costs = get_items(self.items)
         item_costs['Item 1 (Normal)'] = item_costs['Item 1 (Normal)'].strip()
 
         self.assertEqual(item_costs, {'Item 1 (Normal)': '800 Platinum Points',
                          'Item 2 (Sold Out)': 'Sold Out'})
 
-    def test_check_items_css_error(self):
-        self.mock_response = "<html></html>"  # Simulate no items found
-
-        with self.assertRaises(CSSTagSelectorError) as cm:
-            check_items(self.mock_response)
-        exception_message = str(cm.exception)
-        self.assertEqual(
-            exception_message, "The CSS tag for items have changed.")
-
-    def test_check_items_css_price_error(self):
+    def test_get_items_css_price_error(self):
         self.mock_response = """
             <html>
                 <body>
-                    <div class="sc-1bsju6x-4 eJevZe">
-                        <div class="sc-1bsju6x-6 irzLJU">
-                            <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
-                                <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 1 (Normal)</h2>
-                                <div class="sc-m1loqs-5 bvcBeK"></div>
-                            </div>
-                            <div class="CHANGED_TAG">Exclusive</div>
-                            <div class="sc-m1loqs-3 gGJMHZ">
-                                <div class="sc-1f0n8u6-0 kNfSFq">
-                                    <div class="sc-1f0n8u6-1 icpwvf">
-                                        <span class="sc-1f0n8u6-5 fpvyxr">
-                                            <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
-                                            <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
-                                                <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
-                                                    <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                    <a class="sc-1bsju6x-1">
+                        <div class="sc-1bsju6x-4 eJevZe">
+                            <div class="sc-1bsju6x-6 irzLJU">
+                                <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
+                                    <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 1 (Normal)</h2>
+                                    <div class="sc-m1loqs-5 bvcBeK"></div>
+                                </div>
+                                <div class="CHANGED_TAG">Exclusive</div>
+                                <div class="sc-m1loqs-3 gGJMHZ">
+                                    <div class="sc-1f0n8u6-0 kNfSFq">
+                                        <div class="sc-1f0n8u6-1 icpwvf">
+                                            <span class="sc-1f0n8u6-5 fpvyxr">
+                                                <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
+                                                <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
+                                                    <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
+                                                        <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                                                    </div>
+                                                    <span class="sc-1f0n8u6-10 imlIYl">
+                                                        <span class="sc-1f0n8u6-9 unbAu">800</span> Platinum Points
+                                                    </span>
                                                 </div>
-                                                <span class="sc-1f0n8u6-10 imlIYl">
-                                                    <span class="sc-1f0n8u6-9 unbAu">800</span> Platinum Points
-                                                </span>
-                                            </div>
-                                        </span>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="sc-eg7slj-0 cstaaz">
-                                <div class="sc-v8r1lj-1 UbrcP">
-                                    <div class="sc-v8r1lj-0 dQBnrT"></div>
-                                    <span>Exclusives</span>
+                                <div class="sc-eg7slj-0 cstaaz">
+                                    <div class="sc-v8r1lj-1 UbrcP">
+                                        <div class="sc-v8r1lj-0 dQBnrT"></div>
+                                        <span>Exclusives</span>
+                                    </div>
+                                    <button class="sc-1ud0cp0-0 jhpscK sc-m1loqs-0 jgyRXQ" title="Add to Wish List" aria-label="Add to Wish List" aria-pressed="false">
+                                        <svg viewBox="0 0 54 54" fill="currentColor" stroke="currentColor" width="24" role="presentation" alt="" data-testid="heartspark" color="currentColor" size="24">
+                                            <g class="hearts">
+                                                <path ></path>
+                                                <path ></path>
+                                            </g>
+                                            <g class="sparks">
+                                                <path ></path>
+                                                <path ></path>
+                                            <path ></path>
+                                            <path ></path>
+                                            </g>
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button class="sc-1ud0cp0-0 jhpscK sc-m1loqs-0 jgyRXQ" title="Add to Wish List" aria-label="Add to Wish List" aria-pressed="false">
-                                    <svg viewBox="0 0 54 54" fill="currentColor" stroke="currentColor" width="24" role="presentation" alt="" data-testid="heartspark" color="currentColor" size="24">
-                                        <g class="hearts">
-                                            <path ></path>
-                                            <path ></path>
-                                        </g>
-                                        <g class="sparks">
-                                            <path ></path>
-                                            <path ></path>
-                                        <path ></path>
-                                        <path ></path>
-                                        </g>
-                                    </svg>
-                                </button>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </body>
             </html>
         """
+        self.items = find_items(BeautifulSoup(
+            self.mock_response, 'lxml'), "sc-1bsju6x-1")
 
         with self.assertRaises(CSSTagSelectorError) as cm:
-            check_items(self.mock_response)
+            get_items(self.items)
         exception_message = str(cm.exception)
         self.assertEqual(
             exception_message, "The CSS tag for stock has changed.")
