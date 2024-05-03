@@ -11,6 +11,7 @@ interface IScrapeResults {
   recent_change: IChanges;
   current_listings: IItems;
   last_change: ILastChange;
+  images: IItems;
 }
 
 const API_STATUS_URL = "https://j50pzswk.status.cron-job.org/";
@@ -135,7 +136,7 @@ export default function Items() {
             recentChange={scrapeResults.recent_change}
             lastChange={scrapeResults.last_change}
           ></Changes>
-          <ItemGrid listings={scrapeResults.current_listings} />
+          <ItemGrid listings={scrapeResults.current_listings} imageURLs={scrapeResults.images} />
         </div>
       )}
     </>
