@@ -1,7 +1,12 @@
 import { ItemCard } from "./ItemCard";
 import { IItems } from "../interfaces/interfaces";
 
-export default function ItemGrid({ listings }: { listings: IItems }) {
+interface ItemGridProps {
+  listings: IItems;
+  imageURLs: IItems;
+}
+
+export default function ItemGrid({ listings, imageURLs }: ItemGridProps) {
   return (
     <>
       
@@ -13,7 +18,7 @@ export default function ItemGrid({ listings }: { listings: IItems }) {
             <div
               key={index}
             >
-              <ItemCard item={item} index={index} cost={listings[item]} />
+              <ItemCard item={item} index={index} cost={listings[item]} imageURL={imageURLs[item]} />
             </div>
           ))}
         </div>
