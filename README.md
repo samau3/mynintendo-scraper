@@ -92,6 +92,7 @@ The motivation for this project was automate the process of checking My Nintendo
 - [![Docker][docker]][docker-url]
 - [![Discord][discord]][discord-url]
 - [![Vercel][vercel]][vercel-url]
+- [BeautifulSoup](https://beautiful-soup-4.readthedocs.io/en/latest/#)
 - [Fly.io](https://fly.io/)
 - [Axios](https://axios-http.com/)
 - [HeroIcons](https://heroicons.com/)
