@@ -85,6 +85,7 @@ The motivation for this project was automate the process of checking My Nintendo
 - [![React][react.js]][react-url]
 - [![PostgreSQL][postgresql]][postgresql-url]
 - [![Python][python]][python-url]
+- [![Flask][flask]][flask-url]
 - [![Selenium][selenium]][selenium-url]
 - [![Tailwind][tailwind]][tailwind-url]
 - [![Github Actions][github-actions]][github-actions-url]
@@ -252,6 +253,8 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 [postgresql-url]: https://www.postgresql.org/
 [python]: https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue
 [python-url]: https://www.python.org/
+[flask]: https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white
+[flask-url]: https://flask.palletsprojects.com/en/3.0.x/
 [selenium]: https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=Selenium&logoColor=white
 [selenium-url]: https://www.selenium.dev/
 [tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
