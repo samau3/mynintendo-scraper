@@ -166,7 +166,7 @@ The whole motivation for creating this web app is that the web scraping is autom
 
 ### Automated Clean Up
 
-Since so much data is being stored in the database, a weekly cron job request is made to delete records that have been saved in the database for a week or more. This is handled by keeping track of the timestamps when a listing record is stored and having an additional column, `expiration`, for that record of seven days after its insertion timestamp. Then the request just queries based on the `expiration` column to see if that value is a date older than the time of teh deletion API request.
+Since so much data is being stored in the database, a weekly cron job request is made to delete records that have been saved in the database for a week or more. This is handled by keeping track of the timestamps when a listing record is stored and having an additional column, `expiration`, for that record of seven days after its insertion timestamp. Then the request just queries based on the `expiration` column to see if that value is a date older than the time of the deletion API request.
 
 <!-- ROADMAP -->
 
