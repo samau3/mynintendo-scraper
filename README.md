@@ -83,8 +83,6 @@ The motivation for this project was automate the process of checking My Nintendo
 
 - [![Typescript][typescript]][typescript-url]
 - [![React][react.js]][react-url]
-- [![Express][express]][express-url]
-- [![Node][node.js]][node-url]
 - [![PostgreSQL][postgresql]][postgresql-url]
 - [![Python][python]][python-url]
 - [![Selenium][selenium]][selenium-url]
@@ -250,10 +248,6 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 [typescript-url]: https://www.typescriptlang.org/
 [react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [react-url]: https://reactjs.org/
-[express]: https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB
-[express-url]: https://expressjs.com/
-[node.js]: https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white
-[node-url]: https://nodejs.org/en/
 [postgresql]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
 [postgresql-url]: https://www.postgresql.org/
 [python]: https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue
