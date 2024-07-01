@@ -112,25 +112,27 @@ export default function Items() {
               Last Checked:{" "}
               {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
             </p>
-            <button
-              className={`uppercase text-sm font-bold p-2 m-2 ${
-                loading
-                  ? "bg-blue-100 text-blue-400"
-                  : "bg-blue-200 text-blue-600"
-              } rounded-lg`}
-              onClick={loadScrapeResults}
-              disabled={loading}
-            >
-              {loading ? LOADING_SPINNER : "Scrape Again"}
-            </button>
-            <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-200 rounded-lg">
-              <a
-                href="https://www.nintendo.com/store/exclusives/rewards/"
-                target="_blank"
+            <div className="flex justify-center gap-4 flex-wrap">
+              <button
+                className={`flex justify-center flex-1 max-w-xs uppercase text-sm font-bold xs:max-h-11 p-3 m-2 ${
+                  loading
+                    ? "bg-blue-100 text-blue-400"
+                    : "bg-blue-200 text-blue-600"
+                } rounded-lg`}
+                onClick={loadScrapeResults}
+                disabled={loading}
               >
-                Check the listings
-              </a>
-            </button>
+                {loading ? LOADING_SPINNER : "Scrape Again"}
+              </button>
+              <button className="flex-1 max-w-xs uppercase text-sm font-bold text-blue-600 p-3 m-2 bg-blue-200 rounded-lg">
+                <a
+                  href="https://www.nintendo.com/store/exclusives/rewards/"
+                  target="_blank"
+                >
+                  Check the listings
+                </a>
+              </button>
+            </div>
           </div>
           <Changes
             recentChange={scrapeResults.recent_change}
