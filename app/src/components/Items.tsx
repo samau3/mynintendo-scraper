@@ -6,6 +6,7 @@ import { MyNintendoScraperAPI } from "../api/myNintendoScraperAPI";
 import { IChanges, ILastChange, IItems } from "./../interfaces/interfaces";
 import ItemGrid from "./ItemGrid";
 import Changes from "./Changes";
+import ErrorView from "./ErrorView";
 
 interface IScrapeResults {
   recent_change: IChanges;
@@ -13,8 +14,6 @@ interface IScrapeResults {
   last_change: ILastChange;
   images: IItems;
 }
-
-const API_STATUS_URL = "https://j50pzswk.status.cron-job.org/";
 
 const LOADING_SPINNER = (
   <svg
@@ -58,7 +57,7 @@ export default function Items() {
         setErrorInfo(undefined);
       }
     } catch (error) {
-      let message = "Something went wrong";
+      let message = "Something went wrong.";
       if (error instanceof AxiosError) {
         message = error?.response?.data.message;
       } else {
@@ -77,27 +76,7 @@ export default function Items() {
       <div>
         <p className="text-4xl dark:text-gray-300 ">MyNintendo Scraper</p>
       </div>
-      {errorInfo && (
-        <div className="text-center">
-          <p className="font-bold text-lg text-red-700">{errorInfo}</p>
-          <p className="font-bold text-lg dark:text-gray-300">
-            Please create a new issue on the{" "}
-            <a
-              href={API_STATUS_URL}
-              target="_blank"
-              className="text-blue-600 underline"
-            >
-              Github repository
-            </a>
-            .
-          </p>
-          <button className="uppercase text-sm font-bold text-blue-600 p-2 m-2 bg-blue-100 rounded-lg">
-            <a href={API_STATUS_URL} target="_blank">
-              API Status
-            </a>
-          </button>
-        </div>
-      )}
+      {errorInfo && <ErrorView errorInfo={errorInfo} />}
 
       {shouldShowLoading && (
         <div className="mt-10">
