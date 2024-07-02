@@ -1,78 +1,24 @@
-import { useEffect, useState } from "react";
-import { AxiosError } from "axios";
-import { RotatingLines } from "react-loader-spinner";
-
-import { MyNintendoScraperAPI } from "../api/myNintendoScraperAPI";
-import { IChanges, ILastChange, IItems } from "./../interfaces/interfaces";
 import ItemGrid from "./ItemGrid";
 import Changes from "./Changes";
-import ErrorView from "./ErrorView";
 import LoadingSVG from "./LoadingSVG";
 
-interface IScrapeResults {
-  recent_change: IChanges;
-  current_listings: IItems;
-  last_change: ILastChange;
-  images: IItems;
+import { IScrapeResults } from "../interfaces/interfaces";
+
+interface IItemsProps {
+  items: IScrapeResults
+  loading: boolean
+  loadScrapeResults: () => void
 }
 
-
-export default function Items() {
-  const [scrapeResults, setScrapeResults] = useState<
-    IScrapeResults | undefined
-  >(undefined);
-  const [errorInfo, setErrorInfo] = useState<string | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const shouldShowLoading = !scrapeResults && !errorInfo;
-
-  useEffect(() => {
-    loadScrapeResults();
-  }, []);
-
-  async function loadScrapeResults() {
-    setLoading((prev) => !prev);
-    try {
-      const results = await MyNintendoScraperAPI.getItems();
-      setScrapeResults(results);
-      setLoading((prev) => !prev);
-      if (errorInfo) {
-        setErrorInfo(undefined);
-      }
-    } catch (error) {
-      let message = "Something went wrong.";
-      if (error instanceof AxiosError) {
-        message = error?.response?.data.message;
-      } else {
-        console.log(error);
-      }
-      setErrorInfo(message);
-
-      if (scrapeResults) {
-        setScrapeResults(undefined);
-      }
-    }
-  }
-
+export default function Items({items, loading, loadScrapeResults} : IItemsProps) {
   return (
     <>
-      <div>
-        <p className="text-4xl dark:text-gray-300 ">MyNintendo Scraper</p>
-      </div>
-      {errorInfo && <ErrorView errorInfo={errorInfo} />}
-
-      {shouldShowLoading && (
-        <div className="mt-10">
-          <RotatingLines strokeColor="gray" />
-        </div>
-      )}
-
-      {scrapeResults && (
+      
         <div className="text-center">
           <div className="pb-2">
             <p className="text-2xl dark:text-gray-300 ">
               Last Checked:{" "}
-              {new Date(scrapeResults.recent_change.timestamp).toLocaleString()}
+              {new Date(items.recent_change.timestamp).toLocaleString()}
             </p>
             <div className="flex justify-center gap-4 flex-wrap">
               <button
@@ -97,15 +43,15 @@ export default function Items() {
             </div>
           </div>
           <Changes
-            recentChange={scrapeResults.recent_change}
-            lastChange={scrapeResults.last_change}
+            recentChange={items.recent_change}
+            lastChange={items.last_change}
           ></Changes>
           <ItemGrid
-            listings={scrapeResults.current_listings}
-            imageURLs={scrapeResults.images}
+            listings={items.current_listings}
+            imageURLs={items.images}
           />
         </div>
-      )}
+      
     </>
   );
 }

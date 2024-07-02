@@ -16,3 +16,10 @@ export interface ILastChange {
   items: IScrapedItems;
   timestamp: string;
 }
+
+export interface IScrapeResults {
+  recent_change: IChanges;
+  current_listings: IItems;
+  last_change: ILastChange;
+  images: IItems;
+}
