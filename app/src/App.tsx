@@ -59,8 +59,8 @@ function App() {
           <div id={styles["stripe-pattern"]}></div>
         </div>
       </div>
-      <div className="flex flex-col items-center p-4 min-h-screen min-w-full absolute top-0 z-10 ">
-        <div className="w-full flex flex-row-reverse sm:absolute sm:w-min right-5 top-5">
+      <div className="absolute top-0 z-10 flex min-h-screen min-w-full flex-col items-center p-4">
+        <div className="right-5 top-5 flex w-full flex-row-reverse sm:absolute sm:w-min">
           <ThemeSwitcher />
         </div>
         <div>

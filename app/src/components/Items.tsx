@@ -19,13 +19,13 @@ export default function Items({
     <>
       <div className="text-center">
         <div className="pb-2">
-          <p className="text-2xl dark:text-gray-300 ">
+          <p className="text-2xl dark:text-gray-300">
             Last Checked:{" "}
             {new Date(items.recent_change.timestamp).toLocaleString()}
           </p>
-          <div className="flex justify-center gap-4 flex-wrap">
+          <div className="flex flex-wrap justify-center gap-4">
             <button
-              className={`flex justify-center flex-1 max-w-xs uppercase text-sm font-bold xs:max-h-11 p-3 m-2 ${
+              className={`m-2 flex max-w-xs flex-1 justify-center p-3 text-sm font-bold uppercase xs:max-h-11 ${
                 loading
                   ? "bg-blue-100 text-blue-400"
                   : "bg-blue-200 text-blue-600"
@@ -35,7 +35,7 @@ export default function Items({
             >
               {loading ? <LoadingSVG /> : "Scrape Again"}
             </button>
-            <button className="flex-1 max-w-xs uppercase text-sm font-bold text-blue-600 p-3 m-2 bg-blue-200 rounded-lg">
+            <button className="m-2 max-w-xs flex-1 rounded-lg bg-blue-200 p-3 text-sm font-bold uppercase text-blue-600">
               <a
                 href="https://www.nintendo.com/store/exclusives/rewards/"
                 target="_blank"

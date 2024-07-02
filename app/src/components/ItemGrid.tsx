@@ -9,7 +9,7 @@ interface ItemGridProps {
 export default function ItemGrid({ listings, imageURLs }: ItemGridProps) {
   return (
     <>
-      <p className="mb-auto font-bold text-lg tracking-tight text-black dark:text-slate-200 ">
+      <p className="mb-auto text-lg font-bold tracking-tight text-black dark:text-slate-200">
         Current Listings:
       </p>
       <div className="grid auto-cols-fr gap-8 sm:grid-cols-3">
