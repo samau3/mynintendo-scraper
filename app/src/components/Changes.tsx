@@ -17,7 +17,7 @@ export default function Changes({ recentChange, lastChange }: ChangesProps) {
               {recentChange.items}
             </p>
             <section className="flex flex-col items-center">
-              <p className="mt-10 text-lg dark:text-slate-300">
+              <p className="mt-6 mb-6 text-lg dark:text-slate-300">
                 As of{" "}
                 <span className="font-bold">
                   {new Date(recentChange.timestamp).toLocaleString()}
