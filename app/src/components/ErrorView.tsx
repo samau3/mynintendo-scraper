@@ -1,10 +1,10 @@
 const API_STATUS_URL = "https://j50pzswk.status.cron-job.org/";
 
-interface IErrorViewProps {
-  errorInfo: string
+interface ErrorViewProps {
+  errorInfo: string;
 }
 
-export default function ErrorView({ errorInfo } : IErrorViewProps) {
+export default function ErrorView({ errorInfo }: ErrorViewProps) {
   return (
     <div className="text-center">
       <p className="font-bold text-lg text-red-700">{errorInfo}</p>

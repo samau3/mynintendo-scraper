@@ -24,7 +24,11 @@ const ThemeSwitcher = () => {
       onClick={toggleDarkMode}
       className="px-4 py-2 rounded-md bg-slate-800 dark:bg-slate-400 text-white"
     >
-      {darkMode ? <SunIcon className="h-6 w-6 text-yellow-400"></SunIcon> : <MoonIcon className="h-6 w-6 text-blue-500"></MoonIcon>}
+      {darkMode ? (
+        <SunIcon className="h-6 w-6 text-yellow-400"></SunIcon>
+      ) : (
+        <MoonIcon className="h-6 w-6 text-blue-500"></MoonIcon>
+      )}
     </button>
   );
 };

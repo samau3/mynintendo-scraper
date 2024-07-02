@@ -11,7 +11,6 @@ import ErrorView from "./components/ErrorView";
 
 import styles from "./App.module.css";
 
-
 function App() {
   const [scrapeResults, setScrapeResults] = useState<
     IScrapeResults | undefined
@@ -65,7 +64,7 @@ function App() {
           <ThemeSwitcher />
         </div>
         <div>
-          <p className="text-4xl dark:text-gray-300 ">MyNintendo Scraper</p>
+          <p className="text-4xl dark:text-gray-300">MyNintendo Scraper</p>
         </div>
         {errorInfo && <ErrorView errorInfo={errorInfo} />}
 

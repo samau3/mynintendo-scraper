@@ -18,8 +18,12 @@ export default function Changes({ recentChange, lastChange }: ChangesProps) {
             </p>
             <section className="flex flex-col items-center">
               <p className="mt-10 text-lg dark:text-slate-300">
-                As of <span className="font-bold">{new Date(recentChange.timestamp).toLocaleString()}</span> there
-                are no new changes to the listings detected. Feel free to scrape again or check the listings directly.
+                As of{" "}
+                <span className="font-bold">
+                  {new Date(recentChange.timestamp).toLocaleString()}
+                </span>{" "}
+                there are no new changes to the listings detected. Feel free to
+                scrape again or check the listings directly.
               </p>
             </section>
           </>
