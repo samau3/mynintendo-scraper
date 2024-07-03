@@ -21,4 +21,4 @@ RUN apt-get update && apt-get -y install google-chrome-stable
 
 EXPOSE 8080
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "-w", "1", "--threads", "4", "app:app"]
