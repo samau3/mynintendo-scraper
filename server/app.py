@@ -6,6 +6,7 @@ from flask_cors import CORS
 from models import db, connect_db
 from main import scrape_mynintendo, message_discord, delete_old_records, get_items, get_changes, load_items, get_item_images
 from errors import CustomError, CSSTagSelectorError
+from routes.check_api import check_api
 
 import dotenv
 dotenv.load_dotenv()
@@ -24,6 +25,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 
+app.register_blueprint(check_api, url_prefix="/api")
 
 @app.get('/')
 def show_home_page():
@@ -72,34 +74,34 @@ def call_get_items():
     return jsonify(items)
 
 
-@app.get("/api/check-fly")
-def check_fly():
-    try:
-        return jsonify("API is running.")
-    except Exception as err:
-        print(err)
-        raise CustomError("Fly is down.")
+# @app.get("/api/check-fly")
+# def check_fly():
+#     try:
+#         return jsonify("API is running.")
+#     except Exception as err:
+#         print(err)
+#         raise CustomError("Fly is down.")
 
 
-@app.get("/api/check-scraping")
-def check_scraping():
-    try:
-        raw_item_elements = load_items()
-        get_items(raw_item_elements)
-        return jsonify("API Scraping is running.")
-    except Exception as err:
-        print(err)
-        raise CustomError("Scraping function failed.")
+# @app.get("/api/check-scraping")
+# def check_scraping():
+#     try:
+#         raw_item_elements = load_items()
+#         get_items(raw_item_elements)
+#         return jsonify("API Scraping is running.")
+#     except Exception as err:
+#         print(err)
+#         raise CustomError("Scraping function failed.")
 
 
-@app.get("/api/check-db")
-def check_fly_db():
-    try:
-        get_changes()
-        return jsonify("API DB is running.")
-    except Exception as err:
-        print(err)
-        raise CustomError("DB function failed.")
+# @app.get("/api/check-db")
+# def check_fly_db():
+#     try:
+#         get_changes()
+#         return jsonify("API DB is running.")
+#     except Exception as err:
+#         print(err)
+#         raise CustomError("DB function failed.")
 
 
 @app.errorhandler(404)
