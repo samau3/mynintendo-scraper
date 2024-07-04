@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from main import get_items, get_changes, load_items
 from errors import CustomError
 
-check_api = Blueprint("api", __name__)
+check_api = Blueprint("check", __name__)
 
 @check_api.route('/check-fly')
 def check_fly():
