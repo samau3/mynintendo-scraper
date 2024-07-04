@@ -29,8 +29,21 @@ connect_db(app)
 app.register_blueprint(main_api, url_prefix="/api")
 app.register_blueprint(check_api, url_prefix="/api")
 
+
 @app.get('/')
-def show_home_page():
+def display_scrape_summary():
+    """
+    Displays a summary of the scrape, including current listings, images, recent changes, and the last change.
+    If changes are found during scraping, notifies via Discord.
+
+    Returns:
+        A JSON response containing:
+        - current_listings: A list of current items.
+        - images: A list of item images.
+        - recent_change: The results of the most recent scrape.
+        - last_change: Information about the last change detected.
+    """
+
     raw_item_elements = load_items()
     items = get_items(raw_item_elements)
     images = get_item_images(raw_item_elements)
