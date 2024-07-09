@@ -25,7 +25,7 @@ dotenv.load_dotenv()
 
 
 MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
-ITEMS_CSS_TAG = "sc-1bsju6x-1"
+ITEMS_CSS_TAG = "VoZI3"
 
 
 options = webdriver.ChromeOptions()
@@ -36,14 +36,15 @@ options.add_argument("--disable-dev-shm-usage")
 
 def load_items():
     """ Function to load a webpage and wait for a specific tag to load"""
-
     driver = webdriver.Chrome(service=Service(
         ChromeDriverManager().install()), options=options)
     driver.get(MYNINTENDO_URL)
     WebDriverWait(driver, 10).until(
-        EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)))
-
+        EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)),
+        message="Scraping timedout, CSS tags need to be updated."
+    )
     soup = BeautifulSoup(driver.page_source, 'lxml')
+
     item_elements = find_items(soup, ITEMS_CSS_TAG)
     return item_elements
 
