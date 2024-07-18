@@ -60,7 +60,7 @@ def get_items(items):
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
         stock = item.find(
-            'div', class_=re.compile('sc-tb903t-0'))
+            'div', class_=re.compile('Hc9FH'))
 
         if not stock:
             raise CSSTagSelectorError("The CSS tag for stock has changed.")
@@ -89,7 +89,7 @@ def get_item_images(items):
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
         image = item.find(
-            'img', class_=re.compile('sc-1244ond-1'))
+            'img', class_=re.compile('EgihB'))
 
         if not image:
             raise CSSTagSelectorError("The CSS tag for images has changed.")

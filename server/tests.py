@@ -139,7 +139,7 @@ class TestCheckItemsFunction(TestCase):
                                     <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 1 (Normal)</h2>
                                     <div class="sc-m1loqs-5 bvcBeK"></div>
                                 </div>
-                                <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Exclusive</div>
+                                <div class="Hc9FH pRPVc EKAzI">Exclusive</div>
                                 <div class="sc-m1loqs-3 gGJMHZ">
                                     <div class="sc-1f0n8u6-0 kNfSFq">
                                         <div class="sc-1f0n8u6-1 icpwvf">
@@ -187,7 +187,7 @@ class TestCheckItemsFunction(TestCase):
                                     <h2 class="sc-s17bth-0 bMmuUN sc-w55g5t-0 gSthvS sc-eg7slj-2 iiGOlC">Item 2 (Sold Out)</h2>
                                     <div class="sc-m1loqs-5 bvcBeK"></div>
                                 </div>
-                                <div class="sc-tb903t-0 hwFxtm sc-m1loqs-4 gXVfCV">Sold Out</div>
+                                <div class="Hc9FH Qvcxb EKAzI">Sold Out</div>
                                 <div class="sc-m1loqs-3 gGJMHZ">
                                     <div class="sc-1f0n8u6-0 kNfSFq">
                                         <div class="sc-1f0n8u6-1 icpwvf">
