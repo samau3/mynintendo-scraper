@@ -1,4 +1,5 @@
 const API_STATUS_URL = "https://j50pzswk.status.cron-job.org/";
+const GITHUB_ISSUES_URL = "https://github.com/samau3/mynintendo-scraper/issues";
 
 interface ErrorViewProps {
   errorInfo: string;
@@ -11,7 +12,7 @@ export default function ErrorView({ errorInfo }: ErrorViewProps) {
       <p className="text-lg font-bold dark:text-gray-300">
         Please create a new issue on the{" "}
         <a
-          href={API_STATUS_URL}
+          href={GITHUB_ISSUES_URL}
           target="_blank"
           className="text-blue-600 underline"
         >
