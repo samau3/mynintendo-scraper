@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { AxiosError } from "axios";
 import { RotatingLines } from "react-loader-spinner";
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
@@ -33,10 +32,10 @@ function App() {
       if (errorInfo) {
         setErrorInfo(undefined);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       let message = "Something went wrong.";
-      if (error instanceof AxiosError) {
-        message = error?.response?.data.message;
+      if (error instanceof Error) {
+        message = error.message;
       } else {
         console.error(error);
       }
