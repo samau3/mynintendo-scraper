@@ -140,17 +140,17 @@ class TestCheckItemsFunction(TestCase):
                                     <div class="sc-m1loqs-5 bvcBeK"></div>
                                 </div>
                                 <div class="Hc9FH pRPVc EKAzI">Exclusive</div>
-                                <div class="sc-m1loqs-3 gGJMHZ">
-                                    <div class="sc-1f0n8u6-0 kNfSFq">
-                                        <div class="sc-1f0n8u6-1 icpwvf">
-                                            <span class="sc-1f0n8u6-5 fpvyxr">
-                                                <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
-                                                <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
-                                                    <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
-                                                        <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                                <div class="MVVbT">
+                                    <div class="_8rhZP">
+                                        <div class="_5cBXA">
+                                            <span class="W990N SH2al">
+                                                <span class="JBNAy">Regular Price:</span>
+                                                <div data-testid="platinumPoints" class="Zc8hG">
+                                                    <div class="sc-1yh2edi-0 GtTvR ooaNf hCSeY">
+                                                        <img alt="" loading="lazy" fetchpriority="low" class="EgihB" src="IMAGE_URL">
                                                     </div>
-                                                    <span class="sc-1f0n8u6-10 imlIYl">
-                                                        <span class="sc-1f0n8u6-9 unbAu">800</span> Platinum Points
+                                                    <span class="Y0goB">
+                                                        <span class="pXrQP">800</span> Platinum Points
                                                     </span>
                                                 </div>
                                             </span>
@@ -188,14 +188,14 @@ class TestCheckItemsFunction(TestCase):
                                     <div class="sc-m1loqs-5 bvcBeK"></div>
                                 </div>
                                 <div class="Hc9FH Qvcxb EKAzI">Sold Out</div>
-                                <div class="sc-m1loqs-3 gGJMHZ">
-                                    <div class="sc-1f0n8u6-0 kNfSFq">
-                                        <div class="sc-1f0n8u6-1 icpwvf">
-                                            <span class="sc-1f0n8u6-5 fpvyxr">
+                                <div class="MVVbT">
+                                    <div class="_8rhZP">
+                                        <div class="_5cBXA">
+                                            <span class="W990N SH2al">
                                                 <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
-                                                <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
-                                                    <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
-                                                        <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                                                <div data-testid="platinumPoints" class="Zc8hG">
+                                                    <div class="sc-1yh2edi-0 GtTvR ooaNf hCSeY">
+                                                        <img alt="" loading="lazy" fetchpriority="low" class="EgihB" src="IMAGE_URL">
                                                     </div>
                                                     <span class="sc-1f0n8u6-10 imlIYl">
                                                         <span class="sc-1f0n8u6-9 unbAu">800</span>
@@ -253,14 +253,14 @@ class TestCheckItemsFunction(TestCase):
                                     <div class="sc-m1loqs-5 bvcBeK"></div>
                                 </div>
                                 <div class="CHANGED_TAG">Exclusive</div>
-                                <div class="sc-m1loqs-3 gGJMHZ">
-                                    <div class="sc-1f0n8u6-0 kNfSFq">
-                                        <div class="sc-1f0n8u6-1 icpwvf">
-                                            <span class="sc-1f0n8u6-5 fpvyxr">
+                                <div class="MVVbT">
+                                    <div class="_8rhZP">
+                                        <div class="_5cBXA">
+                                            <span class="W990N SH2al">
                                                 <span class="sc-1gv8hi6-0 lktkyu sc-1f0n8u6-2 bFvx">Regular Price:</span>
-                                                <div data-testid="platinumPoints" class="sc-1f0n8u6-8 ftpArF">
-                                                    <div class="sc-1244ond-0 bYKqUR sc-1yh2edi-0 GtTvR sc-1f0n8u6-7 gcszdM">
-                                                        <img alt="" loading="lazy" fetchpriority="low" class="sc-1244ond-1 eaPLXy" src="IMAGE_URL">
+                                                <div data-testid="platinumPoints" class="Zc8hG">
+                                                    <div class="sc-1yh2edi-0 GtTvR ooaNf hCSeY">
+                                                        <img alt="" loading="lazy" fetchpriority="low" class="EgihB" src="IMAGE_URL">
                                                     </div>
                                                     <span class="sc-1f0n8u6-10 imlIYl">
                                                         <span class="sc-1f0n8u6-9 unbAu">800</span> Platinum Points

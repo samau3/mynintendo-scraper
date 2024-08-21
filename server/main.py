@@ -67,7 +67,7 @@ def get_items(items):
 
         if stock and stock.text == "Exclusive":
             price_element = item.find('div', class_=re.compile(
-                'sc-1f0n8u6-8'))
+                'Zc8hG'))
             price = price_element.get_text() if price_element else "Price Not Found"
         elif stock and stock.text != "Exclusive":
             price = stock.text
