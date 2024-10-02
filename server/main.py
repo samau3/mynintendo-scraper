@@ -68,6 +68,7 @@ def load_items():
                     (By.CSS_SELECTOR, 'div.sc-1egu3fv-1.cCkfGx button.MFcmt._3LMnG.xN-5A')),
                 message="Scraping timedout, CSS tag for 'See All' button needs to be updated."
             )
+            driver.execute_script("arguments[0].scrollIntoView(true);", load_more_button)
             load_more_button.click()
             logging.info("'See All' button clicked.")
             # Wait for additional items to load
