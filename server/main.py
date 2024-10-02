@@ -74,10 +74,9 @@ def load_items():
                 message="Scraping timedout, CSS tags need to be updated."
             )
 
-        except TimeoutException:
+        except TimeoutException as e:
+            logging.error(e.msg)
             break
-
-    
 
     soup = BeautifulSoup(driver.page_source, 'lxml')
 
