@@ -1,4 +1,5 @@
 import os
+import logging
 
 from bs4 import BeautifulSoup
 
@@ -15,6 +16,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
@@ -23,10 +25,14 @@ from helpers.find_items import find_items
 import dotenv
 dotenv.load_dotenv()
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
 ITEMS_CSS_TAG = "VoZI3"
 
+PARENT_CONTAINER_OF_PRODUCTS_CSS_TAG = "sc-1dskkk7-1"
+EXPECTED_CHILD_DIV_COUNT = 2
 
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
@@ -43,6 +49,36 @@ def load_items():
         EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)),
         message="Scraping timedout, CSS tags need to be updated."
     )
+
+    # Add a check for a see more button to load more items
+    while True:
+        try:
+            parent_div = driver.find_element(By.CLASS_NAME, PARENT_CONTAINER_OF_PRODUCTS_CSS_TAG)
+            child_divs = parent_div.find_elements(By.TAG_NAME, 'div')
+
+            # Check if the number of child divs is greater than usual (e.g., expecting more than a certain number)
+            if len(child_divs) <= EXPECTED_CHILD_DIV_COUNT:
+                # Break the loop if the number of child divs is not greater than expected
+                break
+
+            logging.info("Found more items to load.")
+            load_more_button = WebDriverWait(driver, 3).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.sc-1egu3fv-1 button.MFcmt')),
+                message="Scraping timedout, CSS tag for 'See All' button needs to be updated."
+            )
+            load_more_button.click()
+            logging.info("'Load More' button clicked.")
+            # Wait for additional items to load
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)),
+                message="Scraping timedout, CSS tags need to be updated."
+            )
+
+        except TimeoutException:
+            break
+
+    
+
     soup = BeautifulSoup(driver.page_source, 'lxml')
 
     item_elements = find_items(soup, ITEMS_CSS_TAG)
