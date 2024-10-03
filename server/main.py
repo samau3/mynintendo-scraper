@@ -1,5 +1,6 @@
 import os
 import logging
+import time
 
 from bs4 import BeautifulSoup
 
@@ -37,6 +38,8 @@ EXPECTED_CHILD_DIV_COUNT = 2
 
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
+options.add_argument("--window-size=1920,1080")
+options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 
@@ -54,8 +57,10 @@ def load_items():
     # Add a check for a see more button to load more items
 
     parent_div = driver.find_element(
-        By.CLASS_NAME, PARENT_CONTAINER_OF_PRODUCTS_CSS_TAG)
-    child_divs = parent_div.find_elements(By.TAG_NAME, 'div')
+        By.CSS_SELECTOR, 'div.sc-1dskkk7-1')
+
+    child_divs = parent_div.find_elements(By.CSS_SELECTOR, ':scope > div')
+    logging.info(f"Found {len(child_divs)} child divs.")
 
     # Check if the number of child divs is greater than usual (e.g., expecting more than a certain number)
     if len(child_divs) > EXPECTED_CHILD_DIV_COUNT:
@@ -70,8 +75,16 @@ def load_items():
             )
             driver.execute_script(
                 "arguments[0].scrollIntoView(true);", load_more_button)
-            load_more_button.click()
+
+            if load_more_button.is_displayed():
+                logging.info("'See All' button is visible.")
+            else:
+                logging.error("'See All' button is not visible.")
+
+            driver.execute_script("arguments[0].click();", load_more_button)
             logging.info("'See All' button clicked.")
+            # Add a delay to give enough time for the items to load
+            time.sleep(3)
             # Wait for additional items to load
             WebDriverWait(driver, 10).until(
                 EC.presence_of_all_elements_located(
@@ -79,10 +92,15 @@ def load_items():
                 message="Scraping timedout, CSS tags need to be updated."
             )
 
+            new_child_divs = parent_div.find_elements(
+                By.CSS_SELECTOR, ':scope > div')
+            logging.info(
+                f"Number of child divs after clicking 'See All': {len(new_child_divs)}")
+
         except TimeoutException as e:
             logging.error(e.msg)
 
-    soup = BeautifulSoup(driver.page_source, 'lxml')
+    soup = BeautifulSoup(parent_div.get_attribute("outerHTML"), 'lxml')
 
     item_elements = find_items(soup, ITEMS_CSS_TAG)
     return item_elements
