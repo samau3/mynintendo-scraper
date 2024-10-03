@@ -1,10 +1,16 @@
 from flask import Blueprint, jsonify
-from main import scrape_mynintendo, message_discord, delete_old_records, get_items, load_items
+from main import (
+    scrape_mynintendo,
+    message_discord,
+    delete_old_records,
+    get_items,
+    load_items,
+)
 
 main_api = Blueprint("main", __name__)
 
 
-@main_api.get('/scrape')
+@main_api.get("/scrape")
 def call_scrape_fn():
     """
     Scrapes items and checks for changes. If changes are found, notifies via Discord.
@@ -23,7 +29,7 @@ def call_scrape_fn():
     return jsonify(results["timestamp"])
 
 
-@main_api.get('/delete')
+@main_api.get("/delete")
 def delete_records():
     """
     Deletes old records from the database.

@@ -24,10 +24,12 @@ from helpers.remove_trademark_false_positives import remove_trademark_false_posi
 from helpers.find_items import find_items
 
 import dotenv
+
 dotenv.load_dotenv()
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
@@ -37,7 +39,7 @@ PARENT_CONTAINER_OF_PRODUCTS_CSS_TAG = "sc-1dskkk7-1"
 EXPECTED_CHILD_DIV_COUNT = 2
 
 options = webdriver.ChromeOptions()
-options.add_argument('--headless')
+options.add_argument("--headless")
 options.add_argument("--window-size=1920,1080")
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
@@ -45,21 +47,21 @@ options.add_argument("--disable-dev-shm-usage")
 
 
 def load_items():
-    """ Function to load a webpage and wait for a specific tag to load"""
-    driver = webdriver.Chrome(service=Service(
-        ChromeDriverManager().install()), options=options)
+    """Function to load a webpage and wait for a specific tag to load"""
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()), options=options
+    )
     driver.get(MYNINTENDO_URL)
     WebDriverWait(driver, 10).until(
         EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)),
-        message="Scraping timedout, CSS tags need to be updated."
+        message="Scraping timedout, CSS tags need to be updated.",
     )
 
     # Add a check for a see more button to load more items
 
-    parent_div = driver.find_element(
-        By.CSS_SELECTOR, 'div.sc-1dskkk7-1')
+    parent_div = driver.find_element(By.CSS_SELECTOR, "div.sc-1dskkk7-1")
 
-    child_divs = parent_div.find_elements(By.CSS_SELECTOR, ':scope > div')
+    child_divs = parent_div.find_elements(By.CSS_SELECTOR, ":scope > div")
     logging.info(f"Found {len(child_divs)} child divs.")
 
     # Check if the number of child divs is greater than usual (e.g., expecting more than a certain number)
@@ -70,11 +72,16 @@ def load_items():
             logging.info("Found more items to load.")
             load_more_button = WebDriverWait(driver, 3).until(
                 EC.element_to_be_clickable(
-                    (By.CSS_SELECTOR, 'div.sc-1egu3fv-1.cCkfGx button.MFcmt._3LMnG.xN-5A')),
-                message="Scraping timedout, CSS tag for 'See All' button needs to be updated."
+                    (
+                        By.CSS_SELECTOR,
+                        "div.sc-1egu3fv-1.cCkfGx button.MFcmt._3LMnG.xN-5A",
+                    )
+                ),
+                message="Scraping timedout, CSS tag for 'See All' button needs to be updated.",
             )
             driver.execute_script(
-                "arguments[0].scrollIntoView(true);", load_more_button)
+                "arguments[0].scrollIntoView(true);", load_more_button
+            )
 
             if load_more_button.is_displayed():
                 logging.info("'See All' button is visible.")
@@ -87,44 +94,41 @@ def load_items():
             time.sleep(3)
             # Wait for additional items to load
             WebDriverWait(driver, 10).until(
-                EC.presence_of_all_elements_located(
-                    (By.CLASS_NAME, ITEMS_CSS_TAG)),
-                message="Scraping timedout, CSS tags need to be updated."
+                EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)),
+                message="Scraping timedout, CSS tags need to be updated.",
             )
 
-            new_child_divs = parent_div.find_elements(
-                By.CSS_SELECTOR, ':scope > div')
+            new_child_divs = parent_div.find_elements(By.CSS_SELECTOR, ":scope > div")
             logging.info(
-                f"Number of child divs after clicking 'See All': {len(new_child_divs)}")
+                f"Number of child divs after clicking 'See All': {len(new_child_divs)}"
+            )
 
         except TimeoutException as e:
             logging.error(e.msg)
 
-    soup = BeautifulSoup(parent_div.get_attribute("outerHTML"), 'lxml')
+    soup = BeautifulSoup(parent_div.get_attribute("outerHTML"), "lxml")
 
     item_elements = find_items(soup, ITEMS_CSS_TAG)
     return item_elements
 
 
 def get_items(items):
-    """ Function to scrape items listed on MyNintendo Rewards"""
+    """Function to scrape items listed on MyNintendo Rewards"""
 
     item_data = {}
 
     for item in items:
-        name = item.get('aria-label', 'Unknown Name').strip()
+        name = item.get("aria-label", "Unknown Name").strip()
 
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
-        stock = item.find(
-            'div', class_=re.compile('Hc9FH'))
+        stock = item.find("div", class_=re.compile("Hc9FH"))
 
         if not stock:
             raise CSSTagSelectorError("The CSS tag for stock has changed.")
 
         if stock and stock.text == "Exclusive":
-            price_element = item.find('div', class_=re.compile(
-                'Zc8hG'))
+            price_element = item.find("div", class_=re.compile("Zc8hG"))
             price = price_element.get_text() if price_element else "Price Not Found"
         elif stock and stock.text != "Exclusive":
             price = stock.text
@@ -136,22 +140,21 @@ def get_items(items):
 
 
 def get_item_images(items):
-    """ Function to scrape items listed on MyNintendo Rewards"""
+    """Function to scrape items listed on MyNintendo Rewards"""
     item_images = {}
 
     for item in items:
 
-        name = item.get('aria-label', 'Unknown Name').strip()
+        name = item.get("aria-label", "Unknown Name").strip()
 
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
         # Use of __DescriptionTag-sc is to reduce the amount of hard coding for the CSS class selection due to website changing what they use
-        image = item.find(
-            'img', class_=re.compile('EgihB'))
+        image = item.find("img", class_=re.compile("EgihB"))
 
         if not image:
             raise CSSTagSelectorError("The CSS tag for images has changed.")
 
-        image_url = image.get('src', 'https://placehold.co/600x400')
+        image_url = image.get("src", "https://placehold.co/600x400")
 
         item_images[name] = image_url
 
@@ -159,17 +162,17 @@ def get_item_images(items):
 
 
 def check_for_changes(last_stored_items, scraped_items):
-    """ Function to compare two dictionaries, 
-        returning the resulting differences"""
+    """Function to compare two dictionaries,
+    returning the resulting differences"""
 
     diff = DeepDiff(last_stored_items, scraped_items)
 
-    if (len(diff) == 0):
+    if len(diff) == 0:
         return None
 
     cleaned_diff = remove_trademark_false_positives(diff)
 
-    if (len(cleaned_diff) == 0):
+    if len(cleaned_diff) == 0:
         return None
 
     changes = {}
@@ -186,35 +189,38 @@ def check_for_changes(last_stored_items, scraped_items):
         if difference == "dictionary_item_removed":
             removed_items = []
             for item in diff[difference]:
-                removed_items.append(
-                    {item[6:-2]: last_stored_items[item[6:-2]]})
+                removed_items.append({item[6:-2]: last_stored_items[item[6:-2]]})
             changes["Removed Items"] = removed_items
         # if difference is changed
         if difference == "values_changed":
             changed_items = []
             for item in diff[difference]:
                 changed_items.append(
-                    {item[6:-2]: f'{diff[difference][item]["new_value"]} (Old value: {diff[difference][item]["old_value"]})'})
+                    {
+                        item[
+                            6:-2
+                        ]: f'{diff[difference][item]["new_value"]} (Old value: {diff[difference][item]["old_value"]})'
+                    }
+                )
             changes["Changed Items"] = changed_items
 
     return changes
 
 
 def get_changes():
-    """ Function that returns the changes from database """
+    """Function that returns the changes from database"""
 
     last_change_row_object = Changes.query.order_by(Changes.id.desc()).first()
     last_change = {}
     for column in last_change_row_object.__table__.columns:
         if column.name != "id":
-            last_change[column.name] = getattr(
-                last_change_row_object, column.name)
+            last_change[column.name] = getattr(last_change_row_object, column.name)
 
     return last_change
 
 
 def scrape_mynintendo(current_items):
-    """ Function that calls scraping function and updates database if changes were found"""
+    """Function that calls scraping function and updates database if changes were found"""
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
 
@@ -230,11 +236,11 @@ def scrape_mynintendo(current_items):
         db.session.rollback()
         print(str(e))
         raise DatabaseError(
-            "Database error occurred while updating database for changes.")
+            "Database error occurred while updating database for changes."
+        )
     except Exception as e:
         print(str(e))
-        raise CustomError(
-            e, "Error occurred while updating database for changes.")
+        raise CustomError(e, "Error occurred while updating database for changes.")
 
     if not changes:
         changes = "No changes."
@@ -243,7 +249,7 @@ def scrape_mynintendo(current_items):
 
 
 def message_discord(changes):
-    """ Function that calls Discord webhook to message user of changes on MyNintendo Rewards"""
+    """Function that calls Discord webhook to message user of changes on MyNintendo Rewards"""
     discord_url = f"https://discord.com/api/webhooks/{os.environ['WEBHOOK_ID']}/{os.environ['WEBHOOK_TOKEN']}"
     data = {}
 
@@ -260,11 +266,12 @@ def message_discord(changes):
         embed_obj["description"] = description
         output_embed.append(embed_obj)
 
-    data['content'] = output_message
-    data['embeds'] = output_embed
+    data["content"] = output_message
+    data["embeds"] = output_embed
 
-    result = requests.post(discord_url, json=data, headers={
-                           "Content-Type": "application/json"})
+    result = requests.post(
+        discord_url, json=data, headers={"Content-Type": "application/json"}
+    )
 
     try:
         result.raise_for_status()
@@ -275,11 +282,9 @@ def message_discord(changes):
 
 
 def delete_old_records():
-    """ Function that deletes expired database records """
-    expired_listings = Listings.query.filter(
-        Listings.expiration <= datetime.utcnow())
-    expired_changes = Changes.query.filter(
-        Changes.expiration <= datetime.utcnow())
+    """Function that deletes expired database records"""
+    expired_listings = Listings.query.filter(Listings.expiration <= datetime.utcnow())
+    expired_changes = Changes.query.filter(Changes.expiration <= datetime.utcnow())
     deleted_listings = expired_listings.delete(synchronize_session=False)
     deleted_changes = expired_changes.delete(synchronize_session=False)
     try:
@@ -287,8 +292,7 @@ def delete_old_records():
     except SQLAlchemyError as e:
         db.session.rollback()
         print(str(e))
-        raise DatabaseError(
-            "Database error occurred while trying to delete records.")
+        raise DatabaseError("Database error occurred while trying to delete records.")
 
     deleted = deleted_listings + deleted_changes
     return deleted

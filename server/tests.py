@@ -6,7 +6,10 @@ from bs4 import BeautifulSoup
 
 from main import get_items
 from errors import CSSTagSelectorError
-from helpers.calculate_expiration_date import calculate_expiration_date, DateTimeProvider
+from helpers.calculate_expiration_date import (
+    calculate_expiration_date,
+    DateTimeProvider,
+)
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
 from helpers.index_of_common_strings import index_of_common_strings
 from helpers.remove_trademark_symbols import remove_trademark_symbols
@@ -31,14 +34,14 @@ class TestCalculateExpDate(TestCase):
 
 class TestIndexOfCommonStrings(TestCase):
     def test_index_of_common_strings(self):
-        list1 = ['apple', 'banana', 'orange']
-        list2 = ['kiwi', 'banana', 'orange']
+        list1 = ["apple", "banana", "orange"]
+        list2 = ["kiwi", "banana", "orange"]
         result = index_of_common_strings(list1, list2)
         self.assertEqual(result, ([1, 2], [1, 2]))
 
     def test_index_of_common_strings_no_common_strings(self):
-        list1 = ['apple', 'banana', 'orange']
-        list2 = ['kiwi', 'grape', 'pear']
+        list1 = ["apple", "banana", "orange"]
+        list2 = ["kiwi", "grape", "pear"]
         result = index_of_common_strings(list1, list2)
         self.assertEqual(result, ([], []))
 
@@ -49,8 +52,8 @@ class TestIndexOfCommonStrings(TestCase):
         self.assertEqual(result, ([], []))
 
     def test_index_of_common_strings_one_empty_list(self):
-        list1 = ['apple', 'banana', 'orange']
-        list2 = ['kiwi', 'banana', 'apple']
+        list1 = ["apple", "banana", "orange"]
+        list2 = ["kiwi", "banana", "apple"]
         result = index_of_common_strings(list1, list2)
         self.assertEqual(result, ([0, 1], [2, 1]))
 
@@ -59,7 +62,7 @@ class TestRemoveTrademarkSymbols(TestCase):
     def test_remove_trademark_symbols(self):
         input_list = ["Apple™", "Banana", "Orange™"]
         result = remove_trademark_symbols(input_list)
-        self.assertEqual(result, ['Apple', 'Banana', 'Orange'])
+        self.assertEqual(result, ["Apple", "Banana", "Orange"])
 
     def test_remove_trademark_symbols_empty_list(self):
         input_list = []
@@ -69,48 +72,44 @@ class TestRemoveTrademarkSymbols(TestCase):
     def test_remove_trademark_symbols_no_trademark_symbols(self):
         input_list = ["Apple", "Banana", "Orange"]
         result = remove_trademark_symbols(input_list)
-        self.assertEqual(result, ['Apple', 'Banana', 'Orange'])
+        self.assertEqual(result, ["Apple", "Banana", "Orange"])
 
 
 class TestRemoveTrademarkFalsePositives(TestCase):
     def test_remove_trademark_false_positives(self):
         differences = {
             "dictionary_item_added": ["Apple™", "Banana", "Orange™"],
-            "dictionary_item_removed": ["Apple", "Banana™", "Kiwi"]
+            "dictionary_item_removed": ["Apple", "Banana™", "Kiwi"],
         }
         result = remove_trademark_false_positives(differences)
-        self.assertEqual(result, {'dictionary_item_added': [
-                         'Orange™'], 'dictionary_item_removed': ['Kiwi']})
+        self.assertEqual(
+            result,
+            {"dictionary_item_added": ["Orange™"], "dictionary_item_removed": ["Kiwi"]},
+        )
 
     def test_remove_trademark_false_positives_out_of_order(self):
         differences = {
             "dictionary_item_added": ["Apple™", "Banana", "Orange™", "Kiwi™"],
-            "dictionary_item_removed": ["Apple", "Banana™", "Kiwi"]
+            "dictionary_item_removed": ["Apple", "Banana™", "Kiwi"],
         }
         result = remove_trademark_false_positives(differences)
-        self.assertEqual(result, {'dictionary_item_added': [
-                         'Orange™']})
+        self.assertEqual(result, {"dictionary_item_added": ["Orange™"]})
 
     def test_remove_trademark_false_positives_no_common_strings(self):
         differences = {
             "dictionary_item_added": ["Apple™", "Banana", "Orange™"],
-            "dictionary_item_removed": ["Kiwi", "Grape", "Pear"]
+            "dictionary_item_removed": ["Kiwi", "Grape", "Pear"],
         }
         result = remove_trademark_false_positives(differences)
         self.assertEqual(result, differences)
 
     def test_remove_trademark_false_positives_empty_lists(self):
-        differences = {
-            "dictionary_item_added": [],
-            "dictionary_item_removed": []
-        }
+        differences = {"dictionary_item_added": [], "dictionary_item_removed": []}
         result = remove_trademark_false_positives(differences)
         self.assertEqual(result, differences)
 
     def test_remove_trademark_false_positives_values_changed(self):
-        differences = {
-            "values_changed": {'root[2]': {'new_value': 4, 'old_value': 2}}
-        }
+        differences = {"values_changed": {"root[2]": {"new_value": 4, "old_value": 2}}}
         result = remove_trademark_false_positives(differences)
         self.assertEqual(result, differences)
 
@@ -120,11 +119,11 @@ class TestFindItemsFunction(TestCase):
         self.mock_response = "<html></html>"  # Simulate no items found
 
         with self.assertRaises(CSSTagSelectorError) as cm:
-            self.items = find_items(BeautifulSoup(
-                self.mock_response, 'lxml'), "sc-1bsju6x-1")
+            self.items = find_items(
+                BeautifulSoup(self.mock_response, "lxml"), "sc-1bsju6x-1"
+            )
         exception_message = str(cm.exception)
-        self.assertEqual(
-            exception_message, "The CSS tag for items have changed.")
+        self.assertEqual(exception_message, "The CSS tag for items have changed.")
 
 
 class TestCheckItemsFunction(TestCase):
@@ -232,14 +231,17 @@ class TestCheckItemsFunction(TestCase):
                 </body>
             </html>
         """
-        self.items = find_items(BeautifulSoup(
-            self.mock_response, 'lxml'), "sc-1bsju6x-1")
+        self.items = find_items(
+            BeautifulSoup(self.mock_response, "lxml"), "sc-1bsju6x-1"
+        )
 
         item_costs = get_items(self.items)
-        item_costs['Item 1 (Normal)'] = item_costs['Item 1 (Normal)'].strip()
+        item_costs["Item 1 (Normal)"] = item_costs["Item 1 (Normal)"].strip()
 
-        self.assertEqual(item_costs, {'Item 1 (Normal)': '800 Platinum Points',
-                         'Item 2 (Sold Out)': 'Sold Out'})
+        self.assertEqual(
+            item_costs,
+            {"Item 1 (Normal)": "800 Platinum Points", "Item 2 (Sold Out)": "Sold Out"},
+        )
 
     def test_get_items_css_price_error(self):
         self.mock_response = """
@@ -296,15 +298,15 @@ class TestCheckItemsFunction(TestCase):
                 </body>
             </html>
         """
-        self.items = find_items(BeautifulSoup(
-            self.mock_response, 'lxml'), "sc-1bsju6x-1")
+        self.items = find_items(
+            BeautifulSoup(self.mock_response, "lxml"), "sc-1bsju6x-1"
+        )
 
         with self.assertRaises(CSSTagSelectorError) as cm:
             get_items(self.items)
         exception_message = str(cm.exception)
-        self.assertEqual(
-            exception_message, "The CSS tag for stock has changed.")
+        self.assertEqual(exception_message, "The CSS tag for stock has changed.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
