@@ -5,7 +5,7 @@ from errors import CustomError
 check_api = Blueprint("check", __name__)
 
 
-@check_api.route('/check-fly')
+@check_api.route("/check-fly")
 def check_fly():
     """
     Check if the 'fly' component of the API is running.

@@ -5,25 +5,34 @@ from flask_cors import CORS
 from selenium.common.exceptions import TimeoutException
 
 from models import db, connect_db
-from main import scrape_mynintendo, message_discord, get_items, get_changes, load_items, get_item_images
+from main import (
+    scrape_mynintendo,
+    message_discord,
+    get_items,
+    get_changes,
+    load_items,
+    get_item_images,
+)
 from errors import CustomError, CSSTagSelectorError
 from routes.check_api import check_api
 from routes.main_api import main_api
 
 import dotenv
+
 dotenv.load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 app.json.sort_keys = False
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ['DATABASE_URL'].replace("postgres://", "postgresql://"))
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"].replace(
+    "postgres://", "postgresql://"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ECHO"] = False
 # need below line to keep db connection active
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True}
+app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
 
 connect_db(app)
 
@@ -31,7 +40,7 @@ app.register_blueprint(main_api, url_prefix="/api")
 app.register_blueprint(check_api, url_prefix="/api")
 
 
-@app.get('/')
+@app.get("/")
 def display_scrape_summary():
     """
     Displays a summary of the scrape, including current listings, images, recent changes, and the last change.
@@ -58,7 +67,7 @@ def display_scrape_summary():
         "current_listings": items,
         "images": images,
         "recent_change": scrape_results,
-        "last_change": last_change
+        "last_change": last_change,
     }
     return jsonify(display)
 
@@ -82,7 +91,6 @@ def handle_error(error):
         response = {
             "message": f"{error}",
         }
-    
 
     return jsonify(response), 500
 
