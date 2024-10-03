@@ -57,7 +57,7 @@ def load_items():
     # Add a check for a see more button to load more items
 
     parent_div = driver.find_element(
-        By.CSS_SELECTOR, f'div.sc-1dskkk7-1')
+        By.CSS_SELECTOR, 'div.sc-1dskkk7-1')
 
     child_divs = parent_div.find_elements(By.CSS_SELECTOR, ':scope > div')
     logging.info(f"Found {len(child_divs)} child divs.")
@@ -81,7 +81,6 @@ def load_items():
             else:
                 logging.error("'See All' button is not visible.")
 
-            logging.info(load_more_button.get_attribute("outerHTML"))
             driver.execute_script("arguments[0].click();", load_more_button)
             logging.info("'See All' button clicked.")
             # Add a delay to give enough time for the items to load
