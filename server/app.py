@@ -1,8 +1,10 @@
 import os
-
-from flask import Flask, jsonify
-from flask_cors import CORS
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from selenium.common.exceptions import TimeoutException
+from dotenv import load_dotenv
 
 from models import db, connect_db
 from main import (
@@ -17,27 +19,44 @@ from errors import CustomError, CSSTagSelectorError
 from routes.check_api import check_api
 from routes.main_api import main_api
 
-import dotenv
+load_dotenv()
 
-dotenv.load_dotenv()
 
-app = Flask(__name__)
-CORS(app)
+@asynccontextmanager
+async def lifespan(app):
+    connect_db(app)
+    db.create_all()
+    yield
+    await app.state.db.close()
 
-app.json.sort_keys = False
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"].replace(
+
+app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"].replace(
+#     "postgres://", "postgresql://"
+# )
+# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# app.config["SQLALCHEMY_ECHO"] = False
+# # need below line to keep db connection active
+# app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True}
+# app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
+
+app.state.database_url = os.environ["DATABASE_URL"].replace(
     "postgres://", "postgresql://"
 )
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ECHO"] = False
-# need below line to keep db connection active
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True}
-app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
+app.state.engine_options = {"pool_pre_ping": True}
 
-connect_db(app)
 
-app.register_blueprint(main_api, url_prefix="/api")
-app.register_blueprint(check_api, url_prefix="/api")
+app.include_router(main_api, prefix="/api")
+app.include_router(check_api, prefix="/api")
 
 
 @app.get("/")
@@ -69,42 +88,29 @@ def display_scrape_summary():
         "recent_change": scrape_results,
         "last_change": last_change,
     }
-    return jsonify(display)
+    return display
 
 
-@app.errorhandler(404)
-def handle_not_found_error(error):
-    response = {"message": "Resource not found."}
-    return jsonify(response), 404
+@app.exception_handler(404)
+async def not_found_error_handler(request: Request, exc: HTTPException):
+    return JSONResponse(status_code=404, content={"message": "Resource not found."})
 
 
-@app.errorhandler(Exception)
-def handle_error(error):
-    if isinstance(error, CustomError):
-        response = {"message": str(error)}
-    elif isinstance(error, CSSTagSelectorError):
-        response = {"message": str(error)}
-        return jsonify(response), 503
-    elif isinstance(error, TimeoutException):
-        response = {"message": str(error)[9:-1]}
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    if isinstance(exc, CustomError):
+        return JSONResponse(status_code=400, content={"message": str(exc)})
+    elif isinstance(exc, CSSTagSelectorError):
+        return JSONResponse(status_code=503, content={"message": str(exc)})
+    elif isinstance(exc, TimeoutException):
+        return JSONResponse(status_code=500, content={"message": str(exc)[9:-1]})
     else:
-        response = {
-            "message": f"{error}",
-        }
-
-    return jsonify(response), 500
+        return JSONResponse(status_code=500, content={"message": f"{exc}"})
 
 
-@app.after_request
-def add_header(response):
-    """Add non-caching headers on every request."""
-
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-    response.cache_control.no_store = True
-    response.cache_control.no_cache = True
-    response.cache_control.must_revalidate = True
+# Middleware for response headers
+@app.middleware("http")
+async def add_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     return response
-
-
-with app.app_context():
-    db.create_all()
