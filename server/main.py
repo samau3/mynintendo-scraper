@@ -1,9 +1,8 @@
 import os
 import logging
 import time
-
+import asyncio
 from bs4 import BeautifulSoup
-
 import requests
 from deepdiff import DeepDiff
 from models import db, Listings, Changes
@@ -11,18 +10,9 @@ from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from errors import DatabaseError, CSSTagSelectorError, CustomError
 import re
-
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
-
+from playwright.sync_api import sync_playwright
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
 from helpers.find_items import find_items
-
 import dotenv
 
 dotenv.load_dotenv()
@@ -31,85 +21,43 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-
 MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
 ITEMS_CSS_TAG = "VoZI3"
-
 PARENT_CONTAINER_OF_PRODUCTS_CSS_TAG = "sc-1dskkk7-1"
 EXPECTED_CHILD_DIV_COUNT = 2
 
-options = webdriver.ChromeOptions()
-options.add_argument("--headless")
-options.add_argument("--window-size=1920,1080")
-options.add_argument("--disable-gpu")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
-
-
 def load_items():
-    """Function to load a webpage and wait for a specific tag to load"""
-    driver = webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()), options=options
-    )
-    driver.get(MYNINTENDO_URL)
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)),
-        message="Scraping timedout, CSS tags need to be updated.",
-    )
-
-    # Add a check for a see more button to load more items
-
-    parent_div = driver.find_element(By.CSS_SELECTOR, "div.sc-1dskkk7-1")
-
-    child_divs = parent_div.find_elements(By.CSS_SELECTOR, ":scope > div")
-    logging.info(f"Found {len(child_divs)} child divs.")
-
-    # Check if the number of child divs is greater than usual (e.g., expecting more than a certain number)
-    if len(child_divs) > EXPECTED_CHILD_DIV_COUNT:
-        # Break the loop if the number of child divs is not greater than expected
-
+    """Function to load a webpage and wait for a specific tag to load using Playwright"""
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, args=[
+            '--no-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--window-size=1920,1080'
+        ])
+        page = browser.new_page()
         try:
-            logging.info("Found more items to load.")
-            load_more_button = WebDriverWait(driver, 3).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.CSS_SELECTOR,
-                        "div.sc-1egu3fv-1.cCkfGx button.MFcmt._3LMnG.xN-5A",
-                    )
-                ),
-                message="Scraping timedout, CSS tag for 'See All' button needs to be updated.",
-            )
-            driver.execute_script(
-                "arguments[0].scrollIntoView(true);", load_more_button
-            )
-
-            if load_more_button.is_displayed():
-                logging.info("'See All' button is visible.")
-            else:
-                logging.error("'See All' button is not visible.")
-
-            driver.execute_script("arguments[0].click();", load_more_button)
-            logging.info("'See All' button clicked.")
-            # Add a delay to give enough time for the items to load
-            time.sleep(3)
-            # Wait for additional items to load
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_all_elements_located((By.CLASS_NAME, ITEMS_CSS_TAG)),
-                message="Scraping timedout, CSS tags need to be updated.",
-            )
-
-            new_child_divs = parent_div.find_elements(By.CSS_SELECTOR, ":scope > div")
-            logging.info(
-                f"Number of child divs after clicking 'See All': {len(new_child_divs)}"
-            )
-
-        except TimeoutException as e:
-            logging.error(e.msg)
-
-    soup = BeautifulSoup(parent_div.get_attribute("outerHTML"), "lxml")
-
-    item_elements = find_items(soup, ITEMS_CSS_TAG)
-    return item_elements
+            page.set_default_timeout(30000)  # 30 seconds
+            page.goto(MYNINTENDO_URL, wait_until='networkidle')
+            page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=20000)
+            # Check for "See All" button and click if present
+            try:
+                see_all_button = page.query_selector("div.sc-1egu3fv-1.cCkfGx button.MFcmt._3LMnG.xN-5A")
+                if see_all_button and see_all_button.is_visible():
+                    see_all_button.click()
+                    page.wait_for_load_state('networkidle')
+                    page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=10000)
+            except Exception as e:
+                logging.info(f"No 'See All' button found or already clicked: {e}")
+            parent_div = page.query_selector("div.sc-1dskkk7-1")
+            if not parent_div:
+                raise CSSTagSelectorError("Parent container not found")
+            html_content = parent_div.inner_html()
+            soup = BeautifulSoup(html_content, "lxml")
+            item_elements = find_items(soup, ITEMS_CSS_TAG)
+            return item_elements
+        finally:
+            browser.close()
 
 
 def get_items(items):

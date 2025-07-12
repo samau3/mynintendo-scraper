@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, jsonify
 from flask_cors import CORS
-from selenium.common.exceptions import TimeoutException
+from playwright.async_api import TimeoutError
 
 from models import db, connect_db
 from main import (
@@ -85,7 +85,7 @@ def handle_error(error):
     elif isinstance(error, CSSTagSelectorError):
         response = {"message": str(error)}
         return jsonify(response), 503
-    elif isinstance(error, TimeoutException):
+    elif isinstance(error, TimeoutError):
         response = {"message": str(error)[9:-1]}
     else:
         response = {
