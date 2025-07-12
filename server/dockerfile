@@ -11,13 +11,12 @@ COPY . /server
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install Playwright browsers
+RUN apt-get update && apt-get install -y wget curl gnupg
+RUN pip install playwright && playwright install --with-deps
+
 # debconf to be non-interactive
 ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get install -y wget
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
-    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-RUN apt-get update && apt-get -y install google-chrome-stable
 
 EXPOSE 8080
 
