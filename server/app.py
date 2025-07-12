@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, jsonify
 from flask_cors import CORS
-from selenium.common.exceptions import TimeoutException
+from playwright.async_api import TimeoutError
 
 from models import db, connect_db
 from main import (
@@ -26,7 +26,7 @@ CORS(app)
 
 app.json.sort_keys = False
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"].replace(
-    "postgres://", "postgresql://"
+    "postgres://", "postgresql+psycopg://"
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = False
@@ -85,7 +85,7 @@ def handle_error(error):
     elif isinstance(error, CSSTagSelectorError):
         response = {"message": str(error)}
         return jsonify(response), 503
-    elif isinstance(error, TimeoutException):
+    elif isinstance(error, TimeoutError):
         response = {"message": str(error)[9:-1]}
     else:
         response = {
