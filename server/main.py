@@ -53,12 +53,9 @@ def load_items():
             'Connection': 'keep-alive',
         })
         try:
-            page.set_default_timeout(28000)  # 28 seconds - use most of the 30s limit
-            # Navigate as fast as possible
-            page.goto(MYNINTENDO_URL, wait_until='commit', timeout=10000)
-            # Give JavaScript time to load the content
-            page.wait_for_timeout(5000)  # Wait 5 seconds for JS to execute
-            
+            page.set_default_timeout(30000)  # 30 seconds
+            # Navigate and wait for page to load, then give JavaScript time
+            page.goto(MYNINTENDO_URL, wait_until='load', timeout=15000)
             # Wait for JavaScript to load the content
             try:
                 page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=15000)
