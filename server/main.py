@@ -33,7 +33,14 @@ def load_items():
             '--no-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu',
-            '--window-size=1920,1080'
+            '--window-size=1920,1080',
+            '--disable-features=VizDisplayCompositor',
+            '--disable-extensions',
+            '--disable-plugins',
+            '--disable-images',  # Skip loading images for speed
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
         ])
         page = browser.new_page()
         try:
