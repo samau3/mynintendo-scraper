@@ -54,12 +54,8 @@ def load_items():
         })
         try:
             page.set_default_timeout(20000)  # 20 seconds
-            # For JavaScript-loaded content, use load event then wait for specific elements
-            try:
-                page.goto(MYNINTENDO_URL, wait_until='load', timeout=15000)
-            except Exception as e:
-                logging.warning(f"load failed, trying domcontentloaded: {e}")
-                page.goto(MYNINTENDO_URL, wait_until='domcontentloaded', timeout=10000)
+            # Navigate once with load event for JavaScript content
+            page.goto(MYNINTENDO_URL, wait_until='load', timeout=15000)
             
             # Wait for JavaScript to load the content
             try:
