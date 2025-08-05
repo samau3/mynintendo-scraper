@@ -33,7 +33,7 @@ def load_items():
             '--no-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu',
-            '--disable-web-security',
+            '--window-size=1920,1080',
             '--disable-features=VizDisplayCompositor',
             '--disable-extensions',
             '--disable-plugins',
@@ -41,53 +41,21 @@ def load_items():
             '--disable-background-timer-throttling',
             '--disable-backgrounding-occluded-windows',
             '--disable-renderer-backgrounding',
-            '--disable-background-networking',
-            '--window-size=1920,1080'
         ])
         page = browser.new_page()
-        # Optimize page for speed
-        page.set_extra_http_headers({
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive',
-        })
         try:
             page.set_default_timeout(30000)  # 30 seconds
-            # Navigate and wait for page to load, then give JavaScript time
-            page.goto(MYNINTENDO_URL, wait_until='load', timeout=25000)
-            # Wait for JavaScript to load the content
+            page.goto(MYNINTENDO_URL, wait_until='networkidle')
+            page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=20000)
+            # Check for "See All" button and click if present
             try:
-                page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=15000)
-            except Exception as e:
-                logging.warning(f"Timeout waiting for {ITEMS_CSS_TAG}, trying networkidle: {e}")
-                # Last resort: wait for network to be idle
-                try:
-                    page.wait_for_load_state('networkidle', timeout=15000)
-                except Exception as e2:
-                    logging.warning(f"networkidle also failed: {e2}")
-
-            # Check for "See All" button - it may or may not exist
-            # If it exists, we must process it. If it doesn't exist, all items are already visible
-            try:
-                # Use a shorter timeout to quickly check if button exists
-                see_all_button = page.wait_for_selector("button:has-text('See all')", timeout=3000)
+                see_all_button = page.query_selector("button:has-text('See all')")
                 if see_all_button and see_all_button.is_visible():
-                    logging.info("Found 'See All' button, clicking to load all items")
                     see_all_button.click()
-                    # Wait for the content to load after clicking
-                    page.wait_for_load_state('load', timeout=25000)
-                    page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=25000)
-                    logging.info("Successfully loaded all items after clicking 'See All'")
-                else:
-                    logging.warning("'See All' button found but not visible - this may indicate incomplete loading")
-                    raise Exception("'See All' button exists but is not visible - cannot proceed safely")
+                    page.wait_for_load_state('networkidle')
+                    page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=10000)
             except Exception as e:
-                if "Timeout" in str(e):
-                    logging.info("No 'See All' button found - all items are already visible")
-                else:
-                    logging.error(f"Failed to process 'See All' button: {e}")
-                    raise Exception(f"Could not process 'See All' button. This would result in incomplete data. Error: {e}")
+                logging.info(f"No 'See All' button found or already clicked: {e}")
             parent_div = page.query_selector("div.sc-1dskkk7-1")
             if not parent_div:
                 raise CSSTagSelectorError("Parent container not found")
