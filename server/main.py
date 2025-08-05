@@ -54,18 +54,23 @@ def load_items():
         })
         try:
             page.set_default_timeout(20000)  # 20 seconds
-            # Try faster navigation first
+            # For JavaScript-loaded content, use load event then wait for specific elements
             try:
-                page.goto(MYNINTENDO_URL, wait_until='domcontentloaded', timeout=15000)
+                page.goto(MYNINTENDO_URL, wait_until='load', timeout=15000)
             except Exception as e:
-                logging.warning(f"domcontentloaded failed, trying commit: {e}")
-                page.goto(MYNINTENDO_URL, wait_until='commit', timeout=10000)
+                logging.warning(f"load failed, trying domcontentloaded: {e}")
+                page.goto(MYNINTENDO_URL, wait_until='domcontentloaded', timeout=10000)
             
-            # Try to wait for selector, but don't fail if it takes too long
+            # Wait for JavaScript to load the content
             try:
-                page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=10000)
+                page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=12000)
             except Exception as e:
-                logging.warning(f"Timeout waiting for {ITEMS_CSS_TAG}, continuing anyway: {e}")
+                logging.warning(f"Timeout waiting for {ITEMS_CSS_TAG}, trying networkidle: {e}")
+                # Last resort: wait for network to be idle
+                try:
+                    page.wait_for_load_state('networkidle', timeout=8000)
+                except Exception as e2:
+                    logging.warning(f"networkidle also failed: {e2}")
             
             # Check for "See All" button and click if present
             try:
