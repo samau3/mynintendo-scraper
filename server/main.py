@@ -53,13 +53,12 @@ def load_items():
             'Connection': 'keep-alive',
         })
         try:
-            page.set_default_timeout(20000)  # 20 seconds
-            # Navigate once with load event for JavaScript content
+            page.set_default_timeout(30000)  # 30 seconds
+            # Navigate and wait for page to load, then give JavaScript time
             page.goto(MYNINTENDO_URL, wait_until='load', timeout=15000)
-            
             # Wait for JavaScript to load the content
             try:
-                page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=12000)
+                page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=15000)
             except Exception as e:
                 logging.warning(f"Timeout waiting for {ITEMS_CSS_TAG}, trying networkidle: {e}")
                 # Last resort: wait for network to be idle
