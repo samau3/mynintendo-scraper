@@ -38,6 +38,10 @@ def load_items():
             '--disable-extensions',
             '--disable-plugins',
             '--disable-images',  # Skip loading images for speed
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
+            '--disable-background-networking',
             '--window-size=1920,1080'
         ])
         page = browser.new_page()
@@ -49,16 +53,35 @@ def load_items():
             'Connection': 'keep-alive',
         })
         try:
-            page.set_default_timeout(25000)  # 25 seconds
-            page.goto(MYNINTENDO_URL, wait_until='domcontentloaded')  # Faster than networkidle
-            page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=15000)
+            page.set_default_timeout(20000)  # 20 seconds
+            # For JavaScript-loaded content, use load event then wait for specific elements
+            try:
+                page.goto(MYNINTENDO_URL, wait_until='load', timeout=15000)
+            except Exception as e:
+                logging.warning(f"load failed, trying domcontentloaded: {e}")
+                page.goto(MYNINTENDO_URL, wait_until='domcontentloaded', timeout=10000)
+            
+            # Wait for JavaScript to load the content
+            try:
+                page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=12000)
+            except Exception as e:
+                logging.warning(f"Timeout waiting for {ITEMS_CSS_TAG}, trying networkidle: {e}")
+                # Last resort: wait for network to be idle
+                try:
+                    page.wait_for_load_state('networkidle', timeout=8000)
+                except Exception as e2:
+                    logging.warning(f"networkidle also failed: {e2}")
+            
             # Check for "See All" button and click if present
             try:
                 see_all_button = page.query_selector("button:has-text('See all')")
                 if see_all_button and see_all_button.is_visible():
                     see_all_button.click()
-                    page.wait_for_load_state('domcontentloaded', timeout=5000)  # Much faster
-                    page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=5000)
+                    try:
+                        page.wait_for_load_state('domcontentloaded', timeout=3000)
+                        page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=3000)
+                    except Exception as e:
+                        logging.warning(f"Timeout after clicking See All, continuing: {e}")
             except Exception as e:
                 logging.info(f"No 'See All' button found or already clicked: {e}")
             parent_div = page.query_selector("div.sc-1dskkk7-1")
