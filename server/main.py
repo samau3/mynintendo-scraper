@@ -55,30 +55,36 @@ def load_items():
         try:
             page.set_default_timeout(30000)  # 30 seconds
             # Navigate and wait for page to load, then give JavaScript time
-            page.goto(MYNINTENDO_URL, wait_until='load', timeout=15000)
+            page.goto(MYNINTENDO_URL, wait_until='load', timeout=25000)
             # Wait for JavaScript to load the content
             try:
-                page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=15000)
+                page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=25000)
             except Exception as e:
                 logging.warning(f"Timeout waiting for {ITEMS_CSS_TAG}, trying networkidle: {e}")
                 # Last resort: wait for network to be idle
                 try:
-                    page.wait_for_load_state('networkidle', timeout=8000)
+                    page.wait_for_load_state('networkidle', timeout=25000)
                 except Exception as e2:
                     logging.warning(f"networkidle also failed: {e2}")
             
-            # Check for "See All" button and click if present
+            # ALWAYS check for "See All" button and click if present
+            # This ensures we get the complete list every time
             try:
-                see_all_button = page.query_selector("button:has-text('See all')")
+                # Wait for the "See All" button to appear (with a reasonable timeout)
+                see_all_button = page.wait_for_selector("button:has-text('See all')", timeout=15000)
                 if see_all_button and see_all_button.is_visible():
+                    logging.info("Found 'See All' button, clicking to load all items")
                     see_all_button.click()
                     try:
-                        page.wait_for_load_state('domcontentloaded', timeout=3000)
-                        page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=3000)
+                        page.wait_for_load_state('load', timeout=25000)
+                        page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=25000)
+                        logging.info("Successfully loaded all items after clicking 'See All'")
                     except Exception as e:
                         logging.warning(f"Timeout after clicking See All, continuing: {e}")
+                else:
+                    logging.info("'See All' button found but not visible")
             except Exception as e:
-                logging.info(f"No 'See All' button found or already clicked: {e}")
+                logging.info("No 'See All' button found - all items may already be visible")
             parent_div = page.query_selector("div.sc-1dskkk7-1")
             if not parent_div:
                 raise CSSTagSelectorError("Parent container not found")
