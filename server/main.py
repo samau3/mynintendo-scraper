@@ -33,20 +33,32 @@ def load_items():
             '--no-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu',
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
+            '--disable-extensions',
+            '--disable-plugins',
+            '--disable-images',  # Skip loading images for speed
             '--window-size=1920,1080'
         ])
         page = browser.new_page()
+        # Optimize page for speed
+        page.set_extra_http_headers({
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate',
+            'Connection': 'keep-alive',
+        })
         try:
-            page.set_default_timeout(30000)  # 30 seconds
-            page.goto(MYNINTENDO_URL, wait_until='networkidle')
-            page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=20000)
+            page.set_default_timeout(25000)  # 25 seconds
+            page.goto(MYNINTENDO_URL, wait_until='domcontentloaded')  # Faster than networkidle
+            page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=15000)
             # Check for "See All" button and click if present
             try:
                 see_all_button = page.query_selector("button:has-text('See all')")
                 if see_all_button and see_all_button.is_visible():
                     see_all_button.click()
-                    page.wait_for_load_state('networkidle')
-                    page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=10000)
+                    page.wait_for_load_state('domcontentloaded', timeout=5000)  # Much faster
+                    page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=5000)
             except Exception as e:
                 logging.info(f"No 'See All' button found or already clicked: {e}")
             parent_div = page.query_selector("div.sc-1dskkk7-1")
