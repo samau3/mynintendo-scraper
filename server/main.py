@@ -42,7 +42,7 @@ def load_items():
             page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=20000)
             # Check for "See All" button and click if present
             try:
-                see_all_button = page.query_selector("div.sc-1egu3fv-1.cCkfGx button.MFcmt._3LMnG.xN-5A")
+                see_all_button = page.query_selector("button:has-text('See all')")
                 if see_all_button and see_all_button.is_visible():
                     see_all_button.click()
                     page.wait_for_load_state('networkidle')
