@@ -3,6 +3,9 @@ name: Server Tests
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
 
 jobs:
   test-flask-server:
@@ -27,5 +30,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked
 
+      - name: Lint with ruff
+        run: uv run ruff check .
+
       - name: Run tests
-        run: uv run python tests.py
+        run: uv run pytest
