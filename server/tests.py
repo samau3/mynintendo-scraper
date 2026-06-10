@@ -119,11 +119,9 @@ class TestFindItemsFunction(TestCase):
         self.mock_response = "<html></html>"  # Simulate no items found
 
         with self.assertRaises(CSSTagSelectorError) as cm:
-            self.items = find_items(
-                BeautifulSoup(self.mock_response, "lxml"), "sc-1bsju6x-1"
-            )
+            self.items = find_items(BeautifulSoup(self.mock_response, "lxml"))
         exception_message = str(cm.exception)
-        self.assertEqual(exception_message, "The CSS tag for items have changed.")
+        self.assertEqual(exception_message, "Reward product items not found on page.")
 
 
 class TestCheckItemsFunction(TestCase):
@@ -231,9 +229,7 @@ class TestCheckItemsFunction(TestCase):
                 </body>
             </html>
         """
-        self.items = find_items(
-            BeautifulSoup(self.mock_response, "lxml"), "sc-1bsju6x-1"
-        )
+        self.items = find_items(BeautifulSoup(self.mock_response, "lxml"))
 
         item_costs = get_items(self.items)
         item_costs["Item 1 (Normal)"] = item_costs["Item 1 (Normal)"].strip()
@@ -247,7 +243,7 @@ class TestCheckItemsFunction(TestCase):
         self.mock_response = """
             <html>
                 <body>
-                    <a class="sc-1bsju6x-1">
+                    <a aria-label="Item 1 (Normal)" class="sc-1bsju6x-1">
                         <div class="sc-1bsju6x-4 eJevZe">
                             <div class="sc-1bsju6x-6 irzLJU">
                                 <div class="sc-eg7slj-1 ieWZCg" style="color: rgb(72, 72, 72);">
@@ -298,9 +294,7 @@ class TestCheckItemsFunction(TestCase):
                 </body>
             </html>
         """
-        self.items = find_items(
-            BeautifulSoup(self.mock_response, "lxml"), "sc-1bsju6x-1"
-        )
+        self.items = find_items(BeautifulSoup(self.mock_response, "lxml"))
 
         with self.assertRaises(CSSTagSelectorError) as cm:
             get_items(self.items)

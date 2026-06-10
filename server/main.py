@@ -12,7 +12,7 @@ from errors import DatabaseError, CSSTagSelectorError, CustomError
 import re
 from playwright.sync_api import sync_playwright
 from helpers.remove_trademark_false_positives import remove_trademark_false_positives
-from helpers.find_items import find_items
+from helpers.find_items import find_items, PLATINUM_POINTS_TEST_ID
 import dotenv
 
 dotenv.load_dotenv()
@@ -22,9 +22,8 @@ logging.basicConfig(
 )
 
 MYNINTENDO_URL = "https://www.nintendo.com/store/exclusives/rewards/"
-ITEMS_CSS_TAG = "VoZI3"
-PARENT_CONTAINER_OF_PRODUCTS_CSS_TAG = "sc-1dskkk7-1"
-EXPECTED_CHILD_DIV_COUNT = 2
+PRODUCT_READY_SELECTOR = f'[data-testid="{PLATINUM_POINTS_TEST_ID}"]'
+
 
 def load_items():
     """Function to load a webpage and wait for a specific tag to load using Playwright"""
@@ -46,22 +45,18 @@ def load_items():
         try:
             page.set_default_timeout(30000)  # 30 seconds
             page.goto(MYNINTENDO_URL, wait_until='networkidle')
-            page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=20000)
+            page.wait_for_selector(PRODUCT_READY_SELECTOR, timeout=20000)
             # Check for "See All" button and click if present
             try:
                 see_all_button = page.query_selector("button:has-text('See all')")
                 if see_all_button and see_all_button.is_visible():
                     see_all_button.click()
                     page.wait_for_load_state('networkidle')
-                    page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=10000)
+                    page.wait_for_selector(PRODUCT_READY_SELECTOR, timeout=10000)
             except Exception as e:
                 logging.info(f"No 'See All' button found or already clicked: {e}")
-            parent_div = page.query_selector("div.sc-1dskkk7-1")
-            if not parent_div:
-                raise CSSTagSelectorError("Parent container not found")
-            html_content = parent_div.inner_html()
-            soup = BeautifulSoup(html_content, "lxml")
-            item_elements = find_items(soup, ITEMS_CSS_TAG)
+            soup = BeautifulSoup(page.content(), "lxml")
+            item_elements = find_items(soup)
             return item_elements
         finally:
             browser.close()
