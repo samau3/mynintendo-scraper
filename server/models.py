@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
-from helpers.calculate_expiration_date import calculate_expiration_date
+
 from flask_sqlalchemy import SQLAlchemy
+
+from helpers.calculate_expiration_date import calculate_expiration_date
 
 db = SQLAlchemy()
 

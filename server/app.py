@@ -1,23 +1,22 @@
 import os
 
+import dotenv
 from flask import Flask, jsonify
 from flask_cors import CORS
 from playwright.async_api import TimeoutError
 
-from models import db, connect_db
+from errors import CSSTagSelectorError, CustomError
 from main import (
-    scrape_mynintendo,
-    message_discord,
-    get_items,
     get_changes,
-    load_items,
     get_item_images,
+    get_items,
+    load_items,
+    message_discord,
+    scrape_mynintendo,
 )
-from errors import CustomError, CSSTagSelectorError
+from models import connect_db, db
 from routes.check_api import check_api
 from routes.main_api import main_api
-
-import dotenv
 
 dotenv.load_dotenv()
 

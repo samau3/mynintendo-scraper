@@ -1,6 +1,9 @@
+import logging
+
 from flask import Blueprint, jsonify
-from main import get_items, get_changes, load_items
+
 from errors import CustomError
+from main import get_changes, get_items, load_items
 
 check_api = Blueprint("check", __name__)
 
@@ -17,8 +20,8 @@ def check_fly():
     try:
         return jsonify("API is running.")
     except Exception as err:
-        print(err)
-        raise CustomError("Fly is down.")
+        logging.error("Fly health check failed: %s", err)
+        raise CustomError("Fly is down.") from err
 
 
 @check_api.route("/check-scraping")
@@ -35,8 +38,8 @@ def check_scraping():
         get_items(raw_item_elements)
         return jsonify("API Scraping is running.")
     except Exception as err:
-        print(err)
-        raise CustomError("Scraping function failed.")
+        logging.error("Scraping health check failed: %s", err)
+        raise CustomError("Scraping function failed.") from err
 
 
 @check_api.route("/check-db")
@@ -52,5 +55,5 @@ def check_fly_db():
         get_changes()
         return jsonify("API DB is running.")
     except Exception as err:
-        print(err)
-        raise CustomError("DB function failed.")
+        logging.error("Database health check failed: %s", err)
+        raise CustomError("DB function failed.") from err

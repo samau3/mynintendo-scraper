@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify
+
 from main import (
-    scrape_mynintendo,
-    message_discord,
     delete_old_records,
     get_items,
+    get_latest_listings_summary,
     load_items,
+    message_discord,
+    scrape_mynintendo,
 )
 
 main_api = Blueprint("main", __name__)
@@ -40,6 +42,22 @@ def delete_records():
 
     results = delete_old_records()
     return f"Deleted {results} entries."
+
+
+@main_api.get("/items/latest")
+def get_cached_listings():
+    """
+    Returns the most recent listings from the database without scraping.
+
+    Returns:
+        A JSON response with cached listings, or 404 if no records exist.
+    """
+
+    summary = get_latest_listings_summary()
+    if summary is None:
+        return jsonify({"message": "No cached listings found."}), 404
+
+    return jsonify(summary)
 
 
 @main_api.get("/get-items")
