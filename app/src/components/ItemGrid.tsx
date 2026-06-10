@@ -1,5 +1,5 @@
 import { ItemCard } from "./ItemCard";
-import { IItems } from "../interfaces/interfaces";
+import type { IItems } from "../interfaces/interfaces";
 
 interface ItemGridProps {
   listings: IItems;

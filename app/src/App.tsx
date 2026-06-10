@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
 
 import { MyNintendoScraperAPI } from "./api/myNintendoScraperAPI";
-import { IScrapeResults } from "./interfaces/interfaces";
+import type { IScrapeResults } from "./interfaces/interfaces";
 
 import Items from "./components/Items";
 import ThemeSwitcher from "./components/ThemeSwitcher";

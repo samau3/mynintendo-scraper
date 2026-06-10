@@ -86,7 +86,7 @@ The motivation for this project was automate the process of checking My Nintendo
 - [![PostgreSQL][postgresql]][postgresql-url]
 - [![Python][python]][python-url]
 - [![Flask][flask]][flask-url]
-- [![Selenium][selenium]][selenium-url]
+- [![Playwright][playwright]][playwright-url]
 - [![Tailwind][tailwind]][tailwind-url]
 - [![Github Actions][github-actions]][github-actions-url]
 - [![Docker][docker]][docker-url]
@@ -94,7 +94,6 @@ The motivation for this project was automate the process of checking My Nintendo
 - [![Vercel][vercel]][vercel-url]
 - [BeautifulSoup](https://beautiful-soup-4.readthedocs.io/en/latest/#)
 - [Fly.io](https://fly.io/)
-- [Axios](https://axios-http.com/)
 - [HeroIcons](https://heroicons.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -257,8 +256,8 @@ Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/
 [python-url]: https://www.python.org/
 [flask]: https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white
 [flask-url]: https://flask.palletsprojects.com/en/3.0.x/
-[selenium]: https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=Selenium&logoColor=white
-[selenium-url]: https://www.selenium.dev/
+[playwright]: https://img.shields.io/badge/Playwright-45ba4b?style=for-the-badge&logo=playwright&logoColor=white
+[playwright-url]: https://playwright.dev/
 [tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
 [tailwind-url]: https://tailwindcss.com/
 [github-actions]: https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white

@@ -2,7 +2,7 @@ import ItemGrid from "./ItemGrid";
 import Changes from "./Changes";
 import LoadingSVG from "./LoadingSVG";
 
-import { IScrapeResults } from "../interfaces/interfaces";
+import type { IScrapeResults } from "../interfaces/interfaces";
 
 interface ItemsProps {
   items: IScrapeResults;
