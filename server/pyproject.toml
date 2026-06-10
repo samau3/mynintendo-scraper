@@ -19,5 +19,19 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pycodestyle>=2.12",
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
+    "ruff>=0.9",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
