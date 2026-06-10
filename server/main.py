@@ -26,6 +26,7 @@ ITEMS_CSS_TAG = "VoZI3"
 PARENT_CONTAINER_OF_PRODUCTS_CSS_TAG = "sc-1dskkk7-1"
 EXPECTED_CHILD_DIV_COUNT = 2
 
+
 def load_items():
     """Function to load a webpage and wait for a specific tag to load using Playwright"""
     with sync_playwright() as p:
@@ -56,7 +57,25 @@ def load_items():
                     page.wait_for_selector(f'.{ITEMS_CSS_TAG}', timeout=10000)
             except Exception as e:
                 logging.info(f"No 'See All' button found or already clicked: {e}")
-            parent_div = page.query_selector("div.sc-1dskkk7-1")
+            parent_div = page.query_selector(
+                f"div.{PARENT_CONTAINER_OF_PRODUCTS_CSS_TAG}"
+            )
+            if not parent_div:
+                parent_div = page.evaluate_handle(
+                    """(tag) => {
+                        const spans = document.querySelectorAll(`span.${tag}`);
+                        if (!spans.length) return null;
+                        let ancestor = spans[0].parentElement;
+                        while (ancestor && ancestor !== document.body) {
+                            if (ancestor.querySelectorAll(`span.${tag}`).length === spans.length) {
+                                return ancestor;
+                            }
+                            ancestor = ancestor.parentElement;
+                        }
+                        return null;
+                    }""",
+                    ITEMS_CSS_TAG,
+                )
             if not parent_div:
                 raise CSSTagSelectorError("Parent container not found")
             html_content = parent_div.inner_html()
