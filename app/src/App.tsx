@@ -69,7 +69,7 @@ function App() {
 
         {shouldShowLoading && (
           <div className="mt-10">
-            <RotatingLines strokeColor="gray" />
+            <RotatingLines color="gray" ariaLabel="loading" />
           </div>
         )}
 
