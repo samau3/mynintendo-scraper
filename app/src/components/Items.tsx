@@ -25,7 +25,7 @@ export default function Items({
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <button
-              className={`m-2 flex max-w-xs flex-1 justify-center p-3 text-sm font-bold uppercase xs:max-h-11 ${
+              className={`xs:max-h-11 m-2 flex max-w-xs flex-1 justify-center p-3 text-sm font-bold uppercase ${
                 loading
                   ? "bg-blue-100 text-blue-400"
                   : "bg-blue-200 text-blue-600"
@@ -35,7 +35,7 @@ export default function Items({
             >
               {loading ? <LoadingSVG /> : "Scrape Again"}
             </button>
-            <button className="m-2 max-w-xs flex-1 rounded-lg bg-blue-200 p-3 text-sm font-bold uppercase text-blue-600">
+            <button className="m-2 max-w-xs flex-1 rounded-lg bg-blue-200 p-3 text-sm font-bold text-blue-600 uppercase">
               <a
                 href="https://www.nintendo.com/store/exclusives/rewards/"
                 target="_blank"

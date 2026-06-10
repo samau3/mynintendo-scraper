@@ -8,8 +8,8 @@ interface ChangesProps {
 
 export default function Changes({ recentChange, lastChange }: ChangesProps) {
   return (
-    <div className="mb-3 grid grid-cols-2 gap-x-3">
-      <div className="flex-1 rounded-md bg-gray-100 bg-opacity-30 p-2 dark:bg-slate-800 dark:bg-opacity-70">
+    <div className="mb-3 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-x-3">
+      <div className="bg-opacity-30 dark:bg-opacity-70 flex-1 rounded-md bg-gray-100 p-2 dark:bg-slate-800">
         <p className="dark:text-slate-300">Latest Scrape Results:</p>
         {typeof recentChange.items === "string" ? (
           <>
@@ -17,7 +17,7 @@ export default function Changes({ recentChange, lastChange }: ChangesProps) {
               {recentChange.items}
             </p>
             <section className="flex flex-col items-center">
-              <p className="mb-6 mt-6 text-lg dark:text-slate-300">
+              <p className="mt-6 mb-6 text-lg dark:text-slate-300">
                 As of{" "}
                 <span className="font-bold">
                   {new Date(recentChange.timestamp).toLocaleString()}
@@ -31,12 +31,20 @@ export default function Changes({ recentChange, lastChange }: ChangesProps) {
           <ChangedItemsList changedItemsData={recentChange.items} />
         )}
       </div>
-      <div className="flex-1 rounded-md bg-gray-100 bg-opacity-30 p-2 dark:bg-slate-800 dark:bg-opacity-70">
+      <div className="bg-opacity-30 dark:bg-opacity-70 flex-1 rounded-md bg-gray-100 p-2 dark:bg-slate-800">
         <p className="dark:text-slate-300">Last Change:</p>
-        <ChangedItemsList changedItemsData={lastChange.items} />
-        <p className="font-bold dark:text-slate-300">
-          From {new Date(lastChange.timestamp).toLocaleString()}
-        </p>
+        {Object.keys(lastChange.items).length > 0 ? (
+          <ChangedItemsList changedItemsData={lastChange.items} />
+        ) : (
+          <p className="text-lg dark:text-slate-300">
+            No changes recorded yet.
+          </p>
+        )}
+        {lastChange.timestamp && (
+          <p className="font-bold dark:text-slate-300">
+            From {new Date(lastChange.timestamp).toLocaleString()}
+          </p>
+        )}
       </div>
     </div>
   );
