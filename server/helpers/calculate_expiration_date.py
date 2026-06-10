@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 class DateTimeProvider:  # Add DateTimeProvider to enable easier testing
     @staticmethod
     def get_utc_now():
         """Returns current UTC timestamp"""
-        return datetime.utcnow()
+        return datetime.now(timezone.utc)
 
 
 def calculate_expiration_date(number_of_days, datetime_provider=None):

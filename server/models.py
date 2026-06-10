@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from helpers.calculate_expiration_date import calculate_expiration_date
 from flask_sqlalchemy import SQLAlchemy
 
@@ -10,7 +10,7 @@ class Listings(db.Model):
     __tablename__ = "item_listings"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
 
@@ -33,7 +33,7 @@ class Changes(db.Model):
     __tablename__ = "changes"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
 

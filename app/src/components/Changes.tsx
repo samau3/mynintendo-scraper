@@ -1,5 +1,5 @@
 import { ChangedItemsList } from "./ChangedItemsList";
-import { IChanges, ILastChange } from "../interfaces/interfaces";
+import type { IChanges, ILastChange } from "../interfaces/interfaces";
 
 interface ChangesProps {
   recentChange: IChanges;

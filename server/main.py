@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import requests
 from deepdiff import DeepDiff
 from models import db, Listings, Changes
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.exc import SQLAlchemyError
 from errors import DatabaseError, CSSTagSelectorError, CustomError
 import re
@@ -238,8 +238,8 @@ def message_discord(changes):
 
 def delete_old_records():
     """Function that deletes expired database records"""
-    expired_listings = Listings.query.filter(Listings.expiration <= datetime.utcnow())
-    expired_changes = Changes.query.filter(Changes.expiration <= datetime.utcnow())
+    expired_listings = Listings.query.filter(Listings.expiration <= datetime.now(timezone.utc))
+    expired_changes = Changes.query.filter(Changes.expiration <= datetime.now(timezone.utc))
     deleted_listings = expired_listings.delete(synchronize_session=False)
     deleted_changes = expired_changes.delete(synchronize_session=False)
     try:

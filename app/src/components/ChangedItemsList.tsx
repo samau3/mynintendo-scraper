@@ -1,4 +1,4 @@
-import { IScrapedItems } from "../interfaces/interfaces";
+import type { IScrapedItems } from "../interfaces/interfaces";
 import { ItemCard } from "./ItemCard";
 
 interface ChangedItemsListProps {
