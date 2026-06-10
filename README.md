@@ -1,270 +1,212 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+# MyNintendo Scraper
 
-<a name="readme-top"></a>
+![Server Tests](https://github.com/samau3/mynintendo-scraper/actions/workflows/python-tests.yml/badge.svg)
+![Frontend CI](https://github.com/samau3/mynintendo-scraper/actions/workflows/frontend-ci.yml/badge.svg)
 
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
+A full-stack monitoring app that scrapes the [My Nintendo rewards store](https://www.nintendo.com/store/exclusives/rewards/) hourly, detects listing changes, persists history in PostgreSQL, and sends Discord alerts.
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
+**[Live Demo](https://mynintendo-scraper.vercel.app/)** · [Report Bug](https://github.com/samau3/mynintendo-scraper/issues) · [Request Feature](https://github.com/samau3/mynintendo-scraper/issues)
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
+## Screenshots
 
-<!-- ![logo](https://user-images.githubusercontent.com/69769431/220485345-82d76424-985e-4948-871a-c847a4f745cb.png) -->
+![Homepage](https://github.com/samau3/mynintendo-scraper/assets/69769431/a4ba18f6-46f1-47aa-b330-809e07b784ed)
 
-<h3 align="center">MyNintendo Scraper</h3>
+## Features
 
-  <p align="center">
-    A webscraper that checks My Nintendo rewards store every hour for changes.
-    <br />
-    <a href="https://github.com/samau3/mynintendo-scraper"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://mynintendo-scraper.vercel.app/">View App</a>
-    ·
-    <a href="https://github.com/samau3/mynintendo-scraper/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/samau3/mynintendo-scraper/issues">Request Feature</a>
-  </p>
-</div>
+- **Headless browser scraping** with Playwright — handles JS-rendered pages and "See all" pagination
+- **Change detection** via DeepDiff with trademark false-positive filtering
+- **Discord webhook notifications** when new, removed, or changed listings are detected
+- **PostgreSQL persistence** with automatic TTL cleanup (7-day listings, 365-day change history)
+- **Hourly automation** via [cron-job.org](https://cron-job.org) hitting the scrape API
+- **Cached read endpoint** for fast UI loads without triggering a scrape on every visit
+- **Themed React dashboard** with dark/light mode and Mario-inspired background animation
+- **CI/CD** — server tests, frontend build, and Fly.io deploy gated on passing tests
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+## Architecture
 
-<!-- ABOUT THE PROJECT -->
+```mermaid
+flowchart LR
+  subgraph client [Frontend_Vercel]
+    ReactApp[React_19_UI]
+  end
+  subgraph server [Backend_Fly_io]
+    FlaskAPI[Flask_API]
+    Scraper[Playwright_Scraper]
+    Diff[DeepDiff_ChangeDetection]
+  end
+  subgraph external [External_Services]
+  Postgres[(PostgreSQL)]
+  Discord[Discord_Webhook]
+  Cron[cron-job.org]
+  end
+  ReactApp -->|GET_api_items_latest| FlaskAPI
+  ReactApp -->|GET_slash_scrape| FlaskAPI
+  Cron -->|hourly_api_scrape| FlaskAPI
+  Cron -->|weekly_api_delete| FlaskAPI
+  FlaskAPI --> Scraper
+  Scraper --> Diff
+  FlaskAPI --> Postgres
+  Diff --> Discord
+```
 
-## About The Project
+**Data flow:** On page load, the React app fetches cached listings from `GET /api/items/latest` (fast, no scrape). Users can trigger a live scrape via "Scrape Again," which calls `GET /` and runs Playwright. Hourly cron jobs call `GET /api/scrape` for automated monitoring. When changes are detected, results are stored in PostgreSQL and a Discord webhook fires.
 
-<div align="center">
+## Tech Stack
 
-![homepage](https://github.com/samau3/mynintendo-scraper/assets/69769431/a4ba18f6-46f1-47aa-b330-809e07b784ed)
+[![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Playwright](https://img.shields.io/badge/Playwright-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
+Also uses BeautifulSoup, DeepDiff, SQLAlchemy, Gunicorn, Vite, and GitHub Actions. Deployed on [Vercel](https://vercel.com/) (frontend) and [Fly.io](https://fly.io/) (API).
 
-</div>
+## API Reference
 
-
-The motivation for this project was automate the process of checking My Nintendo rewards store for new items to reduce the chance of missing out on new listings.
-
-### Built With
-
-- [![Typescript][typescript]][typescript-url]
-- [![React][react.js]][react-url]
-- [![PostgreSQL][postgresql]][postgresql-url]
-- [![Python][python]][python-url]
-- [![Flask][flask]][flask-url]
-- [![Playwright][playwright]][playwright-url]
-- [![Tailwind][tailwind]][tailwind-url]
-- [![Github Actions][github-actions]][github-actions-url]
-- [![Docker][docker]][docker-url]
-- [![Discord][discord]][discord-url]
-- [![Vercel][vercel]][vercel-url]
-- [BeautifulSoup](https://beautiful-soup-4.readthedocs.io/en/latest/#)
-- [Fly.io](https://fly.io/)
-- [HeroIcons](https://heroicons.com/)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- GETTING STARTED -->
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Full scrape + change detection + Discord notification |
+| `GET` | `/api/items/latest` | Cached listings from database (no scrape) |
+| `GET` | `/api/scrape` | Cron-friendly scrape; returns timestamp |
+| `GET` | `/api/delete` | Delete expired database records |
+| `GET` | `/api/get-items` | Scrape and return current items only |
+| `GET` | `/api/check-fly` | API health check |
+| `GET` | `/api/check-scraping` | Scraping functionality health check |
+| `GET` | `/api/check-db` | Database health check |
 
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+### Prerequisites
+
+- Node.js 22+
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/) (`brew install uv` on macOS)
+- PostgreSQL (or use `docker-compose` below)
 
 ### Installation
 
-1. Development Environment Setup
-
-    - You can skip these steps below if you don't plan on submitting changes or features to the repository
-
-    - npm
-      - In the `app/` directory, install the required npm packages:
-      ```sh
-      npm install
-      ```
-    - uv
-      - Install [uv](https://docs.astral.sh/uv/) if you don't have it (`brew install uv` on macOS).
-      - In the `server/` directory, install the required Python packages:
-      ```sh
-      uv sync
-      uv run playwright install chromium
-      ```
-2. Discord Bot messaging
-
-    - This application utilizes a Discord Bot to send an automated message when changes are detected on the store front, which has private keys that cannot be shared. If one wants to replicate this in their copy of this repository, one can start [here](https://discord.com/developers/docs/resources/webhook).
-
-3. Enter your secrets in a `.env` file
-
-    ```env
-    DATABASE_URL=YOUR_DATABASE_URL
-    WEBHOOK_ID=YOUR_WEBHOOK_ID_FROM_DISCORD
-    WEBHOOK_TOKEN=YOUR_WEBHOOK_TOKEN_FROM_DISCORD
-    DISCORD_USER_ID=YOUR_DISCORD_USER_ID
-    ```
-
-4. Starting the application 
+1. Clone the repository and copy environment variables:
 
    ```sh
-    (in the app directory) npm start
-    (in the server directory) uv run flask run
+   cp .env.example .env
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+   Edit `.env` with your `DATABASE_URL`. Discord webhook variables are optional for local development — scraping works without notifications.
 
-<!-- USAGE EXAMPLES -->
+2. **Frontend** (`app/`):
 
-## Usage
+   ```sh
+   cd app
+   npm install
+   npm start
+   ```
 
-### Scraping
+3. **Backend** (`server/`):
 
-<div align="center">
+   ```sh
+   cd server
+   uv sync
+   uv run playwright install chromium
+   uv run flask run
+   ```
 
-</div>
+The frontend runs at `http://localhost:5173` and connects to the API at `http://127.0.0.1:5000`.
 
-Upon accessing the web app, a useEffect hook is ran which scrapes the My Nintendo rewards page for its listings. Then the API checks to see if there are any changes between the items from the most recent scrape result and the previous. If there is a change then:
-  1. The web app will display the changes and store the difference as a new record in the `changes` table of the database. 
-  2. Then it'll send a message via the Discord bot to notify those who are connected to the bot about the changes
-  
-Regardless of a change, the most recently scraped result will be added as a new record in the `listings` table of the database.
+### Docker Compose (optional)
 
-### Automated Scraping
+Run PostgreSQL and the API together:
 
-The whole motivation for creating this web app is that the web scraping is automated. To achieve this, hourly requests are made to the API via [cron-job.org](https://cron-job.org/en/).
+```sh
+cp .env.example .env
+docker compose up --build
+```
 
-### Automated Clean Up
+The API will be available at `http://localhost:5000`. See [server/README.Docker.md](server/README.Docker.md) for production Docker build details.
 
-Since so much data is being stored in the database, a weekly cron job request is made to delete records that have been saved in the database for a week or more. This is handled by keeping track of the timestamps when a listing record is stored and having an additional column, `expiration`, for that record of seven days after its insertion timestamp. Then the request just queries based on the `expiration` column to see if that value is a date older than the time of the deletion API request.
+## Design Decisions
 
-<!-- ROADMAP -->
+- **Playwright over requests** — the Nintendo rewards page is JS-rendered; a headless browser waits for product cards to load before parsing.
+- **DeepDiff for change detection** — compares listing dictionaries and categorizes additions, removals, and value changes.
+- **Trademark false-positive filtering** — Nintendo listings sometimes toggle `™` symbols; a helper filters these so they don't trigger false alerts.
+- **CSS selector fragility** — styled-components generate hashed class names (`Hc9FH`, `EgihB`). The scraper uses regex partial matches and `data-testid`/`aria-label` attributes where possible, and raises `CSSTagSelectorError` (503) when the DOM structure changes.
+
+## Testing
+
+**Server:**
+
+```sh
+cd server
+uv run pytest
+uv run ruff check .
+```
+
+**Frontend:**
+
+```sh
+cd app
+npm run test
+npm run build
+npm run format:check
+```
+
+## Deployment
+
+| Component | Platform | Trigger |
+|-----------|----------|---------|
+| Frontend | Vercel | Auto-deploy on push |
+| API | Fly.io | GitHub Actions on `main` merge to `server/**` (gated on tests) |
+
+Manual Fly.io deploy: `cd server && flyctl deploy --remote-only`
+
+External cron jobs (configured at [cron-job.org](https://cron-job.org)):
+- Hourly: `GET /api/scrape`
+- Weekly: `GET /api/delete`
 
 ## Roadmap
 
 <details>
-<summary> Completed Features </summary>
+<summary>Completed</summary>
 
-- [x] Start a CI/CD Pipeline
-  - [x] Utilize Github Actions to deploy on main branch merge to Fly.io
-- [x] Scrape My Nintendo rewards page
-  - [x] Get current item listings
-- [x] Display any changes to My Nintendo rewards listings
-  - [x] Display what has changed
-  - [x] Display timestamp of when change occurred
-- [x] Display current changes if any
-- [x] Utilize a useEffect to scrape as soon as web app is accessed
-  - [x] Include a timestamp to show when scrape occurred at time of web app loading
-- [x] Improve frontend visuals so it isn't so plain
-  - [x] Added Mario inspired background animation
-  - [x] Include the image of items currently listed on MyNintendo
+- [x] CI/CD pipeline with GitHub Actions
+- [x] Scrape My Nintendo rewards page with Playwright
+- [x] Change detection and Discord notifications
+- [x] React dashboard with themed UI
+- [x] Automated hourly scraping and weekly DB cleanup
+- [x] Unit tests for scraping helpers
+- [x] Pytest migration with route and model tests
+- [x] Cached read endpoint for faster UI loads
+- [x] Frontend and server CI with linting
 
 </details>
 
 <details>
-<summary>Features To Implement</summary>
+<summary>Planned</summary>
 
-- [] Add tests
-  - [] Test routes
-  - [] Test models
-- [] Distribute this app for public use
-- [] An account system
-- [] Refine Discord Bot
-  - [] Add an option/method to add users to be mentioned when a change is detected
-  - [] Add an option to choose which types of changes to be notified for
-  - [] Add a command to call the scrape functions 
+- [ ] Public distribution
+- [ ] User account system
+- [ ] Discord bot refinements (selective notifications, scrape command)
 
 </details>
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTRIBUTING -->
-
 ## Contributing
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the repository a star! Thanks again!
-
 1. Fork the repository
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTACT -->
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Commit your changes
+4. Push and open a Pull Request
 
 ## Contact
 
-Project Link: [https://github.com/samau3/mynintendo-scraper](https://github.com/samau3/mynintendo-scraper)
+**Samuel Au** — [GitHub](https://github.com/samau3) · [Project Repository](https://github.com/samau3/mynintendo-scraper)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## License
 
-<!-- ACKNOWLEDGMENTS -->
+Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ## Acknowledgments
 
-- Thanks to FreeCodeCamp for the BeautifulSoup Webscraping tutorial that helped get this project started
-- Thanks to Hyperplexed for the Mario UI background idea, check out his [tutorial](https://www.youtube.com/watch?v=x872keruUWQ&pp=ygULaHlwZXJwbGV4ZWQ%3D)!
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[product-screenshot]: images/screenshot.png
-[typescript]: https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white
-[typescript-url]: https://www.typescriptlang.org/
-[react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[react-url]: https://reactjs.org/
-[postgresql]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
-[postgresql-url]: https://www.postgresql.org/
-[python]: https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue
-[python-url]: https://www.python.org/
-[flask]: https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white
-[flask-url]: https://flask.palletsprojects.com/en/3.0.x/
-[playwright]: https://img.shields.io/badge/Playwright-45ba4b?style=for-the-badge&logo=playwright&logoColor=white
-[playwright-url]: https://playwright.dev/
-[tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
-[tailwind-url]: https://tailwindcss.com/
-[github-actions]: https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white
-[github-actions-url]: https://docs.github.com/en/actions
-[docker]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
-[docker-url]: https://www.docker.com/
-[discord]: https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white
-[discord-url]: https://discord.com/
-[vercel]: https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white
-[vercel-url]: https://vercel.com/
+- [FreeCodeCamp](https://www.freecodecamp.org/) BeautifulSoup web scraping tutorial
+- [Hyperplexed](https://www.youtube.com/watch?v=x872keruUWQ) for the Mario UI background inspiration
