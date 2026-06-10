@@ -12,9 +12,9 @@ export interface IChanges {
 }
 
 export interface ILastChange {
-  expiration: string;
+  expiration: string | null;
   items: IScrapedItems;
-  timestamp: string;
+  timestamp: string | null;
 }
 
 export interface IScrapeResults {

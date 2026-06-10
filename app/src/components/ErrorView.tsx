@@ -20,7 +20,7 @@ export default function ErrorView({ errorInfo }: ErrorViewProps) {
         </a>
         .
       </p>
-      <button className="m-2 rounded-lg bg-blue-100 p-2 text-sm font-bold uppercase text-blue-600">
+      <button className="m-2 rounded-lg bg-blue-100 p-2 text-sm font-bold text-blue-600 uppercase">
         <a href={API_STATUS_URL} target="_blank">
           API Status
         </a>

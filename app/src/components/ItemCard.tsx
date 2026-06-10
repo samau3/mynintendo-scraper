@@ -9,9 +9,11 @@ export function ItemCard({ item, index, cost, imageURL }: ItemCardProps) {
   return (
     <div
       key={`${item}-${index}`}
-      className="flex h-full w-full flex-col justify-between rounded-lg border-2 bg-gray-100 bg-opacity-80 p-4 shadow-lg dark:border-gray-600 dark:bg-slate-800 dark:bg-opacity-80"
+      className="bg-opacity-80 dark:bg-opacity-80 flex h-full w-full flex-col justify-between rounded-lg border-2 bg-gray-100 p-4 shadow-lg dark:border-gray-600 dark:bg-slate-800"
     >
-      {imageURL && <img className="mb-2" src={imageURL} />}
+      {imageURL && (
+        <img className="mb-2" src={imageURL} alt={`${item} product image`} />
+      )}
       <p className="mb-auto text-lg tracking-tight text-black dark:text-slate-200">
         {item}
       </p>
