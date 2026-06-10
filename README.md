@@ -116,11 +116,12 @@ To get a local copy up and running follow these simple example steps.
       ```sh
       npm install
       ```
-    - pip
-      - In the `server/` directory, install the required python packages:
+    - uv
+      - Install [uv](https://docs.astral.sh/uv/) if you don't have it (`brew install uv` on macOS).
+      - In the `server/` directory, install the required Python packages:
       ```sh
-      source venv/bin/activate
-      pip3 install -r requirements.txt
+      uv sync
+      uv run playwright install chromium
       ```
 2. Discord Bot messaging
 
@@ -139,7 +140,7 @@ To get a local copy up and running follow these simple example steps.
 
    ```sh
     (in the app directory) npm start
-    (in the server directory with venv activated) flask run
+    (in the server directory) uv run flask run
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
