@@ -15,5 +15,6 @@ class CSSTagSelectorError(Exception):
 
 
 class CustomError(Exception):
-    def __init__(self, message):
-        self.message = message
+    def __init__(self, message, original_exception=None):
+        super().__init__(message)
+        self.original_exception = original_exception

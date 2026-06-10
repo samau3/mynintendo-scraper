@@ -1,19 +1,19 @@
-import os
 import logging
-import time
-import asyncio
-from bs4 import BeautifulSoup
-import requests
-from deepdiff import DeepDiff
-from models import db, Listings, Changes
-from datetime import datetime, timezone
-from sqlalchemy.exc import SQLAlchemyError
-from errors import DatabaseError, CSSTagSelectorError, CustomError
+import os
 import re
-from playwright.sync_api import sync_playwright
-from helpers.remove_trademark_false_positives import remove_trademark_false_positives
-from helpers.find_items import find_items, PLATINUM_POINTS_TEST_ID
+from datetime import datetime, timezone
+
 import dotenv
+import requests
+from bs4 import BeautifulSoup
+from deepdiff import DeepDiff
+from playwright.sync_api import sync_playwright
+from sqlalchemy.exc import SQLAlchemyError
+
+from errors import CSSTagSelectorError, CustomError, DatabaseError
+from helpers.find_items import PLATINUM_POINTS_TEST_ID, find_items
+from helpers.remove_trademark_false_positives import remove_trademark_false_positives
+from models import Changes, Listings, db
 
 dotenv.load_dotenv()
 
@@ -161,12 +161,33 @@ def get_changes():
     """Function that returns the changes from database"""
 
     last_change_row_object = Changes.query.order_by(Changes.id.desc()).first()
+    if last_change_row_object is None:
+        return {"items": {}, "timestamp": None, "expiration": None}
+
     last_change = {}
     for column in last_change_row_object.__table__.columns:
         if column.name != "id":
             last_change[column.name] = getattr(last_change_row_object, column.name)
 
     return last_change
+
+
+def get_latest_listings_summary():
+    """Return the most recent cached listings from the database without scraping."""
+
+    last_record = Listings.query.order_by(Listings.id.desc()).first()
+    if last_record is None:
+        return None
+
+    return {
+        "current_listings": last_record.items,
+        "images": {},
+        "recent_change": {
+            "items": "No changes.",
+            "timestamp": last_record.timestamp,
+        },
+        "last_change": get_changes(),
+    }
 
 
 def scrape_mynintendo(current_items):
@@ -184,13 +205,15 @@ def scrape_mynintendo(current_items):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        print(str(e))
+        logging.error("Database error while updating changes: %s", e)
         raise DatabaseError(
             "Database error occurred while updating database for changes."
-        )
+        ) from e
     except Exception as e:
-        print(str(e))
-        raise CustomError(e, "Error occurred while updating database for changes.")
+        logging.error("Unexpected error while updating changes: %s", e)
+        raise CustomError(
+            "Error occurred while updating database for changes.", e
+        ) from e
 
     if not changes:
         changes = "No changes."
@@ -226,9 +249,11 @@ def message_discord(changes):
     try:
         result.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        print(err)
+        logging.error("Discord webhook delivery failed: %s", err)
     else:
-        print("Payload delivered successfully, code {}.".format(result.status_code))
+        logging.info(
+            "Discord payload delivered successfully, code %s.", result.status_code
+        )
 
 
 def delete_old_records():
@@ -241,8 +266,8 @@ def delete_old_records():
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        print(str(e))
-        raise DatabaseError("Database error occurred while trying to delete records.")
+        logging.error("Database error while deleting records: %s", e)
+        raise DatabaseError("Database error occurred while trying to delete records.") from e
 
     deleted = deleted_listings + deleted_changes
     return deleted
