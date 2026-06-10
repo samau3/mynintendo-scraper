@@ -200,7 +200,7 @@ External cron jobs (configured at [cron-job.org](https://cron-job.org)):
 
 ## Contact
 
-**Samuel Au** — [GitHub](https://github.com/samau3) · [Project Repository](https://github.com/samau3/mynintendo-scraper)
+**Sammy Au** — [GitHub](https://github.com/samau3) · [Project Repository](https://github.com/samau3/mynintendo-scraper)
 
 ## License
 
