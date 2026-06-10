@@ -12,7 +12,7 @@ dependencies = [
     "gunicorn>=23.0",
     "lxml>=5.3",
     "playwright>=1.50",
-    "psycopg2>=2.9",
+    "psycopg2-binary>=2.9",
     "python-dotenv>=1.0",
     "requests>=2.32",
 ]
