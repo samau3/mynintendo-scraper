@@ -25,8 +25,7 @@ def test_ensure_schema_adds_images_column_to_legacy_table(app):
         ensure_schema()
 
         columns = {
-            column["name"]
-            for column in inspect(db.engine).get_columns("item_listings")
+            column["name"] for column in inspect(db.engine).get_columns("item_listings")
         }
         assert "images" in columns
 
@@ -81,8 +80,7 @@ def test_ensure_schema_adds_preview_item_count_column_to_legacy_table(app):
         ensure_schema()
 
         columns = {
-            column["name"]
-            for column in inspect(db.engine).get_columns("item_listings")
+            column["name"] for column in inspect(db.engine).get_columns("item_listings")
         }
         assert "preview_item_count" in columns
 
@@ -121,9 +119,7 @@ def test_delete_old_records_removes_expired_entries(app):
     with app.app_context():
         db.session.add(Listings({"Old Item": "50 Points"}, expiration=expired))
         db.session.add(Listings({"New Item": "100 Points"}, expiration=current))
-        db.session.add(
-            Changes({"New Items": [{"Item": "x"}]}, expiration=expired)
-        )
+        db.session.add(Changes({"New Items": [{"Item": "x"}]}, expiration=expired))
         db.session.commit()
 
         deleted = delete_old_records()

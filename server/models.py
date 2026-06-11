@@ -9,11 +9,12 @@ db = SQLAlchemy()
 
 
 class Listings(db.Model):
-
     __tablename__ = "item_listings"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    timestamp = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    timestamp = db.Column(
+        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
     expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
     images = db.Column(db.JSON, nullable=False, default=dict)
@@ -38,11 +39,12 @@ class Listings(db.Model):
 
 
 class Changes(db.Model):
-
     __tablename__ = "changes"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    timestamp = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    timestamp = db.Column(
+        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
     expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
 
@@ -90,8 +92,5 @@ def ensure_schema():
     if "preview_item_count" not in columns:
         with db.engine.begin() as connection:
             connection.execute(
-                text(
-                    "ALTER TABLE item_listings "
-                    "ADD COLUMN preview_item_count INTEGER"
-                )
+                text("ALTER TABLE item_listings ADD COLUMN preview_item_count INTEGER")
             )

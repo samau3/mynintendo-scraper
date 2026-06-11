@@ -7,7 +7,7 @@ from playwright.async_api import TimeoutError
 
 from errors import CSSTagSelectorError, CustomError, IncompleteScrapeError
 from main import get_changes, message_discord, run_scrape
-from models import connect_db, db, ensure_schema
+from models import connect_db, ensure_schema
 from routes.check_api import check_api
 from routes.main_api import main_api
 

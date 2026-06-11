@@ -53,7 +53,9 @@ def test_get_items_endpoint(mock_fetch_scraped_data, client):
 
 @patch("main.load_items")
 def test_root_returns_503_on_css_selector_error(mock_load_items, client):
-    mock_load_items.side_effect = CSSTagSelectorError("The CSS tag for stock has changed.")
+    mock_load_items.side_effect = CSSTagSelectorError(
+        "The CSS tag for stock has changed."
+    )
 
     response = client.get("/")
     assert response.status_code == 503

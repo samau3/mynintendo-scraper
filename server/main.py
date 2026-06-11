@@ -93,23 +93,26 @@ def is_incomplete_scrape(last_items, scraped_items, expansion_meta, preview_item
 def load_items():
     """Load the rewards page and return product elements plus expansion metadata."""
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True, args=[
-            '--no-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--window-size=1920,1080',
-            '--disable-features=VizDisplayCompositor',
-            '--disable-extensions',
-            '--disable-plugins',
-            '--disable-images',  # Skip loading images for speed
-            '--disable-background-timer-throttling',
-            '--disable-backgrounding-occluded-windows',
-            '--disable-renderer-backgrounding',
-        ])
+        browser = p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--window-size=1920,1080",
+                "--disable-features=VizDisplayCompositor",
+                "--disable-extensions",
+                "--disable-plugins",
+                "--disable-images",  # Skip loading images for speed
+                "--disable-background-timer-throttling",
+                "--disable-backgrounding-occluded-windows",
+                "--disable-renderer-backgrounding",
+            ],
+        )
         page = browser.new_page()
         try:
             page.set_default_timeout(30000)  # 30 seconds
-            page.goto(MYNINTENDO_URL, wait_until='networkidle')
+            page.goto(MYNINTENDO_URL, wait_until="networkidle")
             page.wait_for_selector(PRODUCT_READY_SELECTOR, timeout=20000)
             expansion_meta = expand_rewards_list(page, PRODUCT_READY_SELECTOR)
             soup = BeautifulSoup(page.content(), "lxml")
@@ -187,7 +190,6 @@ def get_item_images(items):
     item_images = {}
 
     for item in items:
-
         name = item.get("aria-label", "Unknown Name").strip()
 
         # targets the element that displays "Exclusive" or "Sold out" label to help determine stock status
@@ -220,7 +222,6 @@ def check_for_changes(last_stored_items, scraped_items):
 
     changes = {}
     for difference in cleaned_diff:
-
         # if difference is added
         if difference == "dictionary_item_added":
             new_items = []
@@ -242,7 +243,7 @@ def check_for_changes(last_stored_items, scraped_items):
                     {
                         item[
                             6:-2
-                        ]: f'{diff[difference][item]["new_value"]} (Old value: {diff[difference][item]["old_value"]})'
+                        ]: f"{diff[difference][item]['new_value']} (Old value: {diff[difference][item]['old_value']})"
                     }
                 )
             changes["Changed Items"] = changed_items
@@ -331,7 +332,7 @@ def message_discord(changes):
     discord_url = f"https://discord.com/api/webhooks/{os.environ['WEBHOOK_ID']}/{os.environ['WEBHOOK_TOKEN']}"
     data = {}
 
-    output_message = f"""<@{os.environ['DISCORD_USER_ID']}>\nCheck the listings: {MYNINTENDO_URL}\n"""
+    output_message = f"""<@{os.environ["DISCORD_USER_ID"]}>\nCheck the listings: {MYNINTENDO_URL}\n"""
     output_embed = []
     for change in changes:
         embed_obj = {}
@@ -363,8 +364,12 @@ def message_discord(changes):
 
 def delete_old_records():
     """Function that deletes expired database records"""
-    expired_listings = Listings.query.filter(Listings.expiration <= datetime.now(timezone.utc))
-    expired_changes = Changes.query.filter(Changes.expiration <= datetime.now(timezone.utc))
+    expired_listings = Listings.query.filter(
+        Listings.expiration <= datetime.now(timezone.utc)
+    )
+    expired_changes = Changes.query.filter(
+        Changes.expiration <= datetime.now(timezone.utc)
+    )
     deleted_listings = expired_listings.delete(synchronize_session=False)
     deleted_changes = expired_changes.delete(synchronize_session=False)
     try:
@@ -372,7 +377,9 @@ def delete_old_records():
     except SQLAlchemyError as e:
         db.session.rollback()
         logging.error("Database error while deleting records: %s", e)
-        raise DatabaseError("Database error occurred while trying to delete records.") from e
+        raise DatabaseError(
+            "Database error occurred while trying to delete records."
+        ) from e
 
     deleted = deleted_listings + deleted_changes
     return deleted
