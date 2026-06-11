@@ -34,7 +34,7 @@ def check_scraping():
         Raises a CustomError if the scraping function fails.
     """
     try:
-        raw_item_elements = load_items()
+        raw_item_elements, _expansion_meta = load_items()
         get_items(raw_item_elements)
         return jsonify("API Scraping is running.")
     except Exception as err:
