@@ -181,7 +181,7 @@ def get_latest_listings_summary():
 
     return {
         "current_listings": last_record.items,
-        "images": {},
+        "images": last_record.images or {},
         "recent_change": {
             "items": "No changes.",
             "timestamp": last_record.timestamp,
@@ -190,7 +190,7 @@ def get_latest_listings_summary():
     }
 
 
-def scrape_mynintendo(current_items):
+def scrape_mynintendo(current_items, images=None):
     """Function that calls scraping function and updates database if changes were found"""
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
@@ -199,7 +199,7 @@ def scrape_mynintendo(current_items):
 
     if changes:
         Changes.add_record(changes)
-    new_item = Listings.add_record(current_items)
+    new_item = Listings.add_record(current_items, images=images or {})
 
     try:
         db.session.commit()

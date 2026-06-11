@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 
 from main import (
     delete_old_records,
+    get_item_images,
     get_items,
     get_latest_listings_summary,
     load_items,
@@ -23,7 +24,8 @@ def call_scrape_fn():
 
     raw_item_elements = load_items()
     items = get_items(raw_item_elements)
-    results = scrape_mynintendo(items)
+    images = get_item_images(raw_item_elements)
+    results = scrape_mynintendo(items, images)
 
     if results["items"] != "No changes.":
         message_discord(results["items"])
