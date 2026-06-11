@@ -15,16 +15,19 @@ class Listings(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
+    images = db.Column(db.JSON, nullable=False, default=dict)
 
-    def __init__(self, items, expiration=None):
+    def __init__(self, items, images=None, expiration=None):
         self.items = items
+        self.images = images if images is not None else {}
         self.expiration = expiration if expiration else calculate_expiration_date(7)
 
     @classmethod
-    def add_record(self, items):
+    def add_record(self, items, images=None):
         """Store the scrapped items into database"""
         item = Listings(
             items=items,
+            images=images,
         )
         db.session.add(item)
         return item

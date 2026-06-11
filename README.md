@@ -161,6 +161,18 @@ npm run format:check
 
 Manual Fly.io deploy: `cd server && flyctl deploy --remote-only`
 
+### Database migrations
+
+The app uses `db.create_all()` and does not run automatic schema migrations. When deploying a change that adds columns to existing tables, run the required SQL against your PostgreSQL database before or after deploy.
+
+**Product images column** (required for cached listing images):
+
+```sql
+ALTER TABLE item_listings ADD COLUMN IF NOT EXISTS images JSON NOT NULL DEFAULT '{}';
+```
+
+Existing rows will have empty image maps until the next scrape or cron run populates them.
+
 External cron jobs (configured at [cron-job.org](https://cron-job.org)):
 - Hourly: `GET /api/scrape`
 - Weekly: `GET /api/delete`

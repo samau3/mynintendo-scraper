@@ -24,13 +24,17 @@ def test_get_items_latest_returns_404_when_empty(client):
 
 def test_get_items_latest_returns_cached_listings(app, client):
     with app.app_context():
-        Listings.add_record({"Item A": "100 Platinum Points"})
+        Listings.add_record(
+            {"Item A": "100 Platinum Points"},
+            images={"Item A": "https://assets.nintendo.com/item-a.png"},
+        )
         db.session.commit()
 
     response = client.get("/api/items/latest")
     assert response.status_code == 200
     data = response.get_json()
     assert data["current_listings"] == {"Item A": "100 Platinum Points"}
+    assert data["images"] == {"Item A": "https://assets.nintendo.com/item-a.png"}
     assert data["recent_change"]["items"] == "No changes."
 
 

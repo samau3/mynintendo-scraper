@@ -10,9 +10,22 @@ def test_listings_add_record_sets_expiration(app):
         db.session.commit()
 
         assert record.items == {"Item A": "100 Platinum Points"}
+        assert record.images == {}
         assert record.expiration is not None
         assert record.expiration > record.timestamp
         assert Listings.query.count() == 1
+
+
+def test_listings_add_record_stores_images(app):
+    with app.app_context():
+        images = {"Item A": "https://assets.nintendo.com/item-a.png"}
+        record = Listings.add_record(
+            {"Item A": "100 Platinum Points"},
+            images=images,
+        )
+        db.session.commit()
+
+        assert record.images == images
 
 
 def test_changes_add_record(app):

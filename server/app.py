@@ -56,7 +56,7 @@ def display_scrape_summary():
     raw_item_elements = load_items()
     items = get_items(raw_item_elements)
     images = get_item_images(raw_item_elements)
-    scrape_results = scrape_mynintendo(items)
+    scrape_results = scrape_mynintendo(items, images)
     last_change = get_changes()
 
     if scrape_results["items"] != "No changes.":
