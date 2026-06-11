@@ -112,7 +112,7 @@ def load_items():
         page = browser.new_page()
         try:
             page.set_default_timeout(30000)  # 30 seconds
-            page.goto(MYNINTENDO_URL, wait_until="networkidle")
+            page.goto(MYNINTENDO_URL, wait_until="domcontentloaded")
             page.wait_for_selector(PRODUCT_READY_SELECTOR, timeout=20000)
             expansion_meta = expand_rewards_list(page, PRODUCT_READY_SELECTOR)
             soup = BeautifulSoup(page.content(), "lxml")

@@ -90,7 +90,6 @@ def expand_rewards_list(page, product_ready_selector):
 
         button.scroll_into_view_if_needed()
         button.click()
-        page.wait_for_load_state("networkidle")
         page.wait_for_selector(product_ready_selector, timeout=10000)
 
         count_after, expanded = wait_for_expansion(page, count_before)
