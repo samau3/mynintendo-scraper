@@ -68,7 +68,12 @@ def test_root_returns_503_on_incomplete_scrape(
 ):
     full_listings = {f"Item {i}": f"{i}00 Platinum Points" for i in range(59)}
     partial_listings = {f"Item {i}": f"{i}00 Platinum Points" for i in range(20)}
-    failed_meta = {"expanded": False, "count_before": 20, "count_after": 20}
+    failed_meta = {
+        "expanded": False,
+        "button_found": True,
+        "count_before": 20,
+        "count_after": 20,
+    }
 
     with app.app_context():
         Listings.add_record(full_listings)

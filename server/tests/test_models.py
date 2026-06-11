@@ -50,6 +50,43 @@ def test_listings_add_record_sets_expiration(app):
         assert Listings.query.count() == 1
 
 
+def test_listings_add_record_stores_preview_item_count(app):
+    with app.app_context():
+        record = Listings.add_record(
+            {"Item A": "100 Platinum Points"},
+            preview_item_count=20,
+        )
+        db.session.commit()
+
+        assert record.preview_item_count == 20
+
+
+def test_ensure_schema_adds_preview_item_count_column_to_legacy_table(app):
+    with app.app_context():
+        db.create_all()
+        with db.engine.begin() as connection:
+            connection.execute(text("DROP TABLE item_listings"))
+            connection.execute(
+                text(
+                    "CREATE TABLE item_listings ("
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    "timestamp DATETIME NOT NULL, "
+                    "expiration DATETIME NOT NULL, "
+                    "items JSON NOT NULL, "
+                    "images JSON NOT NULL DEFAULT '{}'"
+                    ")"
+                )
+            )
+
+        ensure_schema()
+
+        columns = {
+            column["name"]
+            for column in inspect(db.engine).get_columns("item_listings")
+        }
+        assert "preview_item_count" in columns
+
+
 def test_listings_add_record_stores_images(app):
     with app.app_context():
         images = {"Item A": "https://assets.nintendo.com/item-a.png"}

@@ -32,7 +32,37 @@ PRODUCT_READY_SELECTOR = f'[data-testid="{PLATINUM_POINTS_TEST_ID}"]'
 MAX_SCRAPE_ATTEMPTS = 3
 
 
-def is_incomplete_scrape(last_items, scraped_items, expansion_meta):
+def derive_preview_item_count(expansion_meta):
+    """Return the collapsed preview count when expansion succeeded."""
+    if not expansion_meta:
+        return None
+
+    if not expansion_meta.get("button_found", False):
+        return None
+
+    count_before = expansion_meta.get("count_before")
+    count_after = expansion_meta.get("count_after")
+    if (
+        count_before is not None
+        and count_after is not None
+        and count_after > count_before
+    ):
+        return count_before
+
+    return None
+
+
+def resolve_preview_item_count(expansion_meta, last_record):
+    """Keep the stored preview count unless this scrape observed a new expansion."""
+    new_preview = derive_preview_item_count(expansion_meta)
+    if new_preview is not None:
+        return new_preview
+    if last_record is not None:
+        return last_record.preview_item_count
+    return None
+
+
+def is_incomplete_scrape(last_items, scraped_items, expansion_meta, preview_item_count):
     """Return True when a scrape likely missed hidden items behind expansion."""
     if not last_items:
         return False
@@ -45,11 +75,19 @@ def is_incomplete_scrape(last_items, scraped_items, expansion_meta):
     if not scraped_keys < last_keys:
         return False
 
+    count_before = expansion_meta.get("count_before", len(scraped_items))
     count_after = expansion_meta.get("count_after", len(scraped_items))
+    button_found = expansion_meta.get("button_found", False)
     expansion_failed = not expansion_meta.get("expanded", False)
-    count_too_low = count_after < len(last_items)
 
-    return expansion_failed or count_too_low
+    if expansion_failed:
+        return True
+    if button_found and count_after <= count_before:
+        return True
+    if preview_item_count is not None and count_after == preview_item_count:
+        return True
+
+    return False
 
 
 def load_items():
@@ -85,6 +123,9 @@ def fetch_scraped_data():
     """Scrape items with retries when expansion appears incomplete."""
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
+    preview_item_count = (
+        last_record.preview_item_count if last_record is not None else None
+    )
 
     raw_elements = None
     items = None
@@ -94,7 +135,9 @@ def fetch_scraped_data():
     for attempt in range(MAX_SCRAPE_ATTEMPTS):
         raw_elements, expansion_meta = load_items()
         items = get_items(raw_elements)
-        if not is_incomplete_scrape(last_items, items, expansion_meta):
+        if not is_incomplete_scrape(
+            last_items, items, expansion_meta, preview_item_count
+        ):
             images = get_item_images(raw_elements)
             break
         logging.warning(
@@ -242,21 +285,26 @@ def get_latest_listings_summary():
 
 def run_scrape():
     """Scrape with retries, update the database, and return scrape results."""
-    items, images, _expansion_meta = fetch_scraped_data()
-    scrape_results = scrape_mynintendo(items, images)
+    items, images, expansion_meta = fetch_scraped_data()
+    scrape_results = scrape_mynintendo(items, images, expansion_meta=expansion_meta)
     return items, images, scrape_results
 
 
-def scrape_mynintendo(current_items, images=None):
+def scrape_mynintendo(current_items, images=None, expansion_meta=None):
     """Function that calls scraping function and updates database if changes were found"""
     last_record = Listings.query.order_by(Listings.id.desc()).first()
     last_items = last_record.items if last_record is not None else {}
+    preview_item_count = resolve_preview_item_count(expansion_meta, last_record)
 
     changes = check_for_changes(last_items, current_items)
 
     if changes:
         Changes.add_record(changes)
-    new_item = Listings.add_record(current_items, images=images or {})
+    new_item = Listings.add_record(
+        current_items,
+        images=images or {},
+        preview_item_count=preview_item_count,
+    )
 
     try:
         db.session.commit()

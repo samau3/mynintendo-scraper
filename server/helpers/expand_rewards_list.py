@@ -73,6 +73,7 @@ def expand_rewards_list(page, product_ready_selector):
         )
         return {
             "expanded": True,
+            "button_found": False,
             "count_before": count_before,
             "count_after": count_before,
         }
@@ -109,6 +110,7 @@ def expand_rewards_list(page, product_ready_selector):
     )
     return {
         "expanded": expanded,
+        "button_found": True,
         "count_before": count_before,
         "count_after": count_after,
     }

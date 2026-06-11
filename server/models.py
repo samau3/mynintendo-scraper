@@ -17,18 +17,21 @@ class Listings(db.Model):
     expiration = db.Column(db.DateTime, nullable=False)
     items = db.Column(db.JSON, nullable=False)
     images = db.Column(db.JSON, nullable=False, default=dict)
+    preview_item_count = db.Column(db.Integer, nullable=True)
 
-    def __init__(self, items, images=None, expiration=None):
+    def __init__(self, items, images=None, preview_item_count=None, expiration=None):
         self.items = items
         self.images = images if images is not None else {}
+        self.preview_item_count = preview_item_count
         self.expiration = expiration if expiration else calculate_expiration_date(7)
 
     @classmethod
-    def add_record(self, items, images=None):
+    def add_record(self, items, images=None, preview_item_count=None):
         """Store the scrapped items into database"""
         item = Listings(
             items=items,
             images=images,
+            preview_item_count=preview_item_count,
         )
         db.session.add(item)
         return item
@@ -82,5 +85,13 @@ def ensure_schema():
                 text(
                     "ALTER TABLE item_listings "
                     "ADD COLUMN images JSON NOT NULL DEFAULT '{}'"
+                )
+            )
+    if "preview_item_count" not in columns:
+        with db.engine.begin() as connection:
+            connection.execute(
+                text(
+                    "ALTER TABLE item_listings "
+                    "ADD COLUMN preview_item_count INTEGER"
                 )
             )
