@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import inspect, text
 
 from helpers.calculate_expiration_date import calculate_expiration_date
 
@@ -64,3 +65,22 @@ def connect_db(app):
 
     db.app = app
     db.init_app(app)
+
+
+def ensure_schema():
+    """Create tables and apply lightweight schema upgrades for existing databases."""
+    db.create_all()
+
+    inspector = inspect(db.engine)
+    if not inspector.has_table("item_listings"):
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("item_listings")}
+    if "images" not in columns:
+        with db.engine.begin() as connection:
+            connection.execute(
+                text(
+                    "ALTER TABLE item_listings "
+                    "ADD COLUMN images JSON NOT NULL DEFAULT '{}'"
+                )
+            )

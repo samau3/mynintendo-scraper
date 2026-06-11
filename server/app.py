@@ -5,16 +5,9 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from playwright.async_api import TimeoutError
 
-from errors import CSSTagSelectorError, CustomError
-from main import (
-    get_changes,
-    get_item_images,
-    get_items,
-    load_items,
-    message_discord,
-    scrape_mynintendo,
-)
-from models import connect_db, db
+from errors import CSSTagSelectorError, CustomError, IncompleteScrapeError
+from main import get_changes, message_discord, run_scrape
+from models import connect_db, db, ensure_schema
 from routes.check_api import check_api
 from routes.main_api import main_api
 
@@ -53,10 +46,7 @@ def display_scrape_summary():
         - last_change: Information about the last change detected.
     """
 
-    raw_item_elements = load_items()
-    items = get_items(raw_item_elements)
-    images = get_item_images(raw_item_elements)
-    scrape_results = scrape_mynintendo(items, images)
+    items, images, scrape_results = run_scrape()
     last_change = get_changes()
 
     if scrape_results["items"] != "No changes.":
@@ -81,7 +71,7 @@ def handle_not_found_error(error):
 def handle_error(error):
     if isinstance(error, CustomError):
         response = {"message": str(error)}
-    elif isinstance(error, CSSTagSelectorError):
+    elif isinstance(error, (CSSTagSelectorError, IncompleteScrapeError)):
         response = {"message": str(error)}
         return jsonify(response), 503
     elif isinstance(error, TimeoutError):
@@ -106,4 +96,4 @@ def add_header(response):
 
 
 with app.app_context():
-    db.create_all()
+    ensure_schema()

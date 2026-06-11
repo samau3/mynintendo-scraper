@@ -1,7 +1,41 @@
 from datetime import datetime, timedelta, timezone
 
+from sqlalchemy import inspect, text
+
 from main import delete_old_records, get_changes
-from models import Changes, Listings, db
+from models import Changes, Listings, db, ensure_schema
+
+
+def test_ensure_schema_adds_images_column_to_legacy_table(app):
+    with app.app_context():
+        db.create_all()
+        with db.engine.begin() as connection:
+            connection.execute(text("DROP TABLE item_listings"))
+            connection.execute(
+                text(
+                    "CREATE TABLE item_listings ("
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    "timestamp DATETIME NOT NULL, "
+                    "expiration DATETIME NOT NULL, "
+                    "items JSON NOT NULL"
+                    ")"
+                )
+            )
+
+        ensure_schema()
+
+        columns = {
+            column["name"]
+            for column in inspect(db.engine).get_columns("item_listings")
+        }
+        assert "images" in columns
+
+        record = Listings.add_record(
+            {"Item A": "100 Platinum Points"},
+            images={"Item A": "https://assets.nintendo.com/item-a.png"},
+        )
+        db.session.commit()
+        assert record.images == {"Item A": "https://assets.nintendo.com/item-a.png"}
 
 
 def test_listings_add_record_sets_expiration(app):

@@ -2,12 +2,10 @@ from flask import Blueprint, jsonify
 
 from main import (
     delete_old_records,
-    get_item_images,
-    get_items,
+    fetch_scraped_data,
     get_latest_listings_summary,
-    load_items,
     message_discord,
-    scrape_mynintendo,
+    run_scrape,
 )
 
 main_api = Blueprint("main", __name__)
@@ -22,10 +20,7 @@ def call_scrape_fn():
         A JSON response containing the timestamp of the scrape.
     """
 
-    raw_item_elements = load_items()
-    items = get_items(raw_item_elements)
-    images = get_item_images(raw_item_elements)
-    results = scrape_mynintendo(items, images)
+    _items, _images, results = run_scrape()
 
     if results["items"] != "No changes.":
         message_discord(results["items"])
@@ -71,7 +66,6 @@ def call_get_items():
         A JSON response containing the processed items.
     """
 
-    raw_item_elements = load_items()
-    items = get_items(raw_item_elements)
+    items, _images, _expansion_meta = fetch_scraped_data()
 
     return jsonify(items)
