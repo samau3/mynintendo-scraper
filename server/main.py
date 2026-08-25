@@ -173,13 +173,13 @@ def get_items(items):
         if not stock:
             raise CSSTagSelectorError("The CSS tag for stock has changed.")
 
-        if stock and stock.text == "Exclusive":
-            price_element = item.find("div", class_=re.compile("Zc8hG"))
-            price = price_element.get_text() if price_element else "Price Not Found"
-        elif stock and stock.text != "Exclusive":
-            price = stock.text
+        if stock.text == "Sold Out":
+            price = "Sold Out"
         else:
-            price = "Price Not Found"
+            price_element = item.find(
+                attrs={"data-testid": PLATINUM_POINTS_TEST_ID}
+            )
+            price = price_element.get_text() if price_element else "Price Not Found"
         item_data[name] = price
 
     return item_data
