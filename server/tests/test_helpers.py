@@ -32,6 +32,12 @@ MOCK_HTML = """
                 <span class="unbAu">800</span> Platinum Points
             </div>
         </a>
+        <a aria-label="Item 3 (Free Badge)" class="sc-1bsju6x-1">
+            <div class="Hc9FH pRPVc EKAzI">Free</div>
+            <div data-testid="platinumPoints" class="Zc8hG">
+                <span class="pXrQP">500</span> Platinum Points
+            </div>
+        </a>
     </body>
 </html>
 """
@@ -97,9 +103,11 @@ def test_get_items_parses_mock_html():
     items = find_items(BeautifulSoup(MOCK_HTML, "lxml"))
     item_costs = get_items(items)
     item_costs["Item 1 (Normal)"] = item_costs["Item 1 (Normal)"].strip()
+    item_costs["Item 3 (Free Badge)"] = item_costs["Item 3 (Free Badge)"].strip()
     assert item_costs == {
         "Item 1 (Normal)": "800 Platinum Points",
         "Item 2 (Sold Out)": "Sold Out",
+        "Item 3 (Free Badge)": "500 Platinum Points",
     }
 
 
