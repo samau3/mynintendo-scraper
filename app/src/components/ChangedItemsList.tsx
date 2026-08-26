@@ -7,7 +7,7 @@ interface ChangedItemsListProps {
 
 export function ChangedItemsList({ changedItemsData }: ChangedItemsListProps) {
   return (
-    <div className="max-h-80 overflow-y-auto">
+    <div className="changed-items-scroll max-h-80 overflow-y-auto">
       {Object.keys(changedItemsData).map((changeCategory, index) => (
         <div key={index}>
           <div>
